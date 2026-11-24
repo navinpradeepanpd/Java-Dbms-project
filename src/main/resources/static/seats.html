@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Seats | CineBook Cinemas</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.2">
+    <link rel="stylesheet" href="css/styles.css?v=2.3">
 </head>
 <body>
     <!-- Floating Glass Island Navbar -->
@@ -57,104 +57,111 @@
         </div>
 
         <!-- Seat Selection & Sidebar Layout -->
-        <div class="seat-selection-wrapper">
+        <div class="seats-page-grid">
             <!-- Stage Area: Screen & Seat Matrix -->
-            <section class="seat-stage-card">
+            <section class="stage-card-glass">
                 <!-- Curved Cinema Screen with Projection Light Beam -->
-                <div class="cinema-screen-container">
-                    <div class="screen-cone-light"></div>
-                    <div class="screen-curve-bar"></div>
-                    <span class="screen-label-text">✦ ALL EYES THIS WAY &bull; CINEMATIC PROJECTION SCREEN ✦</span>
+                <div class="projector-screen-glow">
+                    <div class="projector-beam"></div>
+                    <div class="screen-arc-bar"></div>
+                    <span class="screen-caption">✦ SCREEN THIS WAY ✦</span>
                 </div>
 
                 <!-- 5x8 Seat Matrix (A1 to E8 loaded from database) -->
-                <div id="seatMatrix" class="seat-matrix-wrapper">
+                <div id="seatMatrix" class="matrix-container">
                     <div style="text-align:center; padding:3rem; color:var(--text-muted);">
                         Fetching live 5&times;8 seat inventory from database...
                     </div>
                 </div>
 
                 <!-- Seat Categories & Pricing Legend -->
-                <div class="seat-legend-bar">
+                <div class="glass-legend-panel">
                     <div class="legend-chip">
-                        <div class="legend-box reg"></div>
+                        <div class="legend-indicator reg"></div>
                         <span>Regular &bull; Rows A-B (Rs. 150)</span>
                     </div>
                     <div class="legend-chip">
-                        <div class="legend-box prem"></div>
+                        <div class="legend-indicator prem"></div>
                         <span>Premium &bull; Rows C-D (Rs. 250)</span>
                     </div>
                     <div class="legend-chip">
-                        <div class="legend-box vip"></div>
+                        <div class="legend-indicator vip"></div>
                         <span>VIP &bull; Row E (Rs. 400)</span>
                     </div>
                     <div class="legend-chip">
-                        <div class="legend-box sel"></div>
+                        <div class="legend-indicator sel"></div>
                         <span>Selected</span>
                     </div>
                     <div class="legend-chip">
-                        <div class="legend-box bk"></div>
+                        <div class="legend-indicator bk"></div>
                         <span>Booked (Unavailable)</span>
                     </div>
                 </div>
             </section>
 
-            <!-- Booking Sidebar: Pricing, Coupon & Guest Checkout -->
-            <aside class="booking-sidebar-card">
-                <h3 class="sidebar-heading">Booking Summary</h3>
+            <!-- Booking Summary Sidebar: Pricing, Coupon & Guest Checkout -->
+            <aside class="glass-checkout-sidebar">
+                <h3 class="checkout-title">Booking Summary</h3>
 
-                <div class="sidebar-row">
-                    <span class="sidebar-row-label">Screening Ref:</span>
-                    <span class="sidebar-row-val" id="sidebarShowId">Show #--</span>
+                <div class="summary-info-row">
+                    <span class="summary-info-label">Screening Ref:</span>
+                    <span class="summary-info-val" id="sidebarShowId">Show #--</span>
                 </div>
 
-                <div style="margin-top:0.75rem;">
-                    <span class="sidebar-row-label">Selected Seats (<span id="selectedCount">0</span>):</span>
-                    <div id="selectedSeatsTags" class="selected-seats-badge-list">
+                <div class="summary-info-row">
+                    <span class="summary-info-label">Movie:</span>
+                    <span class="summary-info-val" id="sidebarMovieName" style="color:var(--accent-secondary);">--</span>
+                </div>
+
+                <div style="margin-top:0.85rem;">
+                    <span class="summary-info-label">Selected Seats (<span id="selectedCount" style="color:var(--accent-primary-light); font-weight:700;">0</span>):</span>
+                    <div id="selectedSeatsTags" class="selected-seats-badge-cloud">
                         <span style="color:var(--text-muted); font-size:0.85rem; font-style:italic;">No seats chosen yet</span>
                     </div>
                 </div>
 
-                <div class="sidebar-row">
-                    <span class="sidebar-row-label">Subtotal:</span>
-                    <span class="sidebar-row-val" id="summarySubtotal">Rs. 0.00</span>
+                <div class="summary-info-row">
+                    <span class="summary-info-label">Subtotal:</span>
+                    <span class="summary-info-val" id="summarySubtotal">Rs. 0.00</span>
                 </div>
 
                 <!-- Coupon Box -->
-                <div class="coupon-box">
-                    <label class="coupon-label" for="couponInput">Special Promo Coupon</label>
-                    <div class="coupon-input-group">
+                <div class="coupon-glass-dock">
+                    <label style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); display:block;" for="couponInput">
+                        Special Promo Coupon
+                    </label>
+                    <div class="coupon-glass-input">
                         <input type="text" id="couponInput" placeholder="Try CINE10 (10% Off)" autocomplete="off">
-                        <button type="button" id="btnApplyCoupon" class="btn-apply-coupon">Apply</button>
+                        <button type="button" id="btnApplyCoupon" class="btn-glass-primary" style="padding:0.5rem 1rem; font-size:0.82rem;">Apply</button>
                     </div>
-                    <div id="discountNotice" class="discount-badge-active">
+                    <div id="discountNotice" style="display:none; color:var(--accent-emerald); font-size:0.8rem; font-weight:600; margin-top:0.4rem;">
                         ✓ Coupon CINE10 applied! 10% discount deducted.
                     </div>
                 </div>
 
-                <div id="discountRow" class="sidebar-row" style="display:none; color:var(--accent-emerald);">
-                    <span class="sidebar-row-label" style="color:var(--accent-emerald);">Coupon Discount:</span>
-                    <span class="sidebar-row-val" id="summaryDiscount" style="color:var(--accent-emerald);">- Rs. 0.00</span>
+                <div id="discountRow" class="summary-info-row" style="display:none; color:var(--accent-emerald);">
+                    <span class="summary-info-label" style="color:var(--accent-emerald);">Coupon Discount:</span>
+                    <span class="summary-info-val" id="summaryDiscount" style="color:var(--accent-emerald);">- Rs. 0.00</span>
                 </div>
 
-                <div class="sidebar-total-row">
-                    <span class="sidebar-total-label">Net Payable:</span>
-                    <span class="sidebar-total-amount" id="summaryTotal">Rs. 0.00</span>
+                <div class="checkout-total-panel">
+                    <span style="font-weight:700; color:var(--text-secondary);">Net Payable:</span>
+                    <span class="total-amount-display" id="summaryTotal">Rs. 0.00</span>
                 </div>
 
                 <!-- Guest Checkout Form -->
-                <form id="bookingForm" class="customer-form-group">
-                    <div class="form-field">
+                <form id="bookingForm" class="checkout-form-dock">
+                    <div class="glass-field-group">
                         <label for="customerName">Full Name *</label>
                         <input type="text" id="customerName" required placeholder="e.g. Rahul Sharma" autocomplete="name">
                     </div>
 
-                    <div class="form-field">
+                    <div class="glass-field-group">
                         <label for="customerPhone">Mobile Phone (7-15 digits) *</label>
                         <input type="tel" id="customerPhone" required placeholder="e.g. 9876543210" pattern="[0-9]{7,15}" autocomplete="tel">
                     </div>
 
-                    <button type="submit" id="btnConfirmBooking" class="btn-confirm-checkout" disabled>
+                    <button type="submit" id="btnConfirmBooking" class="btn-glass-confirm-booking" disabled>
                         <span>🔒</span> Confirm &amp; Reserve Seats
                     </button>
                     <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:0.4rem;">
@@ -181,7 +188,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/app.js?v=2.2"></script>
+    <script src="js/app.js?v=2.3"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const showId = parseInt(urlParams.get('showId')) || 1;
@@ -203,7 +210,9 @@
                 currentShow = show;
 
                 // Render Header Details
-                document.getElementById('showMovieTitle').innerText = show.movieName || 'Movie Screening';
+                const movieTitle = show.movieName || 'Movie Screening';
+                document.getElementById('showMovieTitle').innerText = movieTitle;
+                document.getElementById('sidebarMovieName').innerText = movieTitle;
                 document.getElementById('showScreenBadge').innerText = show.screenName || 'Screen 1';
                 document.getElementById('showMetaText').innerHTML = `
                     <span>📅 ${show.showDate}</span>
@@ -300,6 +309,18 @@
                     btn.innerHTML = '<span>🔒</span> Confirm &amp; Reserve Seats';
                 }
             });
+
+            // Validate form input on typing
+            const nameInput = document.getElementById('customerName');
+            const phoneInput = document.getElementById('customerPhone');
+            const validateInputs = () => {
+                const isValid = selectedSeats.size > 0 &&
+                                nameInput.value.trim().length > 0 &&
+                                /^[0-9]{7,15}$/.test(phoneInput.value.trim());
+                document.getElementById('btnConfirmBooking').disabled = !isValid;
+            };
+            nameInput.addEventListener('input', validateInputs);
+            phoneInput.addEventListener('input', validateInputs);
         });
 
         function renderSeatGrid(seatList) {
@@ -317,11 +338,11 @@
             ['A', 'B', 'C', 'D', 'E'].forEach(rowChar => {
                 const rowSeats = rows[rowChar] || [];
                 const rowDiv = document.createElement('div');
-                rowDiv.className = 'seat-row';
+                rowDiv.className = 'seat-row-flex seat-row';
 
                 // Row Label Left
                 const labelLeft = document.createElement('div');
-                labelLeft.className = 'seat-row-label';
+                labelLeft.className = 'row-char-tag seat-row-label';
                 labelLeft.innerText = rowChar;
                 rowDiv.appendChild(labelLeft);
 
@@ -329,7 +350,7 @@
                 rowSeats.forEach(seat => {
                     const seatEl = document.createElement('div');
                     const seatType = SeatPricing.getTypeForRow(rowChar);
-                    seatEl.className = `seat ${seatType}`;
+                    seatEl.className = `seat-cube seat ${seatType}`;
                     seatEl.dataset.code = seat.seatCode;
                     seatEl.dataset.type = seatType;
                     seatEl.innerText = seat.seatCode;
@@ -348,7 +369,7 @@
 
                 // Row Label Right
                 const labelRight = document.createElement('div');
-                labelRight.className = 'seat-row-label';
+                labelRight.className = 'row-char-tag seat-row-label';
                 labelRight.innerText = rowChar;
                 rowDiv.appendChild(labelRight);
 
@@ -374,6 +395,8 @@
             const discountEl = document.getElementById('summaryDiscount');
             const totalEl = document.getElementById('summaryTotal');
             const submitBtn = document.getElementById('btnConfirmBooking');
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
 
             countEl.innerText = selectedSeats.size;
 
@@ -397,7 +420,7 @@
                 subtotal += price;
 
                 const tag = document.createElement('span');
-                tag.className = 'seat-pill-tag';
+                tag.className = 'glass-seat-tag';
                 tag.innerText = `${code} (Rs.${price})`;
                 tagsContainer.appendChild(tag);
             });
@@ -413,7 +436,10 @@
             subtotalEl.innerText = formatCurrency(subtotal);
             discountEl.innerText = `- ${formatCurrency(discount)}`;
             totalEl.innerText = formatCurrency(total);
-            submitBtn.disabled = false;
+            
+            // Validate form requirements
+            const isValid = name.length > 0 && /^[0-9]{7,15}$/.test(phone);
+            submitBtn.disabled = !isValid;
         }
     </script>
 </body>
