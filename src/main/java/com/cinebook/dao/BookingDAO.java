@@ -135,6 +135,15 @@ public class BookingDAO {
      * Cancelled bookings are excluded from customer-facing lookup results.
      */
     public List<Booking> getBookingsByCustomerPhone(String phone) throws SQLException {
+        return getBookingsByCustomerPhone(phone, true);
+    }
+
+    /**
+     * Retrieves bookings for a customer identified by phone number.
+     * If confirmedOnly is true, returns only CONFIRMED bookings.
+     * If confirmedOnly is false, returns all bookings (including CANCELLED).
+     */
+    public List<Booking> getBookingsByCustomerPhone(String phone, boolean confirmedOnly) throws SQLException {
         List<Booking> bookings = new ArrayList<>();
         String sql = """
             SELECT b.booking_id, b.customer_id, b.show_id, b.booking_time,
@@ -145,7 +154,7 @@ public class BookingDAO {
             JOIN customer c ON b.customer_id = c.customer_id
             JOIN movie_show ms ON b.show_id = ms.show_id
             JOIN movie m ON ms.movie_id = m.movie_id
-            WHERE c.phone = ? AND b.status = 'CONFIRMED'
+            WHERE c.phone = ?""" + (confirmedOnly ? " AND b.status = 'CONFIRMED'" : "") + """
             ORDER BY b.booking_time DESC
             """;
 
@@ -160,6 +169,37 @@ public class BookingDAO {
                     b.setBookedSeats(seatDAO.getSeatCodesByBookingId(b.getBookingId()));
                     bookings.add(b);
                 }
+            }
+        }
+        return bookings;
+    }
+
+    /**
+     * Retrieves all bookings for Admin management overview.
+     */
+    public List<Booking> getAllBookings() throws SQLException {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = """
+            SELECT b.booking_id, b.customer_id, b.show_id, b.booking_time,
+                   b.subtotal, b.discount_amount, b.total_amount, b.coupon_code, b.status,
+                   c.customer_name, c.phone,
+                   m.movie_name, ms.show_date, ms.show_time, ms.screen_name
+            FROM booking b
+            JOIN customer c ON b.customer_id = c.customer_id
+            JOIN movie_show ms ON b.show_id = ms.show_id
+            JOIN movie m ON ms.movie_id = m.movie_id
+            ORDER BY b.booking_time DESC
+            """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            SeatDAO seatDAO = new SeatDAO();
+            while (rs.next()) {
+                Booking b = mapResultSetToBooking(rs);
+                b.setBookedSeats(seatDAO.getSeatCodesByBookingId(b.getBookingId()));
+                bookings.add(b);
             }
         }
         return bookings;

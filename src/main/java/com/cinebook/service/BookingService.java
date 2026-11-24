@@ -335,6 +335,10 @@ public class BookingService implements Bookable {
         return bookingDAO.getBookingsByCustomerPhone(phone);
     }
 
+    public List<Booking> getCustomerBookings(String phone, boolean confirmedOnly) throws SQLException {
+        return bookingDAO.getBookingsByCustomerPhone(phone, confirmedOnly);
+    }
+
     public List<Payment> getPaymentsForBooking(int bookingId) throws SQLException {
         return paymentDAO.getPaymentsByBookingId(bookingId);
     }

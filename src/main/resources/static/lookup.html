@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookings &amp; Cancellations | CineBook</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.2">
+    <link rel="stylesheet" href="css/styles.css?v=2.6">
 </head>
 <body>
+    <!-- Ambient Depth Background with Floating Orbs -->
+    <div class="ambient-cosmos">
+        <div class="ambient-orb orb-primary"></div>
+        <div class="ambient-orb orb-secondary"></div>
+        <div class="ambient-orb orb-accent"></div>
+        <div class="particles-field"></div>
+    </div>
+
     <!-- Floating Glass Island Navbar -->
     <header class="floating-nav-wrapper">
         <nav class="navbar-glass-island">
@@ -33,30 +41,36 @@
 
     <!-- Main Container -->
     <main class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem;">
-        <!-- Hero Search Section -->
+        <!-- Hero Section -->
         <section class="lookup-hero">
             <div class="hero-eyebrow">
                 <span>🛡️</span> 100% Secure Cinema Verification
             </div>
-            <h1>Manage Your Reservations</h1>
+            <h1>My Bookings &amp; Cancellations</h1>
             <p style="color:var(--text-secondary); font-size:1.05rem; line-height:1.6;">
-                Retrieve your digital boarding pass, view seat reservations, or cancel an active ticket with an instant <strong>80% refund</strong> credited back immediately.
+                Review your digital reservations, view tickets, or cancel an eligible ticket with an instant <strong>80% refund</strong> credited back immediately.
             </p>
 
-            <form id="searchForm" class="lookup-search-box">
-                <input type="text" id="searchInput" placeholder="Enter Mobile Phone (e.g. 9876543210) or Booking ID (e.g. 31)" required autocomplete="off">
-                <button type="submit" class="btn-lookup-submit">
-                    Search Tickets
+            <!-- Filter Status Tabs -->
+            <div style="display:flex; justify-content:center; gap:0.75rem; margin-top:1.5rem; flex-wrap:wrap;">
+                <button type="button" class="btn-filter-tab active" data-filter="all" onclick="filterBookings('all')">
+                    All Reservations (<span id="countAll">0</span>)
                 </button>
-            </form>
+                <button type="button" class="btn-filter-tab" data-filter="CONFIRMED" onclick="filterBookings('CONFIRMED')">
+                    Confirmed (<span id="countConfirmed">0</span>)
+                </button>
+                <button type="button" class="btn-filter-tab" data-filter="CANCELLED" onclick="filterBookings('CANCELLED')">
+                    Cancelled &amp; Refunded (<span id="countCancelled">0</span>)
+                </button>
+            </div>
         </section>
 
-        <!-- Search Results Container -->
+        <!-- Bookings Results Container -->
         <div id="resultsContainer" class="lookup-results-container">
             <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:var(--bg-glass-card); border-radius:var(--radius-xl); border:1px dashed var(--glass-border); backdrop-filter:blur(24px);">
-                <div style="font-size:2.4rem; margin-bottom:0.75rem;">🎟️</div>
-                <h3 style="color:var(--text-primary); font-size:1.2rem; margin-bottom:0.4rem;">No Search Performed</h3>
-                <p>Enter your 7-15 digit phone number or Booking Reference above to load your active cinema tickets.</p>
+                <div style="font-size:2.4rem; margin-bottom:0.75rem;">⏳</div>
+                <h3 style="color:var(--text-primary); font-size:1.2rem; margin-bottom:0.4rem;">Loading Your Reservations...</h3>
+                <p>Retrieving active tickets and cancellation refund records from database.</p>
             </div>
         </div>
     </main>
@@ -74,7 +88,7 @@
                     Are you sure you want to cancel this booking? Per CineBook policy, you are entitled to an immediate <strong>80% refund</strong>, and your reserved seats will be returned to the live inventory.
                 </p>
 
-                <div style="background:rgba(255, 255, 255, 0.04); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); margin-bottom:1.5rem; text-align:left; font-size:0.9rem;">
+                <div style="background:rgba(255, 255, 255, 0.04); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-glass); margin-bottom:1.5rem; text-align:left; font-size:0.9rem;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
                         <span style="color:var(--text-muted);">Booking Reference:</span>
                         <strong id="modalCancelRef" style="color:var(--text-primary);">--</strong>
@@ -83,7 +97,7 @@
                         <span style="color:var(--text-muted);">Total Paid:</span>
                         <span id="modalCancelOriginal" style="color:var(--text-primary);">--</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; border-top:1px solid var(--glass-border); padding-top:0.4rem; color:var(--accent-emerald); font-weight:700;">
+                    <div style="display:flex; justify-content:space-between; border-top:1px solid var(--border-glass); padding-top:0.4rem; color:var(--accent-emerald); font-weight:700;">
                         <span>Refund Amount (80%):</span>
                         <span id="modalCancelRefund">--</span>
                     </div>
@@ -101,14 +115,6 @@
         </div>
     </div>
 
-    <!-- Universal Auth Modal Overlay -->
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-card">
-            <button class="modal-close-btn" onclick="closeModal('authModal')">&times;</button>
-            <div id="authModalBody"></div>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer>
         <div class="container footer-copy">
@@ -117,23 +123,14 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="js/app.js?v=2.2"></script>
+    <script src="js/app.js?v=2.6"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const queryId = urlParams.get('bookingId');
+        let allUserBookings = [];
+        let currentFilter = 'all';
         let pendingCancelId = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (queryId) {
-                document.getElementById('searchInput').value = queryId;
-                performSearch(queryId);
-            }
-
-            document.getElementById('searchForm').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const term = document.getElementById('searchInput').value.trim();
-                performSearch(term);
-            });
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadMyBookings();
 
             document.getElementById('modalBtnProceedCancel').addEventListener('click', async () => {
                 if (!pendingCancelId) return;
@@ -146,24 +143,9 @@
                     closeModal('cancelConfirmModal');
                     showToast(`Booking cancelled successfully! Refund of ${formatCurrency(resp.refundAmount)} issued.`, 'success');
 
-                    // Immediately remove card from view
-                    const card = document.querySelector(`.receipt-card[data-booking-id="${pendingCancelId}"]`);
-                    if (card) {
-                        const wrapper = card.closest('.receipt-item-wrap');
-                        if (wrapper) wrapper.remove();
-                        else card.remove();
-                    }
+                    // Refresh list from backend to get updated status and seats
+                    await loadMyBookings();
 
-                    const remaining = document.querySelectorAll('.receipt-card');
-                    if (remaining.length === 0) {
-                        document.getElementById('resultsContainer').innerHTML = `
-                            <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:var(--bg-glass-card); border-radius:var(--radius-xl); border:1px dashed var(--glass-border);">
-                                <div style="font-size:2.4rem; margin-bottom:0.5rem;">✓</div>
-                                <h3 style="color:var(--text-primary); font-size:1.2rem; margin-bottom:0.3rem;">All Reservations Cancelled</h3>
-                                <p>Your refund records have been audited and saved in the database.</p>
-                            </div>
-                        `;
-                    }
                 } catch (err) {
                     showToast(err.message, 'error');
                 } finally {
@@ -174,78 +156,76 @@
             });
         });
 
-        async function performSearch(term) {
+        async function loadMyBookings() {
             const container = document.getElementById('resultsContainer');
-            container.innerHTML = `
-                <div style="text-align:center; padding:3rem; color:var(--text-muted);">
-                    <div style="font-size:2rem; margin-bottom:0.5rem;">⏳</div>
-                    Searching database for active reservations...
-                </div>
-            `;
-
-            const cleanTerm = term.replace(/^CBK-/i, '').trim();
-            const digitsOnly = cleanTerm.replace(/\D/g, '');
-
             try {
-                if (/^\d{1,6}$/.test(cleanTerm)) {
-                    // Search single booking by numeric ID
-                    const booking = await API.getBooking(parseInt(cleanTerm));
-                    if (!booking || booking.status !== 'CONFIRMED') {
-                        container.innerHTML = `
-                            <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:var(--bg-glass-card); border-radius:var(--radius-xl); border:1px dashed var(--glass-border);">
-                                <h3>No active reservation found for Booking #${term}</h3>
-                                <p style="margin-top:0.4rem;">Cancelled tickets are preserved in historical records but hidden from active customer results.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    renderBookingCard(booking, container);
+                const bookings = await API.getMyBookings();
+                allUserBookings = bookings || [];
 
-                } else if (digitsOnly.length >= 7 && digitsOnly.length <= 15) {
-                    // Search customer bookings by phone
-                    const bookings = await API.getCustomerBookings(digitsOnly);
-                    if (!bookings || bookings.length === 0) {
-                        container.innerHTML = `
-                            <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:var(--bg-glass-card); border-radius:var(--radius-xl); border:1px dashed var(--glass-border);">
-                                <h3>No active bookings found for phone: ${term}</h3>
-                                <p style="margin-top:0.4rem;">No confirmed tickets found for this phone number.</p>
-                            </div>
-                        `;
-                        return;
-                    }
+                // Update tab counters
+                const conf = allUserBookings.filter(b => b.status === 'CONFIRMED').length;
+                const canc = allUserBookings.filter(b => b.status === 'CANCELLED').length;
+                document.getElementById('countAll').innerText = allUserBookings.length;
+                document.getElementById('countConfirmed').innerText = conf;
+                document.getElementById('countCancelled').innerText = canc;
 
-                    container.innerHTML = `
-                        <div style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
-                            <h3 style="font-family:var(--font-serif); font-size:1.35rem; color:var(--text-primary);">
-                                Found ${bookings.length} Active Reservation(s)
-                            </h3>
-                            <span style="color:var(--accent-gold); font-size:0.85rem; font-weight:700;">● Active in Database</span>
-                        </div>
-                    `;
-
-                    bookings.forEach(b => {
-                        const wrap = document.createElement('div');
-                        wrap.className = 'receipt-item-wrap';
-                        renderBookingCard(b, wrap);
-                        container.appendChild(wrap);
-                    });
-
-                } else {
-                    container.innerHTML = `
-                        <div style="text-align:center; padding:2rem; color:var(--accent-rose);">
-                            Please enter a valid numeric Booking ID (e.g. 31) or 7-15 digit phone number.
-                        </div>
-                    `;
-                }
+                renderFilteredBookings();
 
             } catch (err) {
+                console.error(err);
                 container.innerHTML = `
-                    <div style="text-align:center; padding:2.5rem; color:var(--accent-rose);">
-                        ${err.message}
+                    <div style="text-align:center; padding:3rem; color:var(--accent-rose); background:rgba(25, 29, 48, 0.78); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+                        <h3>Failed to load your reservations</h3>
+                        <p style="color:var(--text-muted); margin-top:0.4rem;">${err.message}</p>
                     </div>
                 `;
             }
+        }
+
+        function filterBookings(status) {
+            currentFilter = status;
+            document.querySelectorAll('.btn-filter-tab').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === status);
+            });
+            renderFilteredBookings();
+        }
+
+        function renderFilteredBookings() {
+            const container = document.getElementById('resultsContainer');
+            let list = allUserBookings;
+            if (currentFilter !== 'all') {
+                list = allUserBookings.filter(b => b.status === currentFilter);
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:var(--bg-glass-card); border-radius:var(--radius-xl); border:1px dashed var(--glass-border);">
+                        <div style="font-size:2.4rem; margin-bottom:0.75rem;">🎟️</div>
+                        <h3 style="color:var(--text-primary); font-size:1.2rem; margin-bottom:0.4rem;">No Reservations Found</h3>
+                        <p>No bookings found matching filter: <strong>${currentFilter.toUpperCase()}</strong>.</p>
+                        <a href="index.html" class="btn-glass-primary" style="margin-top:1.2rem; display:inline-flex;">
+                            Browse Screenings &rarr;
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="font-family:var(--font-serif); font-size:1.35rem; color:var(--text-primary);">
+                        Displaying ${list.length} Reservation(s)
+                    </h3>
+                    <span style="color:var(--accent-gold); font-size:0.85rem; font-weight:700;">● Live Customer Record</span>
+                </div>
+            `;
+
+            list.forEach(b => {
+                const wrap = document.createElement('div');
+                wrap.className = 'receipt-item-wrap';
+                renderBookingCard(b, wrap);
+                container.appendChild(wrap);
+            });
         }
 
         function renderBookingCard(b, parent) {
@@ -254,6 +234,17 @@
             card.dataset.bookingId = b.bookingId;
 
             const seatsText = (b.bookedSeats && b.bookedSeats.length > 0) ? b.bookedSeats.join(', ') : 'None';
+            const isConfirmed = b.status === 'CONFIRMED';
+
+            const statusBadge = isConfirmed
+                ? `<div style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); color:var(--accent-emerald); font-size:0.78rem; font-weight:800; padding:0.25rem 0.85rem; border-radius:var(--radius-full);">● CONFIRMED</div>`
+                : `<div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#f87171; font-size:0.78rem; font-weight:800; padding:0.25rem 0.85rem; border-radius:var(--radius-full);">✕ CANCELLED &bull; REFUNDED</div>`;
+
+            const cancelBtn = isConfirmed
+                ? `<button type="button" class="btn-cancel-ticket" onclick="promptCancel(${b.bookingId}, ${b.totalAmount})">
+                        🚫 Cancel Reservation (80% Refund)
+                   </button>`
+                : `<span style="color:var(--text-muted); font-size:0.85rem; font-style:italic;">Refund of ${formatCurrency(b.totalAmount * 0.80)} processed</span>`;
 
             card.innerHTML = `
                 <div class="receipt-header">
@@ -261,9 +252,7 @@
                         <span style="font-size:1.3rem;">🎟️</span>
                         <h2>RESERVATION &bull; CBK-${String(b.bookingId).padStart(4, '0')}</h2>
                     </div>
-                    <div style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); color:var(--accent-emerald); font-size:0.78rem; font-weight:800; padding:0.25rem 0.85rem; border-radius:var(--radius-full);">
-                        ● ${b.status}
-                    </div>
+                    ${statusBadge}
                 </div>
                 <div class="receipt-body">
                     <div class="receipt-row">
@@ -291,9 +280,7 @@
                         <a href="confirmation.html?bookingId=${b.bookingId}" class="btn-card-details" style="display:inline-flex; align-items:center; gap:0.4rem; padding:0.65rem 1.3rem;">
                             <span>🖨️</span> Digital Boarding Pass
                         </a>
-                        <button type="button" class="btn-cancel-ticket" onclick="promptCancel(${b.bookingId}, ${b.totalAmount})">
-                            🚫 Cancel Reservation (80% Refund)
-                        </button>
+                        ${cancelBtn}
                     </div>
                 </div>
             `;

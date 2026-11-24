@@ -80,6 +80,16 @@ public class BookingController {
         return ResponseEntity.ok(b);
     }
 
+    @GetMapping("/my")
+    public List<Booking> getMyBookings(Authentication authentication) throws SQLException {
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            String phone = userDetails.getUsername();
+            // Return all customer bookings (confirmed + cancelled) for history view
+            return bookingService.getCustomerBookings(phone, false);
+        }
+        return List.of();
+    }
+
     @GetMapping("/customer/{phone}")
     public List<Booking> getCustomerBookings(@PathVariable("phone") String phone, Authentication authentication) throws SQLException {
         // Enforce ownership check: Customer can only view their own phone bookings unless they are an ADMIN

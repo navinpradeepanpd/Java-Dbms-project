@@ -46,6 +46,11 @@ const API = {
         if (!r.ok) throw new Error('Customer lookup failed');
         return r.json();
     },
+    getMyBookings: async () => {
+        const r = await fetch('/api/bookings/my');
+        if (!r.ok) throw new Error('Failed to load user reservations');
+        return r.json();
+    },
     cancelBooking: async (id) => {
         const r = await fetch(`/api/bookings/${id}/cancel`, { method: 'POST' });
         const json = await r.json();
@@ -364,7 +369,11 @@ async function checkAuthSession() {
             if (authSection) {
                 const displayName = data.fullName || data.username || 'User';
                 const roleBadge = data.role === 'ADMIN' ? ' [ADMIN]' : '';
+                const adminLink = data.role === 'ADMIN' 
+                    ? `<a href="admin.html" class="btn-glass" style="padding:0.4rem 0.9rem; font-size:0.82rem; margin-right:0.4rem; color:var(--accent-rose); border-color:rgba(251,113,133,0.35);">Admin Console</a>` 
+                    : '';
                 authSection.innerHTML = `
+                    ${adminLink}
                     <div class="nav-user-badge">
                         <div class="nav-user-avatar">${displayName.charAt(0).toUpperCase()}</div>
                         <span>${displayName}${roleBadge}</span>

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Registration | CineBook Cinemas</title>
     <link rel="stylesheet" href="css/styles.css?v=2.5">
 </head>
+
 <body class="auth-page-body">
     <!-- Ambient Depth Background with Floating Orbs -->
     <div class="ambient-cosmos">
@@ -20,11 +22,15 @@
         <div class="auth-glass-card">
             <!-- Brand Mark -->
             <div class="auth-brand-dock">
-                <div class="nav-symbol-prism" style="width:52px; height:52px; background:linear-gradient(135deg, rgba(167, 139, 250, 0.4), rgba(197, 164, 109, 0.35)); border:1.5px solid rgba(255, 255, 255, 0.3); box-shadow:0 0 20px rgba(167, 139, 250, 0.35);">
+                <div class="nav-symbol-prism"
+                    style="width:52px; height:52px; background:linear-gradient(135deg, rgba(167, 139, 250, 0.4), rgba(197, 164, 109, 0.35)); border:1.5px solid rgba(255, 255, 255, 0.3); box-shadow:0 0 20px rgba(167, 139, 250, 0.35);">
                     <span class="symbol-core" style="font-size:1.35rem; font-weight:800; color:#FFFFFF;">CB</span>
                 </div>
-                <h1 class="brand-title" style="font-size:2rem; margin-top:0.75rem; letter-spacing:1px; color:#FFFFFF;">CINE<span style="color:#C5A46D;">BOOK</span></h1>
-                <p class="brand-sub" style="font-size:0.78rem; letter-spacing:2.5px; color:#C5A46D; font-weight:700; margin-top:0.25rem;">LUXURY CINEMA ACCOUNT</p>
+                <h1 class="brand-title" style="font-size:2rem; margin-top:0.75rem; letter-spacing:1px; color:#FFFFFF;">
+                    CINE<span style="color:#C5A46D;">BOOK</span></h1>
+                <p class="brand-sub"
+                    style="font-size:0.78rem; letter-spacing:2.5px; color:#C5A46D; font-weight:700; margin-top:0.25rem;">
+                    LUXURY CINEMA ACCOUNT</p>
             </div>
 
             <div class="auth-header-text">
@@ -36,19 +42,23 @@
             <form id="registerForm" class="auth-form-group">
                 <div class="glass-field-group">
                     <label for="fullName">Full Name *</label>
-                    <input type="text" id="fullName" required placeholder="e.g. Rahul Sharma" autocomplete="name" autofocus>
+                    <input type="text" id="fullName" required placeholder="e.g. Rahul Sharma" autocomplete="name"
+                        autofocus>
                 </div>
 
                 <div class="glass-field-group" style="margin-top:1.1rem;">
                     <label for="phone">Mobile Phone (7-15 digits) *</label>
-                    <input type="tel" id="phone" required placeholder="e.g. 9876543210" pattern="[0-9]{7,15}" autocomplete="tel">
+                    <input type="tel" id="phone" required placeholder="e.g. 9876543210" pattern="[0-9]{7,15}"
+                        autocomplete="tel">
                 </div>
 
                 <div class="glass-field-group" style="margin-top:1.1rem;">
                     <label for="password">Password (minimum 6 characters) *</label>
                     <div class="password-input-wrapper">
-                        <input type="password" id="password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
-                        <button type="button" class="btn-toggle-password" id="toggleRegPasswordBtn" aria-label="Toggle password visibility" title="Show/Hide Password">
+                        <input type="password" id="password" required minlength="6" placeholder="••••••••"
+                            autocomplete="new-password">
+                        <button type="button" class="btn-toggle-password" id="toggleRegPasswordBtn"
+                            aria-label="Toggle password visibility" title="Show/Hide Password">
                             <span id="toggleRegPasswordIcon">👁️</span>
                         </button>
                     </div>
@@ -134,4 +144,5 @@
         });
     </script>
 </body>
+
 </html>
