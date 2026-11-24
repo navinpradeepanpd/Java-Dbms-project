@@ -1,5 +1,5 @@
 /* ===================================================================
-   CineBook 2.0: Apple-Inspired Liquid Glass UI Design System
+   CineBook 2.0: Luxury Cinema Liquid Glass UI Design System
    Aesthetic: Translucent Glass, Refined Lighting, Depth & Precision
    =================================================================== */
 
@@ -8,40 +8,40 @@
 :root {
     /* Foundation Palette */
     --bg-base: #080A12;
-    --bg-secondary: #101522;
+    --bg-secondary: #111525;
     --bg-tertiary: #161D2E;
 
     /* Liquid Glass Surfaces */
-    --glass-surface-subtle: rgba(255, 255, 255, 0.035);
-    --glass-surface-base: rgba(255, 255, 255, 0.055);
-    --glass-surface-elevated: rgba(255, 255, 255, 0.085);
-    --glass-surface-hover: rgba(255, 255, 255, 0.1);
-    --glass-blur: blur(24px) saturate(190%);
+    --glass-surface-subtle: rgba(255, 255, 255, 0.04);
+    --glass-surface-base: rgba(25, 29, 48, 0.78);
+    --glass-surface-elevated: rgba(30, 36, 60, 0.88);
+    --glass-surface-hover: rgba(255, 255, 255, 0.12);
+    --glass-blur: blur(28px) saturate(190%);
     --glass-blur-nav: blur(28px) saturate(200%);
 
     /* Refined Accents */
     --accent-primary: #A78BFA;         /* Soft Lavender Violet */
     --accent-primary-light: #C4B5FD;
-    --accent-primary-glow: rgba(167, 139, 250, 0.35);
+    --accent-primary-glow: rgba(167, 139, 250, 0.45);
 
     --accent-secondary: #C5A46D;       /* Champagne Gold */
     --accent-secondary-light: #DFCA9B;
-    --accent-secondary-glow: rgba(197, 164, 109, 0.3);
+    --accent-secondary-glow: rgba(197, 164, 109, 0.35);
 
     --accent-emerald: #34D399;
     --accent-rose: #FB7185;
 
-    /* Typography */
+    /* High Contrast Typography */
     --text-primary: #F5F5FA;
-    --text-secondary: #A6AEC0;
-    --text-muted: #64748B;
+    --text-secondary: #B5BDD0;
+    --text-muted: #8993AA;
     --text-accent: #C5A46D;
 
     /* Glass Borders & Inner Light */
-    --border-glass: rgba(255, 255, 255, 0.09);
-    --border-glass-light: rgba(255, 255, 255, 0.18);
-    --border-glass-active: rgba(167, 139, 250, 0.45);
-    --border-glass-gold: rgba(197, 164, 109, 0.45);
+    --border-glass: rgba(255, 255, 255, 0.16);
+    --border-glass-light: rgba(255, 255, 255, 0.24);
+    --border-glass-active: rgba(167, 139, 250, 0.65);
+    --border-glass-gold: rgba(197, 164, 109, 0.55);
 
     /* Radii & Shadows */
     --radius-sm: 10px;
@@ -1632,27 +1632,29 @@ footer {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--bg-deep);
+    background-color: var(--bg-base);
+    background: radial-gradient(circle at 50% 30%, #111525 0%, #080A12 100%);
     position: relative;
     padding: 2rem 1rem;
+    overflow-x: hidden;
 }
 
 .auth-center-wrapper {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 460px;
+    max-width: 450px;
     margin: auto;
 }
 
 .auth-glass-card {
-    background: var(--glass-surface-base);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--border-glass-light);
+    background: rgba(25, 29, 48, 0.78);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: var(--radius-xl);
     padding: 2.8rem 2.2rem;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75), 0 0 32px rgba(167, 139, 250, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.2);
     text-align: center;
 }
 
@@ -1669,15 +1671,15 @@ footer {
 
 .auth-header-text h2 {
     font-family: var(--font-serif);
-    font-size: 1.6rem;
+    font-size: 1.65rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: #F5F5FA;
     margin-bottom: 0.4rem;
 }
 
 .auth-header-text p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    color: #B5BDD0;
+    font-size: 0.92rem;
     line-height: 1.5;
 }
 
@@ -1685,25 +1687,124 @@ footer {
     text-align: left;
 }
 
+.auth-form-group .glass-field-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #F5F5FA;
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.auth-form-group .glass-field-group input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #F5F5FA;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-form-group .glass-field-group input::placeholder {
+    color: #8993AA;
+    opacity: 0.8;
+}
+
+.auth-form-group .glass-field-group input:focus {
+    border-color: #A78BFA;
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+    outline: none;
+}
+
+/* Password input wrapper with toggle button */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    padding-right: 2.8rem !important;
+}
+
+.btn-toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: #B5BDD0;
+    cursor: pointer;
+    font-size: 1.05rem;
+    padding: 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    user-select: none;
+}
+
+.btn-toggle-password:hover {
+    color: #F5F5FA;
+}
+
+/* Sign In Submit Button */
+.btn-auth-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+    padding: 0.95rem;
+    border-radius: var(--radius-pill);
+    font-size: 1.05rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.btn-auth-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(124, 58, 237, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-auth-submit:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-auth-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .auth-switch-dock {
     margin-top: 1.8rem;
     padding-top: 1.4rem;
-    border-top: 1px solid var(--border-glass);
-    font-size: 0.88rem;
-    color: var(--text-muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 0.9rem;
+    color: #B5BDD0;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.4rem;
 }
 
 .auth-link-highlight {
-    color: var(--accent-primary-light);
-    font-weight: 600;
-    transition: color 0.2s;
+    color: #C4B5FD;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
 }
 
 .auth-link-highlight:hover {
     color: #FFFFFF;
+    text-shadow: 0 0 10px rgba(196, 181, 253, 0.5);
 }
 
 /* User Profile Badge in Island Navbar */
