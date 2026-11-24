@@ -78,3 +78,16 @@ CREATE TABLE IF NOT EXISTS payment (
     FOREIGN KEY (booking_id) REFERENCES booking(booking_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- 8. USERS TABLE (Spring Security Customer & Admin Authentication)
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,       -- mobile phone or email/username
+    password VARCHAR(255) NOT NULL,             -- BCrypt hashed password
+    full_name VARCHAR(100) NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER', -- 'CUSTOMER', 'ADMIN'
+    customer_id INT DEFAULT NULL,               -- linked customer record if customer
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+

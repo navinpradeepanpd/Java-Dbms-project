@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | CineBook Cinemas</title>
+    <link rel="stylesheet" href="css/styles.css?v=2.4">
+</head>
+<body class="auth-page-body">
+    <!-- Ambient Depth Background with Slow Floating Orbs -->
+    <div class="ambient-cosmos">
+        <div class="ambient-orb orb-primary"></div>
+        <div class="ambient-orb orb-secondary"></div>
+        <div class="ambient-orb orb-accent"></div>
+        <div class="particles-field"></div>
+    </div>
+
+    <!-- Centered Glass Login Card -->
+    <main class="auth-center-wrapper">
+        <div class="auth-glass-card">
+            <!-- Brand Mark -->
+            <div class="auth-brand-dock">
+                <div class="nav-symbol-prism" style="width:48px; height:48px;">
+                    <span class="symbol-core" style="font-size:1.25rem;">CB</span>
+                </div>
+                <h1 class="brand-title" style="font-size:1.8rem; margin-top:0.6rem;">CINE<span>BOOK</span></h1>
+                <p class="brand-sub" style="font-size:0.75rem; letter-spacing:2px; color:var(--accent-secondary);">PREMIUM CINEMA PORTAL</p>
+            </div>
+
+            <div class="auth-header-text">
+                <h2>Welcome Back</h2>
+                <p>Sign in to access screenings, reserved seating, and active digital tickets.</p>
+            </div>
+
+            <!-- Login Form (POSTs to /api/auth/login) -->
+            <form id="loginForm" class="auth-form-group">
+                <div class="glass-field-group">
+                    <label for="username">Username or Mobile Number</label>
+                    <input type="text" id="username" name="username" required placeholder="e.g. 9876543210 or admin" autocomplete="username" autofocus>
+                </div>
+
+                <div class="glass-field-group" style="margin-top:0.85rem;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+
+                <button type="submit" id="btnLoginSubmit" class="btn-glass-primary" style="width:100%; justify-content:center; padding:0.95rem; font-size:1rem; margin-top:1.5rem;">
+                    <span>🔐</span> Sign In
+                </button>
+            </form>
+
+            <div class="auth-switch-dock">
+                <span>New to CineBook?</span>
+                <a href="register.html" class="auth-link-highlight">Create a customer account &rarr;</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/app.js?v=2.4"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('btnLoginSubmit');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>⏳</span> Verifying credentials...';
+
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                const params = new URLSearchParams();
+                params.append('username', username);
+                params.append('password', password);
+
+                try {
+                    const resp = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: params.toString()
+                    });
+
+                    const data = await resp.json();
+                    if (resp.ok && data.success) {
+                        showToast('Sign in successful! Entering CineBook...', 'success');
+                        setTimeout(() => {
+                            window.location.href = data.redirectUrl || '/index.html';
+                        }, 400);
+                    } else {
+                        showToast(data.message || 'Invalid username or password.', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<span>🔐</span> Sign In';
+                    }
+                } catch (err) {
+                    showToast('Connection error. Please try again.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>🔐</span> Sign In';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

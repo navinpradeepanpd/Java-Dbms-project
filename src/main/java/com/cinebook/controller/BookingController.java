@@ -8,6 +8,9 @@ import com.cinebook.exception.CineBookException;
 import com.cinebook.model.Booking;
 import com.cinebook.model.Customer;
 import com.cinebook.service.BookingService;
+import com.cinebook.security.CustomUserDetails;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,16 +58,38 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable("id") int id) throws SQLException, BookingNotFoundException {
+    public ResponseEntity<Booking> getBookingById(@PathVariable("id") int id, Authentication authentication) throws SQLException, BookingNotFoundException {
         Optional<Booking> opt = bookingService.getBookingDetails(id);
         if (opt.isEmpty()) {
             throw new BookingNotFoundException("Booking #" + id + " was not found.");
         }
-        return ResponseEntity.ok(opt.get());
+        Booking b = opt.get();
+
+        // Enforce ownership check: Customer can only view their own booking unless they are an ADMIN
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            boolean isAdmin = "ADMIN".equalsIgnoreCase(userDetails.getRole());
+            if (!isAdmin) {
+                String userPhone = userDetails.getUsername();
+                if (b.getCustomerPhone() != null && !b.getCustomerPhone().equals(userPhone)
+                        && (userDetails.getCustomerId() == null || userDetails.getCustomerId() != b.getCustomerId())) {
+                    throw new AccessDeniedException("Access denied: You do not have permission to view this reservation.");
+                }
+            }
+        }
+
+        return ResponseEntity.ok(b);
     }
 
     @GetMapping("/customer/{phone}")
-    public List<Booking> getCustomerBookings(@PathVariable("phone") String phone) throws SQLException {
+    public List<Booking> getCustomerBookings(@PathVariable("phone") String phone, Authentication authentication) throws SQLException {
+        // Enforce ownership check: Customer can only view their own phone bookings unless they are an ADMIN
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            boolean isAdmin = "ADMIN".equalsIgnoreCase(userDetails.getRole());
+            if (!isAdmin && !phone.equals(userDetails.getUsername())) {
+                throw new AccessDeniedException("Access denied: You can only query your own bookings.");
+            }
+        }
+
         return bookingService.getCustomerBookings(phone);
     }
 

@@ -348,3 +348,58 @@ function closeModal(modalId) {
         modal.classList.remove('open');
     }
 }
+
+
+// Session and Logout Management
+async function checkAuthSession() {
+    try {
+        const r = await fetch('/api/auth/me');
+        if (r.status === 401) {
+            window.location.href = '/login.html';
+            return;
+        }
+        const data = await r.json();
+        if (data.authenticated) {
+            const authSection = document.getElementById('navAuthSection');
+            if (authSection) {
+                const displayName = data.fullName || data.username || 'User';
+                const roleBadge = data.role === 'ADMIN' ? ' [ADMIN]' : '';
+                authSection.innerHTML = `
+                    <div class="nav-user-badge">
+                        <div class="nav-user-avatar">${displayName.charAt(0).toUpperCase()}</div>
+                        <span>${displayName}${roleBadge}</span>
+                    </div>
+                    <button type="button" class="btn-glass" onclick="handleLogout()" style="padding:0.4rem 0.9rem; font-size:0.82rem; margin-left:0.4rem;">Sign Out</button>
+                `;
+            }
+        } else {
+            // Not authenticated, redirect to login
+            if (!window.location.pathname.endsWith('login.html') && !window.location.pathname.endsWith('register.html')) {
+                window.location.href = '/login.html';
+            }
+        }
+    } catch (e) {
+        console.warn('Session check warning:', e);
+    }
+}
+
+async function handleLogout() {
+    try {
+        const r = await fetch('/api/auth/logout', { method: 'POST' });
+        const data = await r.json();
+        showToast('Signed out successfully.', 'info');
+        setTimeout(() => {
+            window.location.href = data.redirectUrl || '/login.html';
+        }, 300);
+    } catch (err) {
+        window.location.href = '/login.html';
+    }
+}
+
+window.checkAuthSession = checkAuthSession;
+window.handleLogout = handleLogout;
+
+// Run auth check automatically on protected pages
+if (!window.location.pathname.endsWith('login.html') && !window.location.pathname.endsWith('register.html')) {
+    document.addEventListener('DOMContentLoaded', checkAuthSession);
+}

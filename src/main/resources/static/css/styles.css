@@ -1560,3 +1560,174 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ===================================================================
+   AMBIENT DEPTH, COSMIC PARTICLES & AUTHENTICATION PAGES
+   =================================================================== */
+.ambient-cosmos {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ambient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: orbFloat 22s ease-in-out infinite alternate;
+}
+
+.ambient-orb.orb-primary {
+    top: -10%;
+    left: -5%;
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(167, 139, 250, 0.45) 0%, rgba(124, 58, 237, 0.1) 70%, transparent 100%);
+    animation-duration: 25s;
+}
+
+.ambient-orb.orb-secondary {
+    bottom: -15%;
+    right: -5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(197, 164, 109, 0.35) 0%, rgba(217, 119, 6, 0.08) 70%, transparent 100%);
+    animation-duration: 28s;
+    animation-delay: -5s;
+}
+
+.ambient-orb.orb-accent {
+    top: 40%;
+    left: 45%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+    animation-duration: 18s;
+    animation-delay: -10s;
+}
+
+@keyframes orbFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(60px, 40px) scale(1.12); }
+    100% { transform: translate(-40px, 60px) scale(0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ambient-orb {
+        animation: none !important;
+    }
+}
+
+/* Auth Pages Centering Layout */
+.auth-page-body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-deep);
+    position: relative;
+    padding: 2rem 1rem;
+}
+
+.auth-center-wrapper {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 460px;
+    margin: auto;
+}
+
+.auth-glass-card {
+    background: var(--glass-surface-base);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border-glass-light);
+    border-radius: var(--radius-xl);
+    padding: 2.8rem 2.2rem;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    text-align: center;
+}
+
+.auth-brand-dock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.auth-header-text {
+    margin-bottom: 2rem;
+}
+
+.auth-header-text h2 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+}
+
+.auth-header-text p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.auth-form-group {
+    text-align: left;
+}
+
+.auth-switch-dock {
+    margin-top: 1.8rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border-glass);
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.auth-link-highlight {
+    color: var(--accent-primary-light);
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.auth-link-highlight:hover {
+    color: #FFFFFF;
+}
+
+/* User Profile Badge in Island Navbar */
+.nav-user-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.nav-user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #080A12;
+}

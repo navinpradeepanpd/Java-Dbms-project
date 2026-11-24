@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration | CineBook Cinemas</title>
+    <link rel="stylesheet" href="css/styles.css?v=2.4">
+</head>
+<body class="auth-page-body">
+    <!-- Ambient Depth Background with Floating Orbs -->
+    <div class="ambient-cosmos">
+        <div class="ambient-orb orb-primary"></div>
+        <div class="ambient-orb orb-secondary"></div>
+        <div class="ambient-orb orb-accent"></div>
+        <div class="particles-field"></div>
+    </div>
+
+    <!-- Centered Glass Registration Card -->
+    <main class="auth-center-wrapper">
+        <div class="auth-glass-card">
+            <!-- Brand Mark -->
+            <div class="auth-brand-dock">
+                <div class="nav-symbol-prism" style="width:48px; height:48px;">
+                    <span class="symbol-core" style="font-size:1.25rem;">CB</span>
+                </div>
+                <h1 class="brand-title" style="font-size:1.8rem; margin-top:0.6rem;">CINE<span>BOOK</span></h1>
+                <p class="brand-sub" style="font-size:0.75rem; letter-spacing:2px; color:var(--accent-secondary);">LUXURY CINEMA ACCOUNT</p>
+            </div>
+
+            <div class="auth-header-text">
+                <h2>Create Your Account</h2>
+                <p>Register for seamless cinema ticket booking, seat reservations, and refund management.</p>
+            </div>
+
+            <!-- Registration Form (POSTs to /api/auth/register) -->
+            <form id="registerForm" class="auth-form-group">
+                <div class="glass-field-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" required placeholder="e.g. Rahul Sharma" autocomplete="name" autofocus>
+                </div>
+
+                <div class="glass-field-group" style="margin-top:0.85rem;">
+                    <label for="phone">Mobile Phone (7-15 digits) *</label>
+                    <input type="tel" id="phone" required placeholder="e.g. 9876543210" pattern="[0-9]{7,15}" autocomplete="tel">
+                </div>
+
+                <div class="glass-field-group" style="margin-top:0.85rem;">
+                    <label for="password">Password (minimum 6 characters) *</label>
+                    <input type="password" id="password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <button type="submit" id="btnRegisterSubmit" class="btn-glass-primary" style="width:100%; justify-content:center; padding:0.95rem; font-size:1rem; margin-top:1.5rem;">
+                    <span>✨</span> Create Account &amp; Continue
+                </button>
+            </form>
+
+            <div class="auth-switch-dock">
+                <span>Already have an account?</span>
+                <a href="login.html" class="auth-link-highlight">Sign in here &rarr;</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/app.js?v=2.4"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('registerForm');
+            const submitBtn = document.getElementById('btnRegisterSubmit');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>⏳</span> Registering account...';
+
+                const fullName = document.getElementById('fullName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (!/^[0-9]{7,15}$/.test(phone)) {
+                    showToast('Please enter a valid phone number (7-15 digits).', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>✨</span> Create Account &amp; Continue';
+                    return;
+                }
+
+                try {
+                    const resp = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: phone,
+                            phone: phone,
+                            fullName: fullName,
+                            password: password
+                        })
+                    });
+
+                    const data = await resp.json();
+                    if (resp.ok && data.success) {
+                        showToast('Account registered successfully! Redirecting to login...', 'success');
+                        setTimeout(() => {
+                            window.location.href = data.redirectUrl || '/login.html';
+                        }, 800);
+                    } else {
+                        showToast(data.message || 'Registration failed. Please try again.', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<span>✨</span> Create Account &amp; Continue';
+                    }
+                } catch (err) {
+                    showToast('Connection error. Please try again.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>✨</span> Create Account &amp; Continue';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
