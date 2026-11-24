@@ -60,8 +60,14 @@
                         </div>
                     </div>
 
-                    <div class="ticket-movie-title" id="ticketMovieTitle">
-                        Loading Ticket Details...
+                    <div style="display:flex; gap:1.5rem; align-items:flex-start; margin-bottom:1.5rem;">
+                        <img id="ticketPosterImg" src="" alt="Movie Poster" style="width:90px; height:130px; object-fit:cover; border-radius:var(--radius-sm); border:1px solid var(--border-glass); box-shadow:0 8px 20px rgba(0,0,0,0.5); display:none;">
+                        <div>
+                            <div class="ticket-movie-title" id="ticketMovieTitle" style="margin-bottom:0.4rem;">
+                                Loading Ticket Details...
+                            </div>
+                            <div id="ticketMovieGenre" style="font-size:0.85rem; color:var(--accent-secondary); font-weight:600;"></div>
+                        </div>
                     </div>
 
                     <div class="ticket-grid-details">
@@ -160,6 +166,18 @@
                 // Populate Fields
                 document.getElementById('ticketRefCode').innerText = `CBK-${String(b.bookingId).padStart(4, '0')}`;
                 document.getElementById('ticketMovieTitle').innerText = b.movieTitle || 'Movie Screening';
+                
+                // Show official poster
+                const meta = window.getMovieMeta(b.movieTitle);
+                const posterImg = document.getElementById('ticketPosterImg');
+                if (posterImg && meta && meta.poster) {
+                    posterImg.src = meta.poster;
+                    posterImg.style.display = 'block';
+                }
+                const genreEl = document.getElementById('ticketMovieGenre');
+                if (genreEl && meta) {
+                    genreEl.innerText = `${meta.ageCert || 'UA'} • Director: ${meta.director || 'Acclaimed Director'}`;
+                }
                 document.getElementById('ticketCustomerName').innerText = b.customerName;
                 document.getElementById('ticketCustomerPhone').innerText = b.customerPhone;
                 document.getElementById('ticketShowtime').innerText = `${b.showDate} at ${b.showTime}`;

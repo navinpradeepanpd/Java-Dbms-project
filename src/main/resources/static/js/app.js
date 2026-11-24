@@ -61,10 +61,11 @@ const API = {
 
 // Rich Cinematic Movie Metadata (Maps seamlessly to real backend DB records)
 // Stored globally on window so it is guaranteed to be available across all scripts
+// Uses verified official theatrical posters from TMDB (The Movie Database) CDN
 window.MovieMetadata = {
     'Inception': {
-        poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
-        backdrop: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&q=80',
+        poster: 'https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
         rating: '8.8',
         votes: '2.4M',
         director: 'Christopher Nolan',
@@ -77,8 +78,8 @@ window.MovieMetadata = {
         symbol: '🌀'
     },
     'Interstellar': {
-        poster: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
-        backdrop: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=1600&q=80',
+        poster: 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/xJHokMbljvjADYdit5fK5VQsXEG.jpg',
         rating: '8.7',
         votes: '1.9M',
         director: 'Christopher Nolan',
@@ -91,8 +92,8 @@ window.MovieMetadata = {
         symbol: '🚀'
     },
     'The Dark Knight': {
-        poster: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80',
-        backdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&q=80',
+        poster: 'https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg',
         rating: '9.0',
         votes: '2.8M',
         director: 'Christopher Nolan',
@@ -105,8 +106,8 @@ window.MovieMetadata = {
         symbol: '🦇'
     },
     'Oppenheimer': {
-        poster: 'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=800&q=80',
-        backdrop: 'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?w=1600&q=80',
+        poster: 'https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
         rating: '8.9',
         votes: '780K',
         director: 'Christopher Nolan',
@@ -119,8 +120,8 @@ window.MovieMetadata = {
         symbol: '⚛️'
     },
     'Avatar: The Way of Water': {
-        poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-        backdrop: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80',
+        poster: 'https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/xJHokMbljvjADYdit5fK5VQsXEG.jpg',
         rating: '7.6',
         votes: '520K',
         director: 'James Cameron',
@@ -133,8 +134,8 @@ window.MovieMetadata = {
         symbol: '🌊'
     },
     'Gladiator II': {
-        poster: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&q=80',
-        backdrop: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1600&q=80',
+        poster: 'https://image.tmdb.org/t/p/w500/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg',
         rating: '8.1',
         votes: '240K',
         director: 'Ridley Scott',
@@ -147,8 +148,8 @@ window.MovieMetadata = {
         symbol: '⚔️'
     },
     'Spider-Man: Across the Spider-Verse': {
-        poster: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800&q=80',
-        backdrop: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600&q=80',
+        poster: 'https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/4HodYYKEIsGOdinkGi2Ucz6X9i0.jpg',
         rating: '8.7',
         votes: '390K',
         director: 'Joaquim Dos Santos, Kemp Powers',

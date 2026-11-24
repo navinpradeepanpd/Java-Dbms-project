@@ -199,12 +199,16 @@
 
             if (list.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:var(--bg-glass-card); border-radius:var(--radius-xl); border:1px dashed var(--glass-border);">
-                        <div style="font-size:2.4rem; margin-bottom:0.75rem;">🎟️</div>
-                        <h3 style="color:var(--text-primary); font-size:1.2rem; margin-bottom:0.4rem;">No Reservations Found</h3>
-                        <p>No bookings found matching filter: <strong>${currentFilter.toUpperCase()}</strong>.</p>
-                        <a href="index.html" class="btn-glass-primary" style="margin-top:1.2rem; display:inline-flex;">
-                            Browse Screenings &rarr;
+                    <div style="text-align:center; padding:4rem 2rem; color:var(--text-muted); background:rgba(25, 29, 48, 0.78); border-radius:var(--radius-xl); border:1px dashed var(--border-glass); backdrop-filter:blur(24px); max-width:640px; margin:2rem auto;">
+                        <div style="font-size:3.5rem; margin-bottom:1rem; filter:drop-shadow(0 0 16px rgba(167, 139, 250, 0.35));">🎟️</div>
+                        <h3 style="color:var(--text-primary); font-family:var(--font-serif); font-size:1.5rem; margin-bottom:0.5rem;">
+                            No ${currentFilter === 'all' ? 'Reservations' : currentFilter === 'CONFIRMED' ? 'Confirmed Bookings' : 'Cancelled Bookings'} Found
+                        </h3>
+                        <p style="color:var(--text-secondary); max-width:440px; margin:0 auto 1.5rem auto; font-size:0.95rem; line-height:1.6;">
+                            ${currentFilter === 'all' ? "You haven't booked any movie screenings yet. Browse our now showing catalog to reserve your seats!" : "There are currently no tickets matching the selected filter state."}
+                        </p>
+                        <a href="index.html" class="btn-glass-primary" style="padding:0.75rem 1.8rem; font-size:0.95rem; display:inline-flex; align-items:center; gap:0.5rem;">
+                            <span>🎬</span> Browse Now Showing &rarr;
                         </a>
                     </div>
                 `;
@@ -230,57 +234,77 @@
 
         function renderBookingCard(b, parent) {
             const card = document.createElement('div');
-            card.className = 'receipt-card';
+            card.className = 'booking-ticket-card-glass';
             card.dataset.bookingId = b.bookingId;
 
+            const meta = window.getMovieMeta(b.movieTitle);
             const seatsText = (b.bookedSeats && b.bookedSeats.length > 0) ? b.bookedSeats.join(', ') : 'None';
             const isConfirmed = b.status === 'CONFIRMED';
 
             const statusBadge = isConfirmed
-                ? `<div style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); color:var(--accent-emerald); font-size:0.78rem; font-weight:800; padding:0.25rem 0.85rem; border-radius:var(--radius-full);">● CONFIRMED</div>`
-                : `<div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#f87171; font-size:0.78rem; font-weight:800; padding:0.25rem 0.85rem; border-radius:var(--radius-full);">✕ CANCELLED &bull; REFUNDED</div>`;
+                ? `<div class="ticket-status-pill status-confirmed"><span>●</span> CONFIRMED</div>`
+                : `<div class="ticket-status-pill status-cancelled"><span>✕</span> CANCELLED &bull; REFUNDED</div>`;
 
             const cancelBtn = isConfirmed
                 ? `<button type="button" class="btn-cancel-ticket" onclick="promptCancel(${b.bookingId}, ${b.totalAmount})">
-                        🚫 Cancel Reservation (80% Refund)
+                        <span>🚫</span> Cancel &amp; Refund (80%)
                    </button>`
-                : `<span style="color:var(--text-muted); font-size:0.85rem; font-style:italic;">Refund of ${formatCurrency(b.totalAmount * 0.80)} processed</span>`;
+                : `<div class="refund-record-badge">
+                        <span>✓</span> Refund of ${formatCurrency(b.totalAmount * 0.80)} credited
+                   </div>`;
 
             card.innerHTML = `
-                <div class="receipt-header">
-                    <div style="display:flex; align-items:center; gap:0.6rem;">
-                        <span style="font-size:1.3rem;">🎟️</span>
-                        <h2>RESERVATION &bull; CBK-${String(b.bookingId).padStart(4, '0')}</h2>
-                    </div>
-                    ${statusBadge}
+                <div class="ticket-poster-side">
+                    <img src="${meta.poster}" alt="${b.movieTitle} Official Poster" class="ticket-movie-poster" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&q=80';">
+                    <div class="poster-rating-chip">★ ${meta.rating}</div>
                 </div>
-                <div class="receipt-body">
-                    <div class="receipt-row">
-                        <span class="receipt-label">Movie Screening:</span>
-                        <span class="receipt-value" style="font-size:1.1rem; color:var(--accent-gold);">${b.movieTitle}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Customer Details:</span>
-                        <span class="receipt-value">${b.customerName} (${b.customerPhone})</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Showtime &amp; Screen:</span>
-                        <span class="receipt-value">${b.showDate} at ${b.showTime} &bull; ${b.screenName || 'Screen 1'}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Reserved Seats:</span>
-                        <span class="receipt-value" style="color:var(--accent-purple-light);">${seatsText}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Total Amount Paid:</span>
-                        <span class="receipt-value" style="font-size:1.15rem; color:var(--accent-gold); font-family:var(--font-serif);">${formatCurrency(b.totalAmount)}</span>
+
+                <div class="ticket-content-side">
+                    <div class="ticket-header-strip">
+                        <div>
+                            <div class="ticket-ref-eyebrow">BOOKING REFERENCE &bull; CBK-${String(b.bookingId).padStart(4, '0')}</div>
+                            <h2 class="ticket-movie-name">${b.movieTitle}</h2>
+                        </div>
+                        ${statusBadge}
                     </div>
 
-                    <div class="receipt-actions">
-                        <a href="confirmation.html?bookingId=${b.bookingId}" class="btn-card-details" style="display:inline-flex; align-items:center; gap:0.4rem; padding:0.65rem 1.3rem;">
-                            <span>🖨️</span> Digital Boarding Pass
-                        </a>
-                        ${cancelBtn}
+                    <div class="ticket-meta-grid">
+                        <div class="ticket-meta-item">
+                            <span class="meta-item-label">Screening Details</span>
+                            <span class="meta-item-val">${b.showDate} at ${b.showTime}</span>
+                        </div>
+                        <div class="ticket-meta-item">
+                            <span class="meta-item-label">Auditorium / Screen</span>
+                            <span class="meta-item-val" style="color:var(--accent-secondary); font-weight:700;">${b.screenName || 'Screen 1'}</span>
+                        </div>
+                        <div class="ticket-meta-item">
+                            <span class="meta-item-label">Customer Name</span>
+                            <span class="meta-item-val">${b.customerName}</span>
+                        </div>
+                        <div class="ticket-meta-item">
+                            <span class="meta-item-label">Contact Phone</span>
+                            <span class="meta-item-val">${b.customerPhone}</span>
+                        </div>
+                        <div class="ticket-meta-item" style="grid-column: 1 / -1;">
+                            <span class="meta-item-label">Reserved Seats (${b.bookedSeats ? b.bookedSeats.length : 0})</span>
+                            <div class="ticket-seat-badges-cluster">
+                                ${b.bookedSeats ? b.bookedSeats.map(s => `<span class="glass-seat-tag">${s}</span>`).join('') : '<span style="color:var(--text-muted);">None</span>'}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-footer-bar">
+                        <div class="ticket-price-block">
+                            <span class="price-block-label">Total Amount Paid</span>
+                            <span class="price-block-amount">${formatCurrency(b.totalAmount)}</span>
+                        </div>
+
+                        <div class="ticket-actions-group">
+                            <a href="confirmation.html?bookingId=${b.bookingId}" class="btn-card-details">
+                                <span>🖨️</span> Digital Boarding Pass
+                            </a>
+                            ${cancelBtn}
+                        </div>
                     </div>
                 </div>
             `;
