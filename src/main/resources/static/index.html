@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineBook 2.0 | Premium Cinema Booking Experience</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Cache-busting stylesheet -->
+    <link rel="stylesheet" href="css/styles.css?v=2.1">
+    <!-- Load Core API & Metadata Engine Early -->
+    <script src="js/app.js?v=2.1"></script>
 </head>
 <body>
     <!-- Top Navigation Bar -->
@@ -28,56 +31,63 @@
         </div>
     </nav>
 
-    <!-- Cinematic Hero Section -->
-    <header class="hero-billboard">
-        <div class="container hero-content">
-            <div class="hero-eyebrow">
-                <span>✦</span> Experience Cinema in Ultra-HD &amp; Dolby Atmos
-            </div>
-            <h1 class="hero-title">
-                Immerse Yourself in <span>Extraordinary</span> Stories
-            </h1>
-            <p class="hero-subtitle">
-                Reserve your favorite recliner seats on our live 5&times;8 interactive cinema grid. Enjoy transparent pricing, instant booking confirmation, and flexible 80% cancellations.
-            </p>
-            <div class="hero-actions">
-                <a href="#discoverSection" class="btn-hero-primary">
-                    <span>🎬</span> Explore Movies &amp; Shows
-                </a>
-                <a href="lookup.html" class="btn-hero-secondary">
-                    <span>🎟️</span> Find My Tickets
-                </a>
+    <!-- Compact Cinematic Hero Section -->
+    <header class="hero-compact">
+        <div class="container hero-compact-inner">
+            <div class="hero-text-block">
+                <div class="hero-pill-eyebrow">
+                    <span>✦</span> Ultra-HD 4K &bull; Dolby Atmos 7.1 Sound
+                </div>
+                <h1 class="hero-title-compact">
+                    Now Showing at <span>CineBook</span>
+                </h1>
+                <p class="hero-desc-compact">
+                    Experience movie premieres with live 5&times;8 seat selection, transparent pricing, and instant 80% refund protection.
+                </p>
+                <div style="display:flex; gap:0.85rem; flex-wrap:wrap;">
+                    <a href="#discoverSection" class="btn-primary" style="padding:0.75rem 1.6rem;">
+                        <span>🎬</span> Browse Screenings
+                    </a>
+                    <a href="lookup.html" class="btn-ghost" style="padding:0.75rem 1.4rem;">
+                        <span>🎟️</span> Retrieve Tickets
+                    </a>
+                </div>
             </div>
 
-            <!-- Feature Highlights -->
-            <div class="hero-badges-row">
-                <div class="hero-feature-item">
-                    <span class="hero-feature-icon">✨</span>
-                    <span>IMAX Laser &amp; 4K Projection</span>
+            <!-- Cinema Quick Stats Banner -->
+            <div class="hero-stats-card">
+                <div class="hero-stat-row">
+                    <div class="hero-stat-icon">📽️</div>
+                    <div>
+                        <div class="hero-stat-val" id="statsMovieCount">7 Movies</div>
+                        <div class="hero-stat-label">Blockbusters in Catalog</div>
+                    </div>
                 </div>
-                <div class="hero-feature-item">
-                    <span class="hero-feature-icon">🔊</span>
-                    <span>Dolby Atmos 7.1 Surround</span>
+                <div class="hero-stat-row">
+                    <div class="hero-stat-icon">🎟️</div>
+                    <div>
+                        <div class="hero-stat-val" id="statsShowCount">8 Shows</div>
+                        <div class="hero-stat-label">Screenings Available Today</div>
+                    </div>
                 </div>
-                <div class="hero-feature-item">
-                    <span class="hero-feature-icon">💺</span>
-                    <span>VIP Luxury Recliners (Row E)</span>
-                </div>
-                <div class="hero-feature-item">
-                    <span class="hero-feature-icon">🛡️</span>
-                    <span>Instant 80% Refund Guarantee</span>
+                <div class="hero-stat-row">
+                    <div class="hero-stat-icon">💺</div>
+                    <div>
+                        <div class="hero-stat-val">VIP Recliners</div>
+                        <div class="hero-stat-label">Luxury Seating (Row E)</div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Main Content: Movie Discovery & Catalog -->
-    <main class="container" id="discoverSection" style="padding-top: 3rem;">
+    <main class="container" id="discoverSection">
         <!-- Discovery Toolbar: Search & Genre Filter -->
         <div class="discovery-toolbar">
             <div class="search-input-wrap">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="movieSearchInput" placeholder="Search by movie name or genre...">
+                <input type="text" id="movieSearchInput" placeholder="Search by title or genre (e.g. Inception, Sci-Fi)...">
             </div>
 
             <div class="genre-filter-chips" id="genreFilters">
@@ -96,11 +106,11 @@
                     <span>🎬</span> Featured Screenings
                 </h2>
                 <p class="section-tagline">
-                    Real-time seat inventories managed with MySQL database persistence
+                    Select a showtime to view live 5&times;8 recliner seat availability directly from MySQL
                 </p>
             </div>
-            <div id="movieCountBadge" style="color:var(--text-muted); font-size:0.9rem; font-weight:600;">
-                Loading movies...
+            <div id="movieCountBadge" style="color:var(--text-muted); font-size:0.88rem; font-weight:600;">
+                Loading screenings...
             </div>
         </div>
 
@@ -118,26 +128,26 @@
         <div class="container">
             <div class="footer-inner">
                 <div>
-                    <div class="logo" style="margin-bottom:0.5rem;">
+                    <div class="logo" style="margin-bottom:0.4rem;">
                         <span class="logo-badge">CB</span>
                         Cine<span>Book</span>
                     </div>
-                    <p style="color:var(--text-muted); font-size:0.88rem; max-width:380px;">
-                        College Java Semester Project upgraded to a modern cinema booking architecture with Spring Boot 3 &amp; Native JDBC.
+                    <p style="color:var(--text-muted); font-size:0.85rem; max-width:380px;">
+                        College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.
                     </p>
                 </div>
                 <div style="display:flex; gap:2.5rem; flex-wrap:wrap;">
                     <div>
-                        <div style="color:var(--text-primary); font-weight:700; font-size:0.9rem; margin-bottom:0.6rem;">Quick Links</div>
-                        <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.88rem; color:var(--text-secondary);">
+                        <div style="color:var(--text-primary); font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Navigation</div>
+                        <div style="display:flex; flex-direction:column; gap:0.35rem; font-size:0.85rem; color:var(--text-secondary);">
                             <a href="index.html">Now Showing</a>
                             <a href="lookup.html">Booking Lookup</a>
                             <a href="lookup.html">Cancel Reservation</a>
                         </div>
                     </div>
                     <div>
-                        <div style="color:var(--text-primary); font-weight:700; font-size:0.9rem; margin-bottom:0.6rem;">Pricing Tiers</div>
-                        <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.88rem; color:var(--text-muted);">
+                        <div style="color:var(--text-primary); font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Pricing Tiers</div>
+                        <div style="display:flex; flex-direction:column; gap:0.35rem; font-size:0.85rem; color:var(--text-muted);">
                             <span>Rows A-B: Regular (Rs. 150)</span>
                             <span>Rows C-D: Premium (Rs. 250)</span>
                             <span>Row E: VIP Recliner (Rs. 400)</span>
@@ -151,26 +161,51 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="js/app.js"></script>
+    <!-- Safe Inline Engine Script -->
     <script>
         let allMovies = [];
         let allShows = [];
         let currentGenre = 'ALL';
         let searchQuery = '';
 
+        // Safe metadata lookup helper
+        function safeGetMeta(name) {
+            if (window.getMovieMeta) return window.getMovieMeta(name);
+            if (window.MovieMetadata && window.MovieMetadata[name]) return window.MovieMetadata[name];
+            return {
+                rating: '8.5',
+                votes: '500K',
+                director: 'Acclaimed Director',
+                cast: 'Ensemble Cast',
+                tagline: 'An unforgettable cinema experience.',
+                synopsis: 'Experience this movie in crystal-clear projection and immersive Dolby surround sound at CineBook Cinemas.',
+                ageCert: 'UA',
+                poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
+                palette: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
+                symbol: '🎬'
+            };
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const movieGrid = document.getElementById('movieGrid');
             const countBadge = document.getElementById('movieCountBadge');
 
             try {
+                // Fetch actual movies and showtimes from backend API
                 const [movies, shows] = await Promise.all([API.getMovies(), API.getShows()]);
                 allMovies = movies || [];
                 allShows = shows || [];
 
+                // Update Stats Banner
+                const movieCountEl = document.getElementById('statsMovieCount');
+                if (movieCountEl) movieCountEl.innerText = `${allMovies.length} Movies`;
+
+                const showCountEl = document.getElementById('statsShowCount');
+                if (showCountEl) showCountEl.innerText = `${allShows.length} Shows`;
+
                 renderMovies();
 
-                // Setup Search Listener
+                // Setup Search Input Listener
                 document.getElementById('movieSearchInput').addEventListener('input', (e) => {
                     searchQuery = e.target.value.toLowerCase().trim();
                     renderMovies();
@@ -187,11 +222,14 @@
                 });
 
             } catch (err) {
-                console.error(err);
+                console.error('Data loading error:', err);
+                // Differentiate frontend JS error vs backend connection error
+                const isClientError = (err.name === 'TypeError' || err.name === 'ReferenceError');
                 movieGrid.innerHTML = `
-                    <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--accent-rose);">
-                        <h3>Failed to connect to database</h3>
-                        <p style="color:var(--text-muted); margin-top:0.5rem;">${err.message}</p>
+                    <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--accent-rose); background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-subtle);">
+                        <div style="font-size:2.2rem; margin-bottom:0.5rem;">⚠️</div>
+                        <h3>${isClientError ? 'Client Rendering Exception' : 'Server Connection Issue'}</h3>
+                        <p style="color:var(--text-muted); margin-top:0.4rem; font-size:0.9rem;">${err.message}</p>
                     </div>
                 `;
             }
@@ -215,10 +253,10 @@
 
             if (filtered.length === 0) {
                 movieGrid.innerHTML = `
-                    <div style="text-align:center; grid-column:1/-1; padding:4rem; color:var(--text-muted);">
-                        <div style="font-size:2.5rem; margin-bottom:0.5rem;">🔍</div>
-                        <h3>No movies found matching your criteria</h3>
-                        <p style="margin-top:0.4rem;">Try searching for another title or clear the genre filters.</p>
+                    <div style="text-align:center; grid-column:1/-1; padding:4rem; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg); border:1px dashed var(--border-subtle);">
+                        <div style="font-size:2.2rem; margin-bottom:0.5rem;">🔍</div>
+                        <h3 style="color:var(--text-primary); margin-bottom:0.3rem;">No movies found</h3>
+                        <p>No titles matched "${searchQuery || currentGenre}". Try clearing the search filter.</p>
                     </div>
                 `;
                 return;
@@ -234,11 +272,7 @@
             movieGrid.innerHTML = '';
             filtered.forEach(movie => {
                 const movieShows = showsByMovie[movie.movieId] || [];
-                const meta = MovieMetadata[movie.movieName] || {
-                    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
-                    rating: '8.5',
-                    ageCert: 'UA'
-                };
+                const meta = safeGetMeta(movie.movieName);
 
                 let showsHtml = '';
                 if (movieShows.length > 0) {
@@ -258,8 +292,8 @@
                 const card = document.createElement('div');
                 card.className = 'movie-card';
                 card.innerHTML = `
-                    <div class="movie-poster-wrap">
-                        <img src="${meta.poster}" alt="${movie.movieName}" class="movie-poster-img" onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'">
+                    <div class="movie-poster-wrap" style="background:${meta.palette || '#090c13'};">
+                        <img src="${meta.poster}" alt="${movie.movieName}" class="movie-poster-img" loading="lazy" onerror="this.style.display='none';">
                         <div class="movie-poster-gradient"></div>
                         <div class="movie-badge-rating">
                             <span>★</span> ${meta.rating || '8.5'}
