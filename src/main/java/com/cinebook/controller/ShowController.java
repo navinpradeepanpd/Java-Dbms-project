@@ -35,7 +35,7 @@ public class ShowController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Show> getShowById(@PathVariable int id) throws SQLException {
+    public ResponseEntity<Show> getShowById(@PathVariable("id") int id) throws SQLException {
         Optional<Show> opt = bookingService.getAllShows().stream()
                 .filter(s -> s.getShowId() == id)
                 .findFirst();
@@ -44,7 +44,7 @@ public class ShowController {
     }
 
     @GetMapping("/{id}/seats")
-    public List<Seat> getSeatMap(@PathVariable int id) throws SQLException {
+    public List<Seat> getSeatMap(@PathVariable("id") int id) throws SQLException {
         return bookingService.getSeatMapForShow(id);
     }
 }

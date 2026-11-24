@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineBook | Movie Ticket Booking System</title>
+    <title>CineBook 2.0 | Premium Cinema Booking Experience</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
+    <!-- Top Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">
@@ -15,136 +15,287 @@
                 Cine<span>Book</span>
             </a>
             <div class="nav-links">
-                <a href="index.html" class="nav-link active">Movies & Shows</a>
+                <a href="index.html" class="nav-link active">Now Showing</a>
+                <a href="#discoverSection" class="nav-link">Catalog</a>
                 <a href="lookup.html" class="nav-link">My Bookings</a>
-                <a href="lookup.html" class="nav-btn">Cancel / Refund</a>
+                <a href="lookup.html" class="nav-link">Cancel &amp; Refund</a>
+                
+                <div class="nav-auth-group">
+                    <button type="button" class="btn-nav-ghost" onclick="openAuthModal('login')">Sign In</button>
+                    <button type="button" class="btn-nav-primary" onclick="openAuthModal('register')">Register</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <span class="hero-subtitle">Java & JDBC Cinema System</span>
-            <h1>Now Showing at CineBook</h1>
-            <p>Select a movie show below to view live seat availability on our 5x8 interactive matrix and book your tickets instantly.</p>
-        </section>
-
-        <!-- Current Screenings Section -->
-        <section id="screenings">
-            <div class="section-header">
-                <div>
-                    <h2>🎬 Featured Movies</h2>
-                    <p>Screenings with independent seat availability loaded directly from MySQL</p>
-                </div>
+    <!-- Cinematic Hero Section -->
+    <header class="hero-billboard">
+        <div class="container hero-content">
+            <div class="hero-eyebrow">
+                <span>✦</span> Experience Cinema in Ultra-HD &amp; Dolby Atmos
+            </div>
+            <h1 class="hero-title">
+                Immerse Yourself in <span>Extraordinary</span> Stories
+            </h1>
+            <p class="hero-subtitle">
+                Reserve your favorite recliner seats on our live 5&times;8 interactive cinema grid. Enjoy transparent pricing, instant booking confirmation, and flexible 80% cancellations.
+            </p>
+            <div class="hero-actions">
+                <a href="#discoverSection" class="btn-hero-primary">
+                    <span>🎬</span> Explore Movies &amp; Shows
+                </a>
+                <a href="lookup.html" class="btn-hero-secondary">
+                    <span>🎟️</span> Find My Tickets
+                </a>
             </div>
 
-            <!-- Dynamic Movie Grid -->
-            <div id="movieGrid" class="movie-grid">
-                <div style="text-align:center; grid-column: 1/-1; padding: 3rem; color: var(--text-muted);">
-                    Loading movie catalog from database...
+            <!-- Feature Highlights -->
+            <div class="hero-badges-row">
+                <div class="hero-feature-item">
+                    <span class="hero-feature-icon">✨</span>
+                    <span>IMAX Laser &amp; 4K Projection</span>
+                </div>
+                <div class="hero-feature-item">
+                    <span class="hero-feature-icon">🔊</span>
+                    <span>Dolby Atmos 7.1 Surround</span>
+                </div>
+                <div class="hero-feature-item">
+                    <span class="hero-feature-icon">💺</span>
+                    <span>VIP Luxury Recliners (Row E)</span>
+                </div>
+                <div class="hero-feature-item">
+                    <span class="hero-feature-icon">🛡️</span>
+                    <span>Instant 80% Refund Guarantee</span>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </header>
+
+    <!-- Main Content: Movie Discovery & Catalog -->
+    <main class="container" id="discoverSection" style="padding-top: 3rem;">
+        <!-- Discovery Toolbar: Search & Genre Filter -->
+        <div class="discovery-toolbar">
+            <div class="search-input-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="movieSearchInput" placeholder="Search by movie name or genre...">
+            </div>
+
+            <div class="genre-filter-chips" id="genreFilters">
+                <button type="button" class="genre-chip active" data-genre="ALL">All Movies</button>
+                <button type="button" class="genre-chip" data-genre="Sci-Fi">Sci-Fi</button>
+                <button type="button" class="genre-chip" data-genre="Action">Action</button>
+                <button type="button" class="genre-chip" data-genre="Drama">Drama</button>
+                <button type="button" class="genre-chip" data-genre="Animation">Animation</button>
+            </div>
+        </div>
+
+        <!-- Section Heading -->
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">
+                    <span>🎬</span> Featured Screenings
+                </h2>
+                <p class="section-tagline">
+                    Real-time seat inventories managed with MySQL database persistence
+                </p>
+            </div>
+            <div id="movieCountBadge" style="color:var(--text-muted); font-size:0.9rem; font-weight:600;">
+                Loading movies...
+            </div>
+        </div>
+
+        <!-- Dynamic Movie Cards Grid -->
+        <div id="movieGrid" class="movie-grid">
+            <div style="text-align:center; grid-column: 1/-1; padding: 4rem; color: var(--text-muted);">
+                <div style="font-size:2rem; margin-bottom:0.75rem;">🎞️</div>
+                Connecting to MySQL and loading screenings catalog...
+            </div>
+        </div>
+    </main>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 CineBook Cinemas. College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.</p>
+        <div class="container">
+            <div class="footer-inner">
+                <div>
+                    <div class="logo" style="margin-bottom:0.5rem;">
+                        <span class="logo-badge">CB</span>
+                        Cine<span>Book</span>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.88rem; max-width:380px;">
+                        College Java Semester Project upgraded to a modern cinema booking architecture with Spring Boot 3 &amp; Native JDBC.
+                    </p>
+                </div>
+                <div style="display:flex; gap:2.5rem; flex-wrap:wrap;">
+                    <div>
+                        <div style="color:var(--text-primary); font-weight:700; font-size:0.9rem; margin-bottom:0.6rem;">Quick Links</div>
+                        <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.88rem; color:var(--text-secondary);">
+                            <a href="index.html">Now Showing</a>
+                            <a href="lookup.html">Booking Lookup</a>
+                            <a href="lookup.html">Cancel Reservation</a>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="color:var(--text-primary); font-weight:700; font-size:0.9rem; margin-bottom:0.6rem;">Pricing Tiers</div>
+                        <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.88rem; color:var(--text-muted);">
+                            <span>Rows A-B: Regular (Rs. 150)</span>
+                            <span>Rows C-D: Premium (Rs. 250)</span>
+                            <span>Row E: VIP Recliner (Rs. 400)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 CineBook Cinemas. Built with Spring Boot 3, JDBC Connection Factory, MySQL 8 &amp; Vanilla JavaScript.
+            </div>
+        </div>
     </footer>
 
     <!-- Scripts -->
     <script src="js/app.js"></script>
     <script>
+        let allMovies = [];
+        let allShows = [];
+        let currentGenre = 'ALL';
+        let searchQuery = '';
+
         document.addEventListener('DOMContentLoaded', async () => {
             const movieGrid = document.getElementById('movieGrid');
+            const countBadge = document.getElementById('movieCountBadge');
+
             try {
                 const [movies, shows] = await Promise.all([API.getMovies(), API.getShows()]);
+                allMovies = movies || [];
+                allShows = shows || [];
 
-                if (!movies || movies.length === 0) {
-                    movieGrid.innerHTML = '<p style="text-align:center; color: var(--text-muted);">No movies scheduled at this time.</p>';
-                    return;
-                }
+                renderMovies();
 
-                // Group shows by movieId
-                const showsByMovie = {};
-                shows.forEach(s => {
-                    if (!showsByMovie[s.movieId]) showsByMovie[s.movieId] = [];
-                    showsByMovie[s.movieId].push(s);
+                // Setup Search Listener
+                document.getElementById('movieSearchInput').addEventListener('input', (e) => {
+                    searchQuery = e.target.value.toLowerCase().trim();
+                    renderMovies();
                 });
 
-                const bannerArt = {
-                    'Inception': '🌀',
-                    'Interstellar': '🚀',
-                    'The Dark Knight': '🦇',
-                    'Oppenheimer': '⚛️',
-                    'Avatar: The Way of Water': '🌊',
-                    'Gladiator II': '⚔️',
-                    'Spider-Man: Across the Spider-Verse': '🕷️'
-                };
-
-                const bannerGrad = {
-                    'Inception': 'linear-gradient(135deg, #1e3a8a, #0f172a)',
-                    'Interstellar': 'linear-gradient(135deg, #312e81, #090d16)',
-                    'The Dark Knight': 'linear-gradient(135deg, #27272a, #09090b)',
-                    'Oppenheimer': 'linear-gradient(135deg, #7c2d12, #1c1917)',
-                    'Avatar: The Way of Water': 'linear-gradient(135deg, #065f46, #022c22)',
-                    'Gladiator II': 'linear-gradient(135deg, #831843, #18181b)',
-                    'Spider-Man: Across the Spider-Verse': 'linear-gradient(135deg, #581c87, #0f172a)'
-                };
-
-                movieGrid.innerHTML = '';
-                movies.forEach(movie => {
-                    const movieShows = showsByMovie[movie.movieId] || [];
-                    const art = bannerArt[movie.movieName] || '🎥';
-                    const grad = bannerGrad[movie.movieName] || 'linear-gradient(135deg, #1e293b, #0f172a)';
-                    
-                    let showsHtml = '';
-                    if (movieShows.length > 0) {
-                        showsHtml = movieShows.map(show => `
-                            <a href="seats.html?showId=${show.showId}" class="show-pill">
-                                <div>
-                                    <div class="show-time-text">🕒 ${show.showTime}</div>
-                                    <div class="show-date-text">📅 ${show.showDate} &bull; ${show.screenName || 'Screen 1'}</div>
-                                </div>
-                                <span class="btn-book-sm">Book &rarr;</span>
-                            </a>
-                        `).join('');
-                    } else {
-                        showsHtml = '<p style="color:var(--text-muted); font-size:0.85rem;">No shows scheduled today.</p>';
-                    }
-
-                    const card = document.createElement('div');
-                    card.className = 'movie-card';
-                    card.innerHTML = `
-                        <div class="movie-banner" style="background: ${grad};">
-                            <span class="genre-tag">${movie.genre}</span>
-                            <div class="movie-banner-art">${art}</div>
-                        </div>
-                        <div class="movie-body">
-                            <h3 class="movie-title">${movie.movieName}</h3>
-                            <div class="movie-meta">
-                                <span>🌐 ${movie.language}</span>
-                                <span>⏱️ ${movie.duration} mins</span>
-                            </div>
-                            <div class="movie-shows-container">
-                                <div class="movie-shows-label">Available Shows</div>
-                                <div class="show-pill-group">
-                                    ${showsHtml}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    movieGrid.appendChild(card);
+                // Setup Genre Chip Listeners
+                document.querySelectorAll('.genre-chip').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.genre-chip').forEach(c => c.classList.remove('active'));
+                        btn.classList.add('active');
+                        currentGenre = btn.getAttribute('data-genre');
+                        renderMovies();
+                    });
                 });
 
             } catch (err) {
                 console.error(err);
-                movieGrid.innerHTML = `<p style="color:var(--seat-booked); text-align:center;">Failed to connect to database: ${err.message}</p>`;
+                movieGrid.innerHTML = `
+                    <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--accent-rose);">
+                        <h3>Failed to connect to database</h3>
+                        <p style="color:var(--text-muted); margin-top:0.5rem;">${err.message}</p>
+                    </div>
+                `;
             }
         });
+
+        function renderMovies() {
+            const movieGrid = document.getElementById('movieGrid');
+            const countBadge = document.getElementById('movieCountBadge');
+
+            // Filter by search query & genre
+            const filtered = allMovies.filter(m => {
+                const matchesGenre = (currentGenre === 'ALL') || 
+                                     (m.genre && m.genre.toLowerCase().includes(currentGenre.toLowerCase()));
+                const matchesSearch = !searchQuery || 
+                                      m.movieName.toLowerCase().includes(searchQuery) ||
+                                      (m.genre && m.genre.toLowerCase().includes(searchQuery));
+                return matchesGenre && matchesSearch;
+            });
+
+            countBadge.innerText = `Showing ${filtered.length} of ${allMovies.length} movies`;
+
+            if (filtered.length === 0) {
+                movieGrid.innerHTML = `
+                    <div style="text-align:center; grid-column:1/-1; padding:4rem; color:var(--text-muted);">
+                        <div style="font-size:2.5rem; margin-bottom:0.5rem;">🔍</div>
+                        <h3>No movies found matching your criteria</h3>
+                        <p style="margin-top:0.4rem;">Try searching for another title or clear the genre filters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group shows by movieId
+            const showsByMovie = {};
+            allShows.forEach(s => {
+                if (!showsByMovie[s.movieId]) showsByMovie[s.movieId] = [];
+                showsByMovie[s.movieId].push(s);
+            });
+
+            movieGrid.innerHTML = '';
+            filtered.forEach(movie => {
+                const movieShows = showsByMovie[movie.movieId] || [];
+                const meta = MovieMetadata[movie.movieName] || {
+                    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
+                    rating: '8.5',
+                    ageCert: 'UA'
+                };
+
+                let showsHtml = '';
+                if (movieShows.length > 0) {
+                    showsHtml = movieShows.map(s => `
+                        <a href="seats.html?showId=${s.showId}" class="show-item-pill">
+                            <div>
+                                <div class="show-item-time">🕒 ${s.showTime}</div>
+                                <div class="show-item-meta">📅 ${s.showDate} &bull; ${s.screenName || 'Screen 1'}</div>
+                            </div>
+                            <span class="show-btn-book">Book Seats &rarr;</span>
+                        </a>
+                    `).join('');
+                } else {
+                    showsHtml = '<p style="color:var(--text-muted); font-size:0.85rem; padding:0.5rem 0;">No screenings scheduled today.</p>';
+                }
+
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.innerHTML = `
+                    <div class="movie-poster-wrap">
+                        <img src="${meta.poster}" alt="${movie.movieName}" class="movie-poster-img" onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80'">
+                        <div class="movie-poster-gradient"></div>
+                        <div class="movie-badge-rating">
+                            <span>★</span> ${meta.rating || '8.5'}
+                        </div>
+                        <div class="movie-badge-lang">${movie.language}</div>
+                    </div>
+                    <div class="movie-body">
+                        <div class="movie-genre-text">${movie.genre}</div>
+                        <h3 class="movie-title">${movie.movieName}</h3>
+                        
+                        <div class="movie-meta-strip">
+                            <span class="movie-meta-item">⏱ ${movie.duration} mins</span>
+                            <span class="movie-meta-item">🛡 ${meta.ageCert || 'UA'}</span>
+                            <span class="movie-meta-item">🎟 ${movieShows.length} Shows</span>
+                        </div>
+
+                        <div class="movie-shows-section">
+                            <div class="movie-shows-label">
+                                <span>Available Showtimes</span>
+                                <span style="color:var(--accent-gold); font-size:0.75rem;">● Live Seats</span>
+                            </div>
+                            <div class="movie-shows-grid">
+                                ${showsHtml}
+                            </div>
+                        </div>
+
+                        <div class="card-footer-actions">
+                            <button type="button" class="btn-card-details" onclick='openMovieDetailsModal(${JSON.stringify(movie).replace(/'/g, "&#39;")}, ${JSON.stringify(movieShows).replace(/'/g, "&#39;")})'>
+                                ℹ View Details &amp; Synopsis
+                            </button>
+                        </div>
+                    </div>
+                `;
+                movieGrid.appendChild(card);
+            });
+        }
     </script>
 </body>
 </html>
-

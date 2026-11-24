@@ -55,7 +55,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable int id) throws SQLException, BookingNotFoundException {
+    public ResponseEntity<Booking> getBookingById(@PathVariable("id") int id) throws SQLException, BookingNotFoundException {
         Optional<Booking> opt = bookingService.getBookingDetails(id);
         if (opt.isEmpty()) {
             throw new BookingNotFoundException("Booking #" + id + " was not found.");
@@ -64,12 +64,12 @@ public class BookingController {
     }
 
     @GetMapping("/customer/{phone}")
-    public List<Booking> getCustomerBookings(@PathVariable String phone) throws SQLException {
+    public List<Booking> getCustomerBookings(@PathVariable("phone") String phone) throws SQLException {
         return bookingService.getCustomerBookings(phone);
     }
 
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<CancellationResponse> cancelBooking(@PathVariable int id) throws CineBookException, SQLException {
+    public ResponseEntity<CancellationResponse> cancelBooking(@PathVariable("id") int id) throws CineBookException, SQLException {
         Optional<Booking> opt = bookingService.getBookingDetails(id);
         if (opt.isEmpty()) {
             throw new BookingNotFoundException("Booking #" + id + " was not found.");

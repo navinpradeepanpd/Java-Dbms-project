@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Lookup &amp; Cancellation | CineBook</title>
+    <title>My Bookings &amp; Cancellations | CineBook</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
+    <!-- Top Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">
@@ -15,40 +15,91 @@
                 Cine<span>Book</span>
             </a>
             <div class="nav-links">
-                <a href="index.html" class="nav-link">Movies &amp; Shows</a>
+                <a href="index.html" class="nav-link">Now Showing</a>
                 <a href="lookup.html" class="nav-link active">My Bookings</a>
+                <div class="nav-auth-group">
+                    <button type="button" class="btn-nav-ghost" onclick="openAuthModal('login')">Sign In</button>
+                    <button type="button" class="btn-nav-primary" onclick="openAuthModal('register')">Register</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container">
+    <!-- Main Container -->
+    <main class="container">
         <!-- Hero Search Section -->
-        <div class="hero" style="padding: 2rem 1rem; margin-bottom: 2rem;">
-            <h2>Manage Your Bookings</h2>
-            <p>Look up ticket details, verify reservation status, or cancel an eligible booking with an 80% refund.</p>
-
-            <div style="max-width: 550px; margin: 1.5rem auto 0 auto;">
-                <form id="searchForm" style="display:flex; gap:0.5rem;">
-                    <input type="text" id="searchInput" class="form-input" placeholder="Enter Booking ID (e.g. 23) or Phone (e.g. 4545454545)" required>
-                    <button type="submit" class="nav-btn" style="border:none; cursor:pointer; white-space:nowrap; padding: 0.75rem 1.4rem;">
-                        Search
-                    </button>
-                </form>
+        <section class="lookup-hero">
+            <div class="hero-eyebrow">
+                <span>🛡️</span> 100% Secure Cinema Verification
             </div>
-        </div>
+            <h1>Manage Your Reservations</h1>
+            <p style="color:var(--text-secondary); font-size:1.05rem; line-height:1.6;">
+                Retrieve your digital boarding pass, view seat reservations, or cancel an active ticket with an instant <strong>80% refund</strong> credited back immediately.
+            </p>
+
+            <form id="searchForm" class="lookup-search-box">
+                <input type="text" id="searchInput" placeholder="Enter Mobile Phone (e.g. 9876543210) or Booking ID (e.g. 31)" required autocomplete="off">
+                <button type="submit" class="btn-lookup-submit">
+                    Search Tickets
+                </button>
+            </form>
+        </section>
 
         <!-- Search Results Container -->
-        <div id="resultsContainer">
-            <p style="text-align:center; color: var(--text-muted); padding: 2rem;">
-                Enter a Booking ID or customer phone number above to view details.
-            </p>
+        <div id="resultsContainer" class="lookup-results-container">
+            <div style="text-align:center; padding:3rem; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg); border:1px dashed var(--border-subtle);">
+                <div style="font-size:2.4rem; margin-bottom:0.75rem;">🎟️</div>
+                <h3 style="color:var(--text-primary); font-size:1.15rem; margin-bottom:0.4rem;">No Search Performed</h3>
+                <p>Enter your 7-15 digit phone number or Booking Reference above to load your active cinema tickets.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cancellation Confirmation Modal -->
+    <div id="cancelConfirmModal" class="modal-overlay">
+        <div class="modal-card" style="max-width:500px;">
+            <button class="modal-close-btn" onclick="closeModal('cancelConfirmModal')">&times;</button>
+            <div style="text-align:center;">
+                <div style="font-size:2.6rem; margin-bottom:0.75rem;">⚠️</div>
+                <h3 style="font-family:var(--font-serif); font-size:1.5rem; color:var(--accent-rose); margin-bottom:0.5rem;">
+                    Confirm Ticket Cancellation
+                </h3>
+                <p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.6; margin-bottom:1.5rem;">
+                    Are you sure you want to cancel this booking? Per CineBook policy, you are entitled to an immediate <strong>80% refund</strong>, and your reserved seats will be returned to the live inventory.
+                </p>
+
+                <div style="background:var(--bg-surface); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-subtle); margin-bottom:1.5rem; text-align:left; font-size:0.9rem;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                        <span style="color:var(--text-muted);">Booking Reference:</span>
+                        <strong id="modalCancelRef" style="color:var(--text-primary);">--</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                        <span style="color:var(--text-muted);">Total Paid:</span>
+                        <span id="modalCancelOriginal" style="color:var(--text-primary);">--</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; border-top:1px solid var(--border-subtle); padding-top:0.4rem; color:var(--accent-emerald); font-weight:700;">
+                        <span>Refund Amount (80%):</span>
+                        <span id="modalCancelRefund">--</span>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:0.75rem;">
+                    <button type="button" class="btn-hero-secondary" style="flex:1; justify-content:center;" onclick="closeModal('cancelConfirmModal')">
+                        Keep Ticket
+                    </button>
+                    <button type="button" id="modalBtnProceedCancel" class="btn-cancel-ticket" style="flex:1; padding:0.8rem; border-radius:var(--radius-full); text-align:center;">
+                        Yes, Cancel Ticket
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 CineBook Cinemas. College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.</p>
+        <div class="container footer-copy">
+            &copy; 2026 CineBook Cinemas. College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.
+        </div>
     </footer>
 
     <!-- Scripts -->
@@ -56,6 +107,7 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const queryId = urlParams.get('bookingId');
+        let pendingCancelId = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (queryId) {
@@ -68,44 +120,117 @@
                 const term = document.getElementById('searchInput').value.trim();
                 performSearch(term);
             });
+
+            document.getElementById('modalBtnProceedCancel').addEventListener('click', async () => {
+                if (!pendingCancelId) return;
+                const btn = document.getElementById('modalBtnProceedCancel');
+                btn.disabled = true;
+                btn.innerText = 'Processing Refund...';
+
+                try {
+                    const resp = await API.cancelBooking(pendingCancelId);
+                    closeModal('cancelConfirmModal');
+                    showToast(`Booking cancelled successfully! Refund of ${formatCurrency(resp.refundAmount)} issued.`, 'success');
+
+                    // Immediately remove card from view
+                    const card = document.querySelector(`.receipt-card[data-booking-id="${pendingCancelId}"]`);
+                    if (card) {
+                        const wrapper = card.closest('.receipt-item-wrap');
+                        if (wrapper) wrapper.remove();
+                        else card.remove();
+                    }
+
+                    const remaining = document.querySelectorAll('.receipt-card');
+                    if (remaining.length === 0) {
+                        document.getElementById('resultsContainer').innerHTML = `
+                            <div style="text-align:center; padding:3rem; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg); border:1px dashed var(--border-subtle);">
+                                <div style="font-size:2.4rem; margin-bottom:0.5rem;">✓</div>
+                                <h3 style="color:var(--text-primary); font-size:1.15rem; margin-bottom:0.3rem;">All Reservations Cancelled</h3>
+                                <p>Your refund records have been audited and saved in the database.</p>
+                            </div>
+                        `;
+                    }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = 'Yes, Cancel Ticket';
+                    pendingCancelId = null;
+                }
+            });
         });
 
         async function performSearch(term) {
             const container = document.getElementById('resultsContainer');
-            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Searching database...</p>';
+            container.innerHTML = `
+                <div style="text-align:center; padding:3rem; color:var(--text-muted);">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">⏳</div>
+                    Searching database for active reservations...
+                </div>
+            `;
 
-            // Check if term is Booking ID (numeric or CBK-xxxx) or Phone
-            let cleanTerm = term.replace(/^CBK-/i, '').trim();
-            let digitsOnly = cleanTerm.replace(/\D/g, '');
+            const cleanTerm = term.replace(/^CBK-/i, '').trim();
+            const digitsOnly = cleanTerm.replace(/\D/g, '');
 
             try {
                 if (/^\d{1,6}$/.test(cleanTerm)) {
-                    // Search single booking by ID
+                    // Search single booking by numeric ID
                     const booking = await API.getBooking(parseInt(cleanTerm));
                     if (!booking || booking.status !== 'CONFIRMED') {
-                        container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">No active bookings found for ID: ${term}</p>`;
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:3rem; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg); border:1px dashed var(--border-subtle);">
+                                <h3>No active reservation found for Booking #${term}</h3>
+                                <p style="margin-top:0.4rem;">Cancelled tickets are preserved in historical records but hidden from active customer results.</p>
+                            </div>
+                        `;
                         return;
                     }
                     container.innerHTML = '';
                     renderBookingCard(booking, container);
+
                 } else if (digitsOnly.length >= 7 && digitsOnly.length <= 15) {
-                    // Search by customer phone (backend returns only CONFIRMED)
+                    // Search customer bookings by phone
                     const bookings = await API.getCustomerBookings(digitsOnly);
                     if (!bookings || bookings.length === 0) {
-                        container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">No active bookings found for phone: ${term}</p>`;
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:3rem; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg); border:1px dashed var(--border-subtle);">
+                                <h3>No active bookings found for phone: ${term}</h3>
+                                <p style="margin-top:0.4rem;">No confirmed tickets found for this phone number.</p>
+                            </div>
+                        `;
                         return;
                     }
-                    container.innerHTML = `<h3 style="margin-bottom:1.5rem; text-align:center;">Found ${bookings.length} Active Booking(s)</h3>`;
+
+                    container.innerHTML = `
+                        <div style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                            <h3 style="font-family:var(--font-serif); font-size:1.35rem; color:var(--text-primary);">
+                                Found ${bookings.length} Active Reservation(s)
+                            </h3>
+                            <span style="color:var(--accent-gold); font-size:0.85rem; font-weight:700;">● Active in Database</span>
+                        </div>
+                    `;
+
                     bookings.forEach(b => {
-                        const cardWrapper = document.createElement('div');
-                        renderBookingCard(b, cardWrapper);
-                        container.appendChild(cardWrapper);
+                        const wrap = document.createElement('div');
+                        wrap.className = 'receipt-item-wrap';
+                        renderBookingCard(b, wrap);
+                        container.appendChild(wrap);
                     });
+
                 } else {
-                    container.innerHTML = `<p style="text-align:center; color:var(--seat-booked);">Please enter a valid numeric Booking ID or 7-15 digit phone number.</p>`;
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:2rem; color:var(--accent-rose);">
+                            Please enter a valid numeric Booking ID (e.g. 31) or 7-15 digit phone number.
+                        </div>
+                    `;
                 }
+
             } catch (err) {
-                container.innerHTML = `<p style="text-align:center; color:var(--seat-booked); padding:2rem;">${err.message}</p>`;
+                container.innerHTML = `
+                    <div style="text-align:center; padding:2.5rem; color:var(--accent-rose);">
+                        ${err.message}
+                    </div>
+                `;
             }
         }
 
@@ -113,50 +238,47 @@
             const card = document.createElement('div');
             card.className = 'receipt-card';
             card.dataset.bookingId = b.bookingId;
-            card.style.marginBottom = '2rem';
+
+            const seatsText = (b.bookedSeats && b.bookedSeats.length > 0) ? b.bookedSeats.join(', ') : 'None';
+
             card.innerHTML = `
                 <div class="receipt-header">
-                    <div class="receipt-icon">🎟️</div>
-                    <h2>ACTIVE BOOKING</h2>
-                    <p>Booking Reference: CBK-${String(b.bookingId).padStart(4, '0')}</p>
+                    <div style="display:flex; align-items:center; gap:0.6rem;">
+                        <span style="font-size:1.3rem;">🎟️</span>
+                        <h2>RESERVATION &bull; CBK-${String(b.bookingId).padStart(4, '0')}</h2>
+                    </div>
+                    <div style="background:rgba(16,185,129,0.15); border:1px solid var(--accent-emerald); color:var(--accent-emerald); font-size:0.78rem; font-weight:800; padding:0.25rem 0.75rem; border-radius:var(--radius-full);">
+                        ● ${b.status}
+                    </div>
                 </div>
                 <div class="receipt-body">
                     <div class="receipt-row">
-                        <span class="receipt-label">Customer:</span>
+                        <span class="receipt-label">Movie Screening:</span>
+                        <span class="receipt-value" style="font-size:1.05rem; color:var(--accent-gold);">${b.movieTitle}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Customer Details:</span>
                         <span class="receipt-value">${b.customerName} (${b.customerPhone})</span>
                     </div>
                     <div class="receipt-row">
-                        <span class="receipt-label">Movie:</span>
-                        <span class="receipt-value">${b.movieTitle}</span>
+                        <span class="receipt-label">Showtime &amp; Screen:</span>
+                        <span class="receipt-value">${b.showDate} at ${b.showTime} &bull; ${b.screenName || 'Screen 1'}</span>
                     </div>
                     <div class="receipt-row">
-                        <span class="receipt-label">Showtime:</span>
-                        <span class="receipt-value">${b.showDate} at ${b.showTime}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Screen:</span>
-                        <span class="receipt-value">${b.screenName || 'Screen 1'}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Seats:</span>
-                        <span class="receipt-value" style="color:var(--accent-gold); font-weight:700;">
-                            ${b.bookedSeats ? b.bookedSeats.join(', ') : 'None'}
-                        </span>
+                        <span class="receipt-label">Reserved Seats:</span>
+                        <span class="receipt-value" style="color:var(--accent-purple-light);">${seatsText}</span>
                     </div>
                     <div class="receipt-row">
                         <span class="receipt-label">Total Amount Paid:</span>
-                        <span class="receipt-value">${formatCurrency(b.totalAmount)}</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span class="receipt-label">Status:</span>
-                        <span class="receipt-value" style="color:var(--seat-available); font-weight:800;">
-                            ● ${b.status}
-                        </span>
+                        <span class="receipt-value" style="font-size:1.1rem; color:var(--accent-gold); font-family:var(--font-serif);">${formatCurrency(b.totalAmount)}</span>
                     </div>
 
                     <div class="receipt-actions">
-                        <button onclick="handleCancel(${b.bookingId}, ${b.totalAmount})" class="btn-danger">
-                            🚫 Cancel Booking (80% Refund)
+                        <a href="confirmation.html?bookingId=${b.bookingId}" class="btn-card-details" style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.6rem 1.2rem;">
+                            <span>🖨️</span> Digital Boarding Pass
+                        </a>
+                        <button type="button" class="btn-cancel-ticket" onclick="promptCancel(${b.bookingId}, ${b.totalAmount})">
+                            🚫 Cancel Reservation (80% Refund)
                         </button>
                     </div>
                 </div>
@@ -164,42 +286,15 @@
             parent.appendChild(card);
         }
 
-        async function handleCancel(bookingId, totalAmount) {
+        function promptCancel(bookingId, totalAmount) {
+            pendingCancelId = bookingId;
             const refund = totalAmount * 0.80;
-            const confirmMsg = `Are you sure you want to cancel Booking #CBK-${String(bookingId).padStart(4, '0')}?\n\nOriginal Amount: ${formatCurrency(totalAmount)}\nEligible Refund (80%): ${formatCurrency(refund)}\n\nYour reserved seats will be released back to the cinema pool immediately.`;
-            
-            if (!confirm(confirmMsg)) {
-                return;
-            }
+            document.getElementById('modalCancelRef').innerText = `CBK-${String(bookingId).padStart(4, '0')}`;
+            document.getElementById('modalCancelOriginal').innerText = formatCurrency(totalAmount);
+            document.getElementById('modalCancelRefund').innerText = formatCurrency(refund);
 
-            try {
-                const response = await API.cancelBooking(bookingId);
-                showToast(`Cancellation successful! Refund: ${formatCurrency(response.refundAmount)}`, "success");
-                
-                // Immediately remove the cancelled card from view
-                const card = document.querySelector(`.receipt-card[data-booking-id="${bookingId}"]`);
-                if (card) {
-                    const parentBlock = card.parentElement;
-                    if (parentBlock && parentBlock.id !== 'resultsContainer') {
-                        parentBlock.remove();
-                    } else {
-                        card.remove();
-                    }
-                }
-                const remaining = document.querySelectorAll('.receipt-card');
-                if (remaining.length === 0) {
-                    document.getElementById('resultsContainer').innerHTML = 
-                        '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No active bookings found.</p>';
-                } else {
-                    const countHeader = document.querySelector('#resultsContainer h3');
-                    if (countHeader) {
-                        countHeader.innerText = `Found ${remaining.length} Active Booking(s)`;
-                    }
-                }
-
-            } catch (err) {
-                showToast(err.message, "error");
-            }
+            const modal = document.getElementById('cancelConfirmModal');
+            modal.classList.add('open');
         }
     </script>
 </body>
