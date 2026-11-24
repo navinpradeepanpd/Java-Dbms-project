@@ -46,8 +46,8 @@ public class BookingService implements Bookable {
     public static final double CINE10_DISCOUNT_PERCENT = 0.10; // 10%
     public static final double CANCELLATION_REFUND_PERCENT = 0.80; // 80%
 
-    // Regular expression for valid seat codes: Rows A-E and Columns 1-8
-    private static final Pattern SEAT_CODE_PATTERN = Pattern.compile("^[A-E][1-8]$", Pattern.CASE_INSENSITIVE);
+    // Regular expression for valid seat codes: Rows A-L and Columns 1-14 (168-seat auditorium)
+    private static final Pattern SEAT_CODE_PATTERN = Pattern.compile("^[A-L]([1-9]|1[0-4])$", Pattern.CASE_INSENSITIVE);
 
     private final MovieDAO movieDAO;
     private final ShowDAO showDAO;
@@ -131,7 +131,7 @@ public class BookingService implements Bookable {
         for (String rawCode : seatCodes) {
             String trimmed = rawCode.trim().toUpperCase();
             if (!SEAT_CODE_PATTERN.matcher(trimmed).matches()) {
-                throw new InvalidSeatException("Invalid seat code '" + rawCode + "'. Valid seats are rows A-E and columns 1-8 (e.g., A1, C5).");
+                throw new InvalidSeatException("Invalid seat code '" + rawCode + "'. Valid seats are rows A-L and columns 1-14 (e.g., A1, G7, L14).");
             }
             if (!uniqueCheck.add(trimmed)) {
                 throw new InvalidSeatException("Duplicate seat code '" + rawCode + "' in request.");

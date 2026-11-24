@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineBook | Premium Cinema Experience &bull; Dolby Atmos</title>
     <!-- Cache-busting stylesheet -->
-    <link rel="stylesheet" href="css/styles.css?v=2.2">
+    <link rel="stylesheet" href="css/styles.css?v=2.9">
     <!-- Load Core API & Metadata Engine Early -->
-    <script src="js/app.js?v=2.2"></script>
+    <script src="js/app.js?v=2.9"></script>
 </head>
 <body>
-    <!-- Shared Cinematic Ambient Background -->
+    <!-- Shared Cinematic Ambient Background with Looping Ambient Video -->
     <div class="cinematic-ambient-bg" aria-hidden="true">
+        <video id="cinematicBgVideo" class="cinematic-bg-video" autoplay muted loop playsinline poster="https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg">
+            <source src="videos/cinematic-ambient.mp4" type="video/mp4">
+        </video>
+        <div class="ambient-video-overlay"></div>
         <div class="ambient-aurora-layer"></div>
         <div class="ambient-light-rays"></div>
         <div class="ambient-orb orb-primary"></div>
@@ -33,7 +37,8 @@
 
             <div class="nav-menu-links">
                 <a href="index.html" class="nav-link-pill active">Now Showing</a>
-                <a href="#catalogSection" class="nav-link-pill">Movie Catalog</a>
+                <a href="#catalogSection" class="nav-link-pill">Featured Screenings</a>
+                <a href="#tmdbSection" class="nav-link-pill">Live TMDB Releases</a>
                 <a href="lookup.html" class="nav-link-pill">My Bookings</a>
                 <a href="lookup.html#cancelSection" class="nav-link-pill">Cancel &amp; Refund</a>
             </div>
@@ -56,11 +61,14 @@
                     The Future of <span>Cinema</span> Booking
                 </h1>
                 <p class="hero-subhead">
-                    Immerse yourself in blockbuster screenings with live 5&times;8 recliner seat reservation, transparent pricing, and instant 80% cancellation protection.
+                    Immerse yourself in blockbuster screenings with live 168-seat auditorium recliner reservation, transparent tier pricing, and instant 80% cancellation protection.
                 </p>
                 <div class="hero-btn-row">
                     <a href="#catalogSection" class="btn-glass-primary" style="padding:0.75rem 1.6rem; font-size:0.95rem;">
                         <span>🎬</span> Explore Screenings
+                    </a>
+                    <a href="#tmdbSection" class="btn-glass" style="padding:0.75rem 1.4rem; font-size:0.95rem;">
+                        <span>🌐</span> Live TMDB Releases
                     </a>
                     <a href="lookup.html" class="btn-glass" style="padding:0.75rem 1.4rem; font-size:0.95rem;">
                         <span>🎟️</span> Retrieve Tickets
@@ -87,14 +95,14 @@
                 <div class="stat-item">
                     <div class="stat-icon-wrap">💺</div>
                     <div>
-                        <div class="stat-value">VIP Recliners</div>
-                        <div class="stat-caption">Luxury Seating (Row E)</div>
+                        <div class="stat-value">168 Seats / Show</div>
+                        <div class="stat-caption">12 Rows (A–L) &bull; 3 Aisle Sections</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Movie Discovery Section -->
+        <!-- Movie Discovery Section (MySQL Screenings Source of Truth) -->
         <main id="catalogSection">
             <!-- Glass Search & Filter Dock -->
             <div class="glass-dock-toolbar">
@@ -116,10 +124,10 @@
             <div class="section-headline-bar">
                 <div>
                     <h2 class="section-title-text">
-                        <span>🎬</span> Featured Screenings
+                        <span>🎬</span> Featured Screenings (Live in CineBook)
                     </h2>
                     <p style="color:var(--text-muted); font-size:0.88rem; margin-top:0.25rem;">
-                        Select a screening to view live 5&times;8 recliner seat availability directly from MySQL
+                        Select a screening to reserve your 168-seat auditorium seats with instant ACID transaction isolation.
                     </p>
                 </div>
                 <div id="movieCountBadge" style="color:var(--text-muted); font-size:0.88rem; font-weight:600;">
@@ -135,6 +143,47 @@
                 </div>
             </div>
         </main>
+
+        <!-- Live TMDB Global Releases Section -->
+        <section id="tmdbSection" style="margin-top: 4.5rem; margin-bottom: 3.5rem;">
+            <div class="section-headline-bar" style="margin-bottom: 1.5rem;">
+                <div>
+                    <div class="eyebrow-glass-badge" style="margin-bottom:0.4rem;">
+                        <span>🌐</span> LIVE GLOBAL DISCOVERY &bull; TMDB INTEGRATION
+                    </div>
+                    <h2 class="section-title-text">
+                        <span>✨</span> Theatrical Releases &amp; Upcoming Premieres
+                    </h2>
+                    <p style="color:var(--text-muted); font-size:0.88rem; margin-top:0.25rem;">
+                        Live cached cinema feeds from The Movie Database with real-time Indian theatrical releases and global ratings.
+                    </p>
+                </div>
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <button type="button" class="btn-filter-tab active" id="tabTmdbNowPlaying" onclick="switchTmdbTab('now-playing')">Now In Theatres</button>
+                    <button type="button" class="btn-filter-tab" id="tabTmdbUpcoming" onclick="switchTmdbTab('upcoming')">Upcoming</button>
+                    <button type="button" class="btn-filter-tab" id="tabTmdbPopular" onclick="switchTmdbTab('popular')">Popular</button>
+                </div>
+            </div>
+
+            <!-- TMDB Live Search Bar -->
+            <div style="margin-bottom: 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <div class="glass-search-box" style="max-width: 460px; width:100%;">
+                    <span class="glass-search-icon">🔎</span>
+                    <input type="text" id="tmdbSearchInput" placeholder="Search any live movie on TMDB (e.g. Dune, Oppenheimer)...">
+                </div>
+                <div id="tmdbStatusBadge" style="font-size:0.85rem; color:var(--text-muted);">
+                    Live Caching Active (15m TTL)
+                </div>
+            </div>
+
+            <!-- TMDB Movies Grid -->
+            <div id="tmdbMovieGrid" class="movie-grid-glass">
+                <div style="text-align:center; grid-column: 1/-1; padding: 3rem; color: var(--text-muted);">
+                    <div style="font-size:2rem; margin-bottom:0.75rem;">🌐</div>
+                    Fetching live releases from TMDB...
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- Liquid Glass Footer -->
@@ -147,7 +196,7 @@
                         <div class="brand-name" style="font-size:1.25rem;">Cine<span>Book</span></div>
                     </div>
                     <p style="color:var(--text-muted); font-size:0.85rem; max-width:380px;">
-                        College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.
+                        Enterprise Cinema Experience powered by Spring Boot 3, MySQL 8, JDBC Connection Pooling, and TMDB live discovery.
                     </p>
                 </div>
                 <div style="display:flex; gap:2.5rem; flex-wrap:wrap;">
@@ -155,20 +204,33 @@
                         <div style="color:var(--text-primary); font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Navigation</div>
                         <div style="display:flex; flex-direction:column; gap:0.35rem; font-size:0.85rem; color:var(--text-secondary);">
                             <a href="index.html">Now Showing</a>
+                            <a href="#tmdbSection">TMDB Releases</a>
                             <a href="lookup.html">Booking Lookup</a>
-                            <a href="lookup.html">Cancel Reservation</a>
+                            <a href="lookup.html#cancelSection">Cancel Reservation</a>
                         </div>
                     </div>
                     <div>
-                        <div style="color:var(--text-primary); font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Pricing Tiers</div>
+                        <div style="color:var(--text-primary); font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">Auditorium Tiers</div>
                         <div style="display:flex; flex-direction:column; gap:0.35rem; font-size:0.85rem; color:var(--text-muted);">
-                            <span>Rows A-B: Regular (Rs. 150)</span>
-                            <span>Rows C-D: Premium (Rs. 250)</span>
-                            <span>Row E: VIP Recliner (Rs. 400)</span>
+                            <span>Rows A–F: Regular (Rs. 150)</span>
+                            <span>Rows G–J: Premium (Rs. 250)</span>
+                            <span>Rows K–L: VIP Recliner (Rs. 400)</span>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- TMDB Official Attribution -->
+            <div style="margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+                <div style="display:flex; align-items:center; gap:0.6rem;">
+                    <span style="font-size:1.2rem;">🎬</span>
+                    <span>This product uses the TMDB API but is not endorsed or certified by TMDB. Powered by The Movie Database.</span>
+                </div>
+                <div style="color: var(--accent-gold); font-weight: 600;">
+                    168-Seat Auditorium Architecture &bull; Non-destructive Migration
+                </div>
+            </div>
+
             <div class="footer-copy">
                 &copy; 2026 CineBook Cinemas. Built with Spring Boot 3, JDBC Connection Factory, MySQL 8 &amp; Vanilla JavaScript.
             </div>
@@ -181,6 +243,8 @@
         let allShows = [];
         let currentGenre = 'ALL';
         let searchQuery = '';
+        let currentTmdbTab = 'now-playing';
+        let tmdbSearchTimeout = null;
 
         // Safe metadata lookup helper: Guaranteed to never throw ReferenceError
         function safeGetMeta(name) {
@@ -237,6 +301,22 @@
                         currentGenre = btn.getAttribute('data-genre');
                         renderMovies();
                     });
+                });
+
+                // Load initial TMDB feed
+                loadTmdbFeed(currentTmdbTab);
+
+                // Setup TMDB Search
+                document.getElementById('tmdbSearchInput').addEventListener('input', (e) => {
+                    clearTimeout(tmdbSearchTimeout);
+                    const q = e.target.value.trim();
+                    if (!q) {
+                        loadTmdbFeed(currentTmdbTab);
+                        return;
+                    }
+                    tmdbSearchTimeout = setTimeout(() => {
+                        searchTmdb(q);
+                    }, 400);
                 });
 
             } catch (err) {
@@ -330,7 +410,7 @@
                         <div class="movie-showtimes-dock">
                             <div class="showtimes-header-text">
                                 <span>Available Showtimes</span>
-                                <span style="color:var(--accent-secondary); font-size:0.75rem;">● Live Seats</span>
+                                <span style="color:var(--accent-secondary); font-size:0.75rem;">● 168 Seats</span>
                             </div>
                             <div class="showtimes-pills-list">
                                 ${showsHtml}
@@ -346,6 +426,116 @@
                 `;
                 movieGrid.appendChild(card);
             });
+        }
+
+        // ================= TMDB FEED ENGINE =================
+        function switchTmdbTab(tab) {
+            currentTmdbTab = tab;
+            document.querySelectorAll('#tmdbSection .btn-filter-tab').forEach(b => b.classList.remove('active'));
+            if (tab === 'now-playing') document.getElementById('tabTmdbNowPlaying').classList.add('active');
+            if (tab === 'upcoming') document.getElementById('tabTmdbUpcoming').classList.add('active');
+            if (tab === 'popular') document.getElementById('tabTmdbPopular').classList.add('active');
+            document.getElementById('tmdbSearchInput').value = '';
+            loadTmdbFeed(tab);
+        }
+
+        async function loadTmdbFeed(endpoint) {
+            const grid = document.getElementById('tmdbMovieGrid');
+            grid.innerHTML = `
+                <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--text-muted);">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">⏳</div>
+                    Fetching ${endpoint} movies from TMDB API...
+                </div>
+            `;
+            try {
+                const res = await fetch(`/api/tmdb/${endpoint}`);
+                const data = await res.json();
+                renderTmdbCards(data.results || []);
+            } catch (err) {
+                console.error('Failed to load TMDB feed:', err);
+                grid.innerHTML = `
+                    <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--accent-rose);">
+                        <p>Unable to retrieve live TMDB feed. Showing cached titles.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function searchTmdb(query) {
+            const grid = document.getElementById('tmdbMovieGrid');
+            grid.innerHTML = `
+                <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--text-muted);">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🔎</div>
+                    Searching TMDB for "${query}"...
+                </div>
+            `;
+            try {
+                const res = await fetch(`/api/tmdb/search?query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                renderTmdbCards(data.results || []);
+            } catch (err) {
+                console.error('TMDB search error:', err);
+            }
+        }
+
+        function renderTmdbCards(movies) {
+            const grid = document.getElementById('tmdbMovieGrid');
+            if (!movies || movies.length === 0) {
+                grid.innerHTML = `
+                    <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--text-muted); background:var(--glass-surface-base); border-radius:var(--radius-lg); border:1px dashed var(--border-glass);">
+                        <div style="font-size:2rem; margin-bottom:0.5rem;">🎬</div>
+                        <h3 style="color:var(--text-primary); margin-bottom:0.25rem;">No TMDB Movies Found</h3>
+                        <p>Try searching for another blockbuster title.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            movies.slice(0, 12).forEach(m => {
+                const title = m.title || m.name || 'Untitled';
+                const poster = m.poster_path 
+                    ? `https://image.tmdb.org/t/p/w500${m.poster_path}` 
+                    : (m.poster || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&q=80');
+                const rating = m.vote_average ? Number(m.vote_average).toFixed(1) : '8.2';
+                const releaseDate = m.release_date || 'In Theatres';
+                const overview = m.overview ? (m.overview.length > 130 ? m.overview.substring(0, 127) + '...' : m.overview) : 'Global theatrical release registered on The Movie Database.';
+
+                const card = document.createElement('div');
+                card.className = 'movie-card-glass';
+                card.innerHTML = `
+                    <div class="movie-poster-frame">
+                        <img src="${poster}" alt="${title}" class="movie-poster-photo" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&q=80';">
+                        <div class="movie-poster-glass-grad"></div>
+                        <div class="badge-glass-rating">
+                            <span>★</span> ${rating}
+                        </div>
+                        <div class="badge-glass-cert">TMDB</div>
+                    </div>
+                    <div class="movie-details-body">
+                        <div class="movie-genre-label">RELEASE: ${releaseDate}</div>
+                        <h3 class="movie-card-title">${title}</h3>
+                        <p style="font-size:0.84rem; color:var(--text-muted); line-height:1.4; margin-bottom:1rem; flex-grow:1;">
+                            ${overview}
+                        </p>
+                        <div class="card-bottom-actions">
+                            <a href="#catalogSection" class="btn-glass-primary" style="padding:0.6rem 1rem; font-size:0.85rem; width:100%; text-align:center;" onclick="filterCatalogByTitle('${title.replace(/'/g, "\\'")}')">
+                                🎟️ Check CineBook Screenings
+                            </a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCatalogByTitle(title) {
+            const input = document.getElementById('movieSearchInput');
+            if (input) {
+                input.value = title;
+                searchQuery = title.toLowerCase().trim();
+                renderMovies();
+            }
         }
     </script>
 </body>

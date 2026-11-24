@@ -117,6 +117,40 @@ public class SeatDAO {
         return seatCodes;
     }
 
+    /**
+     * Non-destructively ensures full 168-seat capacity (12 rows A-L x 14 columns) for a show.
+     * Uses INSERT IGNORE so existing seats and their booking records are 100% preserved.
+     */
+    public int ensure168SeatsForShow(Connection conn, int showId) throws SQLException {
+        String sql = "INSERT IGNORE INTO seat (show_id, seat_code, seat_type, status) VALUES (?, ?, ?, 'AVAILABLE')";
+        int inserted = 0;
+        char[] rows = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'};
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (char row : rows) {
+                String type = SeatType.fromRow(row).name();
+                for (int col = 1; col <= 14; col++) {
+                    String seatCode = "" + row + col;
+                    stmt.setInt(1, showId);
+                    stmt.setString(2, seatCode);
+                    stmt.setString(3, type);
+                    stmt.addBatch();
+                }
+            }
+            int[] results = stmt.executeBatch();
+            for (int r : results) {
+                if (r > 0) inserted += r;
+            }
+        }
+        return inserted;
+    }
+
+    public int ensure168SeatsForShow(int showId) throws SQLException {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            return ensure168SeatsForShow(conn, showId);
+        }
+    }
+
     private Seat mapResultSetToSeat(ResultSet rs) throws SQLException {
         return new Seat(
                 rs.getInt("seat_id"),

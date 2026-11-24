@@ -26,18 +26,18 @@ public enum SeatType {
     }
 
     /**
-     * Maps row characters ('A'-'E') to their respective SeatType.
-     * Rows A-B: Regular (Rs. 150)
-     * Rows C-D: Premium (Rs. 250)
-     * Row E:    VIP     (Rs. 400)
+     * Maps row characters ('A'-'L') to their respective SeatType.
+     * Rows A-F: Regular (Rs. 150) - 84 seats
+     * Rows G-J: Premium (Rs. 250) - 56 seats
+     * Rows K-L: VIP     (Rs. 400) - 28 seats (VIP Recliners)
      */
     public static SeatType fromRow(char rowChar) {
         char upper = Character.toUpperCase(rowChar);
         return switch (upper) {
-            case 'A', 'B' -> REGULAR;
-            case 'C', 'D' -> PREMIUM;
-            case 'E' -> VIP;
-            default -> throw new IllegalArgumentException("Invalid row identifier: " + rowChar);
+            case 'A', 'B', 'C', 'D', 'E', 'F' -> REGULAR;
+            case 'G', 'H', 'I', 'J' -> PREMIUM;
+            case 'K', 'L' -> VIP;
+            default -> throw new IllegalArgumentException("Invalid row identifier: " + rowChar + ". Valid rows are A through L.");
         };
     }
 }

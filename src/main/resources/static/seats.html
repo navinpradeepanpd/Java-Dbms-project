@@ -74,10 +74,10 @@
                     <span class="screen-caption">✦ SCREEN THIS WAY ✦</span>
                 </div>
 
-                <!-- 5x8 Seat Matrix (A1 to E8 loaded from database) -->
-                <div id="seatMatrix" class="matrix-container">
+                <!-- 168-Seat Matrix: Left (1-4), Centre (5-10), Right (11-14) -->
+                <div id="seatMatrix" class="auditorium-wrapper">
                     <div style="text-align:center; padding:3rem; color:var(--text-muted);">
-                        Fetching live 5&times;8 seat inventory from database...
+                        Connecting to live 168-seat auditorium inventory from MySQL...
                     </div>
                 </div>
 
@@ -85,15 +85,15 @@
                 <div class="glass-legend-panel">
                     <div class="legend-chip">
                         <div class="legend-indicator reg"></div>
-                        <span>Regular &bull; Rows A-B (Rs. 150)</span>
+                        <span>Regular &bull; Rows A-F (Rs. 150)</span>
                     </div>
                     <div class="legend-chip">
                         <div class="legend-indicator prem"></div>
-                        <span>Premium &bull; Rows C-D (Rs. 250)</span>
+                        <span>Premium &bull; Rows G-J (Rs. 250)</span>
                     </div>
                     <div class="legend-chip">
                         <div class="legend-indicator vip"></div>
-                        <span>VIP &bull; Row E (Rs. 400)</span>
+                        <span>VIP Recliner &bull; Rows K-L (Rs. 400)</span>
                     </div>
                     <div class="legend-chip">
                         <div class="legend-indicator sel"></div>
@@ -101,7 +101,7 @@
                     </div>
                     <div class="legend-chip">
                         <div class="legend-indicator bk"></div>
-                        <span>Booked (Unavailable)</span>
+                        <span>Booked (Reserved)</span>
                     </div>
                 </div>
             </section>
@@ -334,27 +334,50 @@
             const container = document.getElementById('seatMatrix');
             container.innerHTML = '';
 
-            // Group seats by row character: A, B, C, D, E
-            const rows = { 'A': [], 'B': [], 'C': [], 'D': [], 'E': [] };
+            // Group seats by row character: Rows A through L
+            const rowChars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+            const rows = {};
+            rowChars.forEach(r => rows[r] = []);
+
             seatList.forEach(s => {
                 const row = s.seatCode.charAt(0).toUpperCase();
                 if (rows[row]) rows[row].push(s);
             });
 
-            // Render each row in strict sequence A through E
-            ['A', 'B', 'C', 'D', 'E'].forEach(rowChar => {
+            // Render each row in strict sequence A through L with 3 sections:
+            // Left Section (Seats 1-4) | Aisle | Centre Section (Seats 5-10) | Aisle | Right Section (Seats 11-14)
+            rowChars.forEach(rowChar => {
                 const rowSeats = rows[rowChar] || [];
+                if (rowSeats.length === 0) return;
+
+                // Sort numerically by column
+                rowSeats.sort((a, b) => {
+                    const numA = parseInt(a.seatCode.substring(1)) || 0;
+                    const numB = parseInt(b.seatCode.substring(1)) || 0;
+                    return numA - numB;
+                });
+
                 const rowDiv = document.createElement('div');
-                rowDiv.className = 'seat-row-flex seat-row';
+                rowDiv.className = 'auditorium-row';
 
                 // Row Label Left
                 const labelLeft = document.createElement('div');
-                labelLeft.className = 'row-char-tag seat-row-label';
+                labelLeft.className = 'auditorium-row-label';
                 labelLeft.innerText = rowChar;
                 rowDiv.appendChild(labelLeft);
 
-                // Row Seats
+                // 3 Seat Sections
+                const leftSection = document.createElement('div');
+                leftSection.className = 'seat-section section-left';
+
+                const centreSection = document.createElement('div');
+                centreSection.className = 'seat-section section-centre';
+
+                const rightSection = document.createElement('div');
+                rightSection.className = 'seat-section section-right';
+
                 rowSeats.forEach(seat => {
+                    const colNum = parseInt(seat.seatCode.substring(1)) || 0;
                     const seatEl = document.createElement('div');
                     const seatType = SeatPricing.getTypeForRow(rowChar);
                     seatEl.className = `seat-cube seat ${seatType}`;
@@ -371,12 +394,34 @@
                         seatEl.addEventListener('click', () => toggleSeat(seat.seatCode, seatEl));
                     }
 
-                    rowDiv.appendChild(seatEl);
+                    if (colNum <= 4) {
+                        leftSection.appendChild(seatEl);
+                    } else if (colNum <= 10) {
+                        centreSection.appendChild(seatEl);
+                    } else {
+                        rightSection.appendChild(seatEl);
+                    }
                 });
+
+                rowDiv.appendChild(leftSection);
+
+                // Walking Aisle 1
+                const aisle1 = document.createElement('div');
+                aisle1.className = 'walking-aisle';
+                rowDiv.appendChild(aisle1);
+
+                rowDiv.appendChild(centreSection);
+
+                // Walking Aisle 2
+                const aisle2 = document.createElement('div');
+                aisle2.className = 'walking-aisle';
+                rowDiv.appendChild(aisle2);
+
+                rowDiv.appendChild(rightSection);
 
                 // Row Label Right
                 const labelRight = document.createElement('div');
-                labelRight.className = 'row-char-tag seat-row-label';
+                labelRight.className = 'auditorium-row-label';
                 labelRight.innerText = rowChar;
                 rowDiv.appendChild(labelRight);
 

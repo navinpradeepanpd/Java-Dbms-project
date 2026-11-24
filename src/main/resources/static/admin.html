@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard &bull; All Reservations | CineBook</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.7">
+    <title>Admin Dashboard &bull; Master Console | CineBook</title>
+    <link rel="stylesheet" href="css/styles.css?v=2.9">
 </head>
 <body>
     <!-- Shared Cinematic Ambient Background -->
     <div class="cinematic-ambient-bg" aria-hidden="true">
+        <video id="cinematicBgVideo" class="cinematic-bg-video" autoplay muted loop playsinline poster="https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg">
+            <source src="videos/cinematic-ambient.mp4" type="video/mp4">
+        </video>
+        <div class="ambient-video-overlay"></div>
         <div class="ambient-aurora-layer"></div>
         <div class="ambient-light-rays"></div>
         <div class="ambient-orb orb-primary"></div>
@@ -30,7 +34,8 @@
 
             <div class="nav-menu-links">
                 <a href="index.html" class="nav-link-pill">Customer View</a>
-                <a href="admin.html" class="nav-link-pill active">All Reservations</a>
+                <a href="javascript:switchAdminView('reservations')" id="navReservations" class="nav-link-pill active">All Reservations</a>
+                <a href="javascript:switchAdminView('scheduler')" id="navScheduler" class="nav-link-pill">Schedule Screening</a>
                 <a href="lookup.html" class="nav-link-pill">My Bookings</a>
             </div>
 
@@ -47,16 +52,19 @@
                 <div style="color:var(--accent-rose); font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:0.25rem;">
                     RESTRICTED ROLE: SYSTEM ADMINISTRATOR
                 </div>
-                <h1 style="font-family:var(--font-serif); font-size:2.2rem; color:var(--text-primary); margin-bottom:0.3rem;">
+                <h1 style="font-family:var(--font-serif); font-size:2.2rem; color:var(--text-primary); margin-bottom:0.3rem;" id="adminHeaderTitle">
                     All Cinema Reservations
                 </h1>
-                <p style="color:var(--text-secondary); font-size:0.95rem;">
+                <p style="color:var(--text-secondary); font-size:0.95rem;" id="adminHeaderSubtitle">
                     Master overview of all customer bookings, actual theatrical artwork, audit status, and live ACID transaction logs.
                 </p>
             </div>
-            <div>
+            <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
                 <span class="ticket-status-pill" style="border-color:var(--accent-emerald); color:var(--accent-emerald); background:rgba(16,185,129,0.15); padding:0.4rem 1rem;">
                     ● DATABASE CONNECTED (MySQL 8)
+                </span>
+                <span class="ticket-status-pill" style="border-color:var(--accent-gold); color:var(--accent-gold); background:rgba(197,164,109,0.15); padding:0.4rem 1rem;">
+                    ✦ 168 SEATS ARCHITECTURE
                 </span>
             </div>
         </div>
@@ -90,43 +98,117 @@
             </div>
         </div>
 
-        <!-- Filter & Search Toolbar -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                <button type="button" class="btn-filter-tab active" data-filter="all" onclick="filterAdminBookings('all')">
-                    All (<span id="countAdminAll">0</span>)
-                </button>
-                <button type="button" class="btn-filter-tab" data-filter="CONFIRMED" onclick="filterAdminBookings('CONFIRMED')">
-                    Confirmed (<span id="countAdminConfirmed">0</span>)
-                </button>
-                <button type="button" class="btn-filter-tab" data-filter="CANCELLED" onclick="filterAdminBookings('CANCELLED')">
-                    Cancelled &amp; Refunded (<span id="countAdminCancelled">0</span>)
-                </button>
+        <!-- VIEW 1: MASTER RESERVATIONS -->
+        <section id="viewReservations">
+            <!-- Filter & Search Toolbar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <button type="button" class="btn-filter-tab active" data-filter="all" onclick="filterAdminBookings('all')">
+                        All (<span id="countAdminAll">0</span>)
+                    </button>
+                    <button type="button" class="btn-filter-tab" data-filter="CONFIRMED" onclick="filterAdminBookings('CONFIRMED')">
+                        Confirmed (<span id="countAdminConfirmed">0</span>)
+                    </button>
+                    <button type="button" class="btn-filter-tab" data-filter="CANCELLED" onclick="filterAdminBookings('CANCELLED')">
+                        Cancelled &amp; Refunded (<span id="countAdminCancelled">0</span>)
+                    </button>
+                </div>
+
+                <div style="position:relative; width:300px;">
+                    <input type="text" id="adminSearchInput" placeholder="Filter by customer, phone, or title..." style="width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); border-radius:var(--radius-pill); padding:0.55rem 1rem; color:var(--text-primary); font-size:0.88rem;">
+                </div>
             </div>
 
-            <div style="position:relative; width:300px;">
-                <input type="text" id="adminSearchInput" placeholder="Filter by customer, phone, or title..." style="width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); border-radius:var(--radius-pill); padding:0.55rem 1rem; color:var(--text-primary); font-size:0.88rem;">
+            <!-- Master Reservations Cards -->
+            <div id="adminReservationsContainer">
+                <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:rgba(25, 29, 48, 0.78); border-radius:var(--radius-xl); border:1px dashed var(--border-glass);">
+                    <div style="font-size:2.4rem; margin-bottom:0.5rem;">⏳</div>
+                    <h3 style="color:var(--text-primary); font-size:1.2rem;">Loading Master Reservations from MySQL...</h3>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Master Reservations Cards -->
-        <div id="adminReservationsContainer">
-            <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:rgba(25, 29, 48, 0.78); border-radius:var(--radius-xl); border:1px dashed var(--border-glass);">
-                <div style="font-size:2.4rem; margin-bottom:0.5rem;">⏳</div>
-                <h3 style="color:var(--text-primary); font-size:1.2rem;">Loading Master Reservations from MySQL...</h3>
+        <!-- VIEW 2: SCHEDULE SCREENING (168 SEATS & TMDB SYNC) -->
+        <section id="viewScheduler" style="display:none;">
+            <div class="glass-card" style="padding:2.2rem; margin-bottom:2rem;">
+                <div style="margin-bottom:1.8rem;">
+                    <h2 style="font-family:var(--font-serif); font-size:1.6rem; color:var(--text-primary); margin-bottom:0.4rem;">
+                        Schedule New Screening (168-Seat Auditorium)
+                    </h2>
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">
+                        Select a live movie from TMDB or enter custom metadata. CineBook will automatically create the show and provision all 168 seats (A1 through L14) in MySQL.
+                    </p>
+                </div>
+
+                <!-- TMDB Quick Picker Bar -->
+                <div style="margin-bottom:1.5rem; background:rgba(255,255,255,0.04); padding:1.2rem; border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+                    <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--accent-secondary); text-transform:uppercase; margin-bottom:0.5rem;">
+                        🔍 Fast TMDB Movie Search &amp; Auto-Fill
+                    </label>
+                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                        <input type="text" id="tmdbQuickSearch" placeholder="Type movie name to search TMDB..." style="flex:1; min-width:260px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.6rem 1rem; color:var(--text-primary); font-size:0.9rem;">
+                        <button type="button" class="btn-glass" onclick="searchTmdbForAdmin()" style="padding:0.6rem 1.2rem;">Search TMDB</button>
+                    </div>
+                    <div id="tmdbAdminResults" style="margin-top:1rem; display:none; max-height:220px; overflow-y:auto; border-radius:var(--radius-md); background:rgba(8,10,18,0.8); padding:0.6rem;"></div>
+                </div>
+
+                <!-- Screening Form -->
+                <form id="scheduleScreeningForm" onsubmit="handleScheduleScreening(event)">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.4rem; margin-bottom:1.8rem;">
+                        <div>
+                            <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Movie Title *</label>
+                            <input type="text" id="screenMovieTitle" required placeholder="e.g. Inception, Dune: Part Two" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.7rem 1rem; color:var(--text-primary); font-size:0.95rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Auditorium Screen *</label>
+                            <select id="screenNameSelect" style="width:100%; background:#111525; border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.7rem 1rem; color:var(--text-primary); font-size:0.95rem;">
+                                <option value="Screen 1 - Atmos">Screen 1 - Atmos (168 Seats)</option>
+                                <option value="Screen 2 - IMAX">Screen 2 - IMAX (168 Seats)</option>
+                                <option value="Screen 3 - Luxe">Screen 3 - Luxe (168 Seats)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Screening Date *</label>
+                            <input type="date" id="screenShowDate" required style="width:100%; background:#111525; border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.7rem 1rem; color:var(--text-primary); font-size:0.95rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Screening Time *</label>
+                            <input type="time" id="screenShowTime" required style="width:100%; background:#111525; border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.7rem 1rem; color:var(--text-primary); font-size:0.95rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Language</label>
+                            <input type="text" id="screenLanguage" value="English" placeholder="e.g. English, Hindi, Tamil" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.7rem 1rem; color:var(--text-primary); font-size:0.95rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Genre</label>
+                            <input type="text" id="screenGenre" value="Sci-Fi / Action" placeholder="e.g. Sci-Fi, Drama, Action" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.7rem 1rem; color:var(--text-primary); font-size:0.95rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.4rem;">Duration (Minutes)</label>
+                            <input type="number" id="screenDuration" value="148" min="30" max="360" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:0.7rem 1rem; color:var(--text-primary); font-size:0.95rem;">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; gap:1rem; align-items:center;">
+                        <button type="button" class="btn-glass" onclick="switchAdminView('reservations')">Cancel</button>
+                        <button type="submit" class="btn-glass-primary" id="btnSubmitScreening" style="padding:0.75rem 2rem;">
+                            <span>🎬</span> Provision 168-Seat Screening
+                        </button>
+                    </div>
+                </form>
             </div>
-        </div>
+        </section>
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="container footer-copy">
-            &copy; 2026 CineBook Cinemas &bull; System Administration &amp; Audit Portal
+            &copy; 2026 CineBook Cinemas &bull; System Administration &amp; Audit Portal &bull; 168 Seats Enterprise Edition
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="js/app.js?v=2.7"></script>
+    <script src="js/app.js?v=2.9"></script>
     <script>
         let allMasterBookings = [];
         let currentAdminFilter = 'all';
@@ -145,12 +227,49 @@
                 return;
             }
 
+            // Set default date for screening form
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateStr = tomorrow.toISOString().split('T')[0];
+            const dateInput = document.getElementById('screenShowDate');
+            if (dateInput) {
+                dateInput.value = dateStr;
+                dateInput.min = new Date().toISOString().split('T')[0];
+            }
+            const timeInput = document.getElementById('screenShowTime');
+            if (timeInput) timeInput.value = "19:30";
+
             await loadAdminData();
 
             document.getElementById('adminSearchInput').addEventListener('input', (e) => {
                 renderAdminBookings(e.target.value.trim().toLowerCase());
             });
         });
+
+        function switchAdminView(view) {
+            const resView = document.getElementById('viewReservations');
+            const schedView = document.getElementById('viewScheduler');
+            const navRes = document.getElementById('navReservations');
+            const navSched = document.getElementById('navScheduler');
+            const title = document.getElementById('adminHeaderTitle');
+            const sub = document.getElementById('adminHeaderSubtitle');
+
+            if (view === 'scheduler') {
+                resView.style.display = 'none';
+                schedView.style.display = 'block';
+                navRes.classList.remove('active');
+                navSched.classList.add('active');
+                title.innerText = 'Auditorium Screening Scheduler';
+                sub.innerText = 'Schedule blockbusters with automatic 168-seat layout provisioning and TMDB catalog synchronization.';
+            } else {
+                schedView.style.display = 'none';
+                resView.style.display = 'block';
+                navSched.classList.remove('active');
+                navRes.classList.add('active');
+                title.innerText = 'All Cinema Reservations';
+                sub.innerText = 'Master overview of all customer bookings, actual theatrical artwork, audit status, and live ACID transaction logs.';
+            }
+        }
 
         async function loadAdminData() {
             try {
@@ -178,15 +297,15 @@
                 renderAdminBookings();
 
             } catch (err) {
-                console.error(err);
-                showToast('Failed to load admin data: ' + err.message, 'error');
+                console.error('Failed to load admin data:', err);
+                showToast('Failed to load reservation data: ' + err.message, 'error');
             }
         }
 
-        function filterAdminBookings(status) {
-            currentAdminFilter = status;
+        function filterAdminBookings(filter) {
+            currentAdminFilter = filter;
             document.querySelectorAll('.btn-filter-tab').forEach(b => {
-                b.classList.toggle('active', b.dataset.filter === status);
+                b.classList.toggle('active', b.getAttribute('data-filter') === filter);
             });
             renderAdminBookings(document.getElementById('adminSearchInput').value.trim().toLowerCase());
         }
@@ -295,6 +414,86 @@
                 `;
                 container.appendChild(card);
             });
+        }
+
+        // ================= TMDB SEARCH FOR ADMIN =================
+        async function searchTmdbForAdmin() {
+            const query = document.getElementById('tmdbQuickSearch').value.trim();
+            if (!query) return;
+            const resBox = document.getElementById('tmdbAdminResults');
+            resBox.style.display = 'block';
+            resBox.innerHTML = '<div style="color:var(--text-muted); padding:0.5rem;">Searching TMDB...</div>';
+            try {
+                const res = await fetch(`/api/tmdb/search?query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                const list = data.results || [];
+                if (list.length === 0) {
+                    resBox.innerHTML = '<div style="color:var(--text-muted); padding:0.5rem;">No matching movies found on TMDB.</div>';
+                    return;
+                }
+                resBox.innerHTML = list.slice(0, 6).map(m => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem; border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer;" onclick='selectTmdbForScreening(${JSON.stringify(m).replace(/'/g, "&#39;")})'>
+                        <div style="display:flex; align-items:center; gap:0.6rem;">
+                            <span style="font-size:1.2rem;">🎬</span>
+                            <div>
+                                <div style="color:var(--text-primary); font-weight:700; font-size:0.9rem;">${m.title || m.name}</div>
+                                <div style="color:var(--text-muted); font-size:0.75rem;">${m.release_date || 'N/A'} &bull; ★ ${m.vote_average ? Number(m.vote_average).toFixed(1) : '8.0'}</div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-glass" style="padding:0.3rem 0.8rem; font-size:0.78rem;">Use Movie &rarr;</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                resBox.innerHTML = `<div style="color:var(--accent-rose); padding:0.5rem;">Error: ${err.message}</div>`;
+            }
+        }
+
+        function selectTmdbForScreening(m) {
+            document.getElementById('screenMovieTitle').value = m.title || m.name || '';
+            document.getElementById('screenLanguage').value = (m.original_language === 'hi' ? 'Hindi' : (m.original_language === 'ta' ? 'Tamil' : 'English'));
+            document.getElementById('screenGenre').value = 'Blockbuster / Feature';
+            document.getElementById('screenDuration').value = 145;
+            document.getElementById('tmdbAdminResults').style.display = 'none';
+            showToast(`Selected "${m.title || m.name}". Choose date and time to provision.`, 'success');
+        }
+
+        async function handleScheduleScreening(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitScreening');
+            btn.disabled = true;
+            btn.innerHTML = 'Provisioning 168 Seats...';
+
+            const payload = {
+                title: document.getElementById('screenMovieTitle').value.trim(),
+                screenName: document.getElementById('screenNameSelect').value,
+                showDate: document.getElementById('screenShowDate').value,
+                showTime: document.getElementById('screenShowTime').value,
+                language: document.getElementById('screenLanguage').value.trim(),
+                genre: document.getElementById('screenGenre').value.trim(),
+                duration: parseInt(document.getElementById('screenDuration').value, 10) || 140
+            };
+
+            try {
+                const res = await fetch('/api/admin/screenings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || 'Failed to schedule screening.');
+                }
+
+                showToast(`Screening Scheduled! ${data.seatsProvisioned} seats provisioned (Show #${data.showId})`, 'success');
+                await loadAdminData();
+                setTimeout(() => switchAdminView('reservations'), 1000);
+
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🎬</span> Provision 168-Seat Screening';
+            }
         }
     </script>
 </body>

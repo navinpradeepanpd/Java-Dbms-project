@@ -1078,23 +1078,72 @@ a {
     user-select: none;
 }
 
-/* Individual Glass Seat (.seat and .seat-cube) */
+/* 168-Seat Auditorium 3-Section Layout (12 Rows x 14 Columns) */
+.auditorium-wrapper {
+    overflow-x: auto;
+    padding: 1.5rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+}
+
+.auditorium-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 0.45rem;
+    min-width: 680px;
+}
+
+.auditorium-row-label {
+    width: 24px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-align: center;
+    user-select: none;
+}
+
+.seat-section {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.walking-aisle {
+    width: 22px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.walking-aisle::before {
+    content: '';
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.06);
+}
+
 .seat-cube,
 .seat {
-    width: 48px;
-    height: 44px;
-    border-radius: 9px 9px 5px 5px;
+    width: 38px;
+    height: 36px;
+    border-radius: 8px 8px 5px 5px;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
     position: relative;
     user-select: none;
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     line-height: 1;
 }
 
@@ -2248,8 +2297,324 @@ footer {
 
 
 /* ===================================================================
-   MY BOOKINGS & CANCELLATIONS TICKET CARDS REDESIGN
+   DIGITAL CINEMA BOARDING PASS TICKET CARD & PRINT STYLES
    =================================================================== */
+.digital-ticket-container {
+    display: grid;
+    grid-template-columns: 220px 1fr 190px;
+    background: rgba(25, 29, 48, 0.85);
+    backdrop-filter: blur(30px) saturate(190%);
+    -webkit-backdrop-filter: blur(30px) saturate(190%);
+    border: 1px solid var(--border-glass-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(167, 139, 250, 0.15);
+    margin: 1.5rem auto 2.5rem auto;
+    max-width: 980px;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ticket-poster-col {
+    position: relative;
+    overflow: hidden;
+    background: #080A12;
+}
+
+.ticket-main-poster {
+    width: 100%;
+    height: 100%;
+    min-height: 380px;
+    object-fit: cover;
+    display: block;
+}
+
+.ticket-age-cert-badge {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    background: rgba(8, 10, 18, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    letter-spacing: 1px;
+}
+
+.ticket-details-col {
+    padding: 2.2rem 2.4rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.ticket-brand-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.ticket-hero-title {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+}
+
+.ticket-genre-line {
+    font-size: 0.88rem;
+    color: var(--accent-secondary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.ticket-spec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+
+.spec-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.spec-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.spec-value {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.ticket-seats-section {
+    margin-bottom: 1.5rem;
+}
+
+.ticket-seats-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.ticket-seat-tag {
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.ticket-seat-tag.tier-regular {
+    background: rgba(52, 211, 153, 0.15);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #34D399;
+}
+
+.ticket-seat-tag.tier-premium {
+    background: rgba(96, 165, 250, 0.15);
+    border: 1px solid rgba(96, 165, 250, 0.5);
+    color: #60A5FA;
+}
+
+.ticket-seat-tag.tier-vip {
+    background: rgba(192, 132, 252, 0.2);
+    border: 1px solid rgba(192, 132, 252, 0.6);
+    color: #C084FC;
+}
+
+.ticket-price-breakdown {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.price-spec-item.total-item {
+    text-align: right;
+}
+
+.spec-num {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.spec-num.total-num {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent-secondary);
+}
+
+/* Right Perforated Stub */
+.ticket-stub-col {
+    background: rgba(15, 18, 32, 0.95);
+    border-left: 2px dashed rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.2rem;
+    position: relative;
+    text-align: center;
+}
+
+.stub-notch {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: var(--bg-base);
+    border-radius: 50%;
+    left: -13px;
+}
+.stub-notch.notch-top { top: -12px; }
+.stub-notch.notch-bottom { bottom: -12px; }
+
+.stub-cinema-tag {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--accent-secondary);
+    margin-bottom: 1.2rem;
+}
+
+.qr-code-wrapper {
+    margin-bottom: 1.2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.stub-secure-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.15);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* Cinematic Looping Background Video */
+.cinematic-bg-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: -2;
+    opacity: 0.32;
+    filter: saturate(135%) brightness(0.65) contrast(110%);
+    pointer-events: none;
+}
+
+.ambient-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 30%, rgba(8, 10, 18, 0.55) 0%, rgba(8, 10, 18, 0.95) 100%),
+                linear-gradient(180deg, rgba(8, 10, 18, 0.45) 0%, rgba(8, 10, 18, 0.98) 100%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* TMDB Attribution Badge */
+.tmdb-attribution-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.45rem 1rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+}
+
+.tmdb-attribution-badge img {
+    height: 16px;
+    width: auto;
+}
+
+/* Printable Ticket Styling (@media print) */
+@media print {
+    body {
+        background: #FFFFFF !important;
+        color: #080A12 !important;
+    }
+    .print-hide,
+    .floating-nav-wrapper,
+    .cinematic-ambient-bg,
+    footer,
+    .ticket-actions-bar {
+        display: none !important;
+    }
+    .digital-ticket-container {
+        border: 2px solid #080A12 !important;
+        box-shadow: none !important;
+        background: #FFFFFF !important;
+        color: #080A12 !important;
+        max-width: 100% !important;
+        break-inside: avoid;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .ticket-hero-title,
+    .spec-value {
+        color: #080A12 !important;
+    }
+    .ticket-stub-col {
+        background: #F8FAFC !important;
+        border-left: 2px dashed #080A12 !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .digital-ticket-container {
+        grid-template-columns: 1fr;
+    }
+    .ticket-poster-col {
+        max-height: 220px;
+    }
+    .ticket-stub-col {
+        border-left: none;
+        border-top: 2px dashed rgba(255, 255, 255, 0.2);
+    }
+}
+
 .booking-ticket-card-glass {
     display: grid;
     grid-template-columns: 190px 1fr;

@@ -83,6 +83,24 @@ public class ShowDAO {
         return Optional.empty();
     }
 
+    public int createShow(Connection conn, int movieId, java.time.LocalDate showDate, java.time.LocalTime showTime, String screenName) throws SQLException {
+        String sql = "INSERT INTO movie_show (movie_id, show_date, show_time, screen_name) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, movieId);
+            stmt.setDate(2, java.sql.Date.valueOf(showDate));
+            stmt.setTime(3, java.sql.Time.valueOf(showTime));
+            stmt.setString(4, screenName != null && !screenName.trim().isEmpty() ? screenName.trim() : "Screen 1");
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        throw new SQLException("Failed to create show record, no generated ID.");
+    }
+
     private Show mapResultSetToShow(ResultSet rs) throws SQLException {
         Show show = new Show(
                 rs.getInt("show_id"),

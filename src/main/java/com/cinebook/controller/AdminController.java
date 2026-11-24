@@ -74,5 +74,66 @@ public class AdminController {
     public ResponseEntity<List<Seat>> getShowSeats(@PathVariable("showId") int showId) throws SQLException {
         return ResponseEntity.ok(seatDAO.getSeatsByShowId(showId));
     }
+
+    @org.springframework.web.bind.annotation.PostMapping("/screenings")
+    public ResponseEntity<Map<String, Object>> createScreening(@org.springframework.web.bind.annotation.RequestBody Map<String, Object> req) throws SQLException {
+        String movieTitle = (String) req.get("title");
+        if (movieTitle == null || movieTitle.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Movie title is required."));
+        }
+
+        String showDateStr = (String) req.get("showDate");
+        String showTimeStr = (String) req.get("showTime");
+        String screenName = (String) req.getOrDefault("screenName", "Screen 1");
+        if (screenName != null && screenName.length() > 20) {
+            screenName = screenName.substring(0, 20);
+        }
+        String language = (String) req.getOrDefault("language", "English");
+        String genre = (String) req.getOrDefault("genre", "Cinema");
+        int duration = req.containsKey("duration") ? Integer.parseInt(req.get("duration").toString()) : 140;
+
+        if (showDateStr == null || showTimeStr == null) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Show date and show time are required."));
+        }
+
+        java.time.LocalDate showDate = java.time.LocalDate.parse(showDateStr.trim());
+        java.time.LocalTime showTime = java.time.LocalTime.parse(showTimeStr.trim());
+
+        try (java.sql.Connection conn = com.cinebook.util.DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                // Check if movie already exists in database
+                java.util.Optional<Movie> optMovie = movieDAO.findByName(movieTitle);
+                int movieId;
+                if (optMovie.isPresent()) {
+                    movieId = optMovie.get().getMovieId();
+                } else {
+                    movieId = movieDAO.createMovie(conn, movieTitle, duration, language, genre);
+                }
+
+                // Create show record
+                int showId = showDAO.createShow(conn, movieId, showDate, showTime, screenName);
+
+                // Provision all 168 seats for this show (12 rows x 14 columns)
+                int seatsCreated = seatDAO.ensure168SeatsForShow(conn, showId);
+
+                conn.commit();
+
+                Map<String, Object> resp = new HashMap<>();
+                resp.put("success", true);
+                resp.put("message", "Screening scheduled successfully! 168 seats provisioned.");
+                resp.put("showId", showId);
+                resp.put("movieId", movieId);
+                resp.put("seatsProvisioned", seatsCreated);
+                return ResponseEntity.ok(resp);
+
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+    }
 }
 

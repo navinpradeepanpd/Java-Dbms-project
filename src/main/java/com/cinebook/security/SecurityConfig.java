@@ -44,8 +44,11 @@ public class SecurityConfig {
                     "/css/**",
                     "/js/**",
                     "/images/**",
+                    "/videos/**",
                     "/favicon.ico",
-                    "/api/auth/**"
+                    "/api/auth/**",
+                    "/api/tmdb/**",
+                    "/api/tickets/verify"
                 ).permitAll()
                 // Admin specific endpoints
                 .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")

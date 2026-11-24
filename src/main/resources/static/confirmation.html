@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmed | CineBook Cinemas</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.2">
+    <title>Digital Cinema Ticket | CineBook Cinemas</title>
+    <link rel="stylesheet" href="css/styles.css?v=2.7">
+    <script src="js/qrcode.js"></script>
 </head>
 <body>
     <!-- Shared Cinematic Ambient Background -->
@@ -42,121 +43,133 @@
     <!-- Main Container: Digital Cinema Boarding Pass -->
     <main class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem;">
         <div class="confirmation-wrapper">
-            <div style="text-align:center; margin-bottom:2rem;">
-                <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(16, 185, 129, 0.15); border:1px solid rgba(16, 185, 129, 0.4); color:var(--accent-emerald); padding:0.4rem 1.4rem; border-radius:var(--radius-full); font-weight:700; font-size:0.85rem; margin-bottom:0.75rem;">
+            <div style="text-align:center; margin-bottom:2rem;" class="print-hide">
+                <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(16, 185, 129, 0.15); border:1px solid rgba(16, 185, 129, 0.4); color:var(--accent-emerald); padding:0.4rem 1.4rem; border-radius:var(--radius-pill); font-weight:700; font-size:0.85rem; margin-bottom:0.75rem;">
                     <span>✓</span> ACID Transaction Committed &bull; Seats Secured
                 </div>
                 <h1 style="font-family:var(--font-serif); font-size:2.4rem; font-weight:800; color:var(--text-primary);">
-                    Your Digital Cinema Ticket
+                    Official Cinema Boarding Pass
                 </h1>
                 <p style="color:var(--text-muted); font-size:0.95rem;">
-                    Present this boarding pass or reference ID at the cinema entrance box office
+                    Scan the digital pass below at the cinema entrance box office for instant admittance
                 </p>
             </div>
 
-            <!-- Boarding Pass Ticket Card -->
-            <div id="ticketCard" class="ticket-pass">
-                <!-- Main Ticket Body -->
-                <div class="ticket-main">
-                    <div class="ticket-header-strip">
-                        <div class="ticket-cinema-brand">
-                            <span class="logo-badge" style="width:32px; height:32px; font-size:0.85rem; border-radius:8px;">CB</span>
-                            <span style="font-weight:700; letter-spacing:1px; font-size:0.85rem;">CINEBOOK CINEMAS</span>
+            <!-- Digital Cinema Boarding Pass Card -->
+            <div id="ticketCard" class="digital-ticket-container">
+                <!-- Left: Master Movie Poster & Age Cert -->
+                <div class="ticket-poster-col">
+                    <img id="ticketPosterImg" src="" alt="Movie Poster" class="ticket-main-poster">
+                    <div class="ticket-age-cert-badge" id="ticketAgeBadge">UA 13+</div>
+                </div>
+
+                <!-- Center: Screening, Customer & Seating Meta -->
+                <div class="ticket-details-col">
+                    <div class="ticket-brand-header">
+                        <div style="display:flex; align-items:center; gap:0.6rem;">
+                            <span class="nav-brand-icon-prism" style="width:30px; height:30px; font-size:0.9rem;">🎟️</span>
+                            <span style="font-family:var(--font-serif); font-weight:800; letter-spacing:1px; color:#FFFFFF;">CINEBOOK GRAND CINEMAS</span>
                         </div>
-                        <div class="ticket-status-pill" id="ticketStatusBadge">
+                        <div class="ticket-status-pill status-confirmed" id="ticketStatusBadge">
                             <span>●</span> CONFIRMED
                         </div>
                     </div>
 
-                    <div style="display:flex; gap:1.5rem; align-items:flex-start; margin-bottom:1.5rem;">
-                        <img id="ticketPosterImg" src="" alt="Movie Poster" style="width:90px; height:130px; object-fit:cover; border-radius:var(--radius-sm); border:1px solid var(--border-glass); box-shadow:0 8px 20px rgba(0,0,0,0.5); display:none;">
-                        <div>
-                            <div class="ticket-movie-title" id="ticketMovieTitle" style="margin-bottom:0.4rem;">
-                                Loading Ticket Details...
-                            </div>
-                            <div id="ticketMovieGenre" style="font-size:0.85rem; color:var(--accent-secondary); font-weight:600;"></div>
+                    <h2 class="ticket-hero-title" id="ticketMovieTitle">Loading Screening Details...</h2>
+                    <div class="ticket-genre-line" id="ticketMovieGenre">Blockbuster Screening</div>
+
+                    <!-- 4-Grid Information -->
+                    <div class="ticket-spec-grid">
+                        <div class="spec-block">
+                            <span class="spec-label">Customer Name</span>
+                            <span class="spec-value" id="ticketCustomerName" style="color:#FFFFFF; font-weight:700;">--</span>
+                        </div>
+                        <div class="spec-block">
+                            <span class="spec-label">Booking Reference</span>
+                            <span class="spec-value" id="ticketRefCode" style="color:var(--accent-secondary); font-family:monospace; font-weight:800;">CB-0000</span>
+                        </div>
+                        <div class="spec-block">
+                            <span class="spec-label">Date &amp; Showtime</span>
+                            <span class="spec-value" id="ticketShowtime">--</span>
+                        </div>
+                        <div class="spec-block">
+                            <span class="spec-label">Theatre &amp; Screen</span>
+                            <span class="spec-value" id="ticketScreen" style="color:var(--accent-secondary-light); font-weight:700;">Screen 1 &bull; Dolby Atmos</span>
                         </div>
                     </div>
 
-                    <div class="ticket-grid-details">
-                        <div>
-                            <div class="ticket-field-label">Customer Name</div>
-                            <div class="ticket-field-val" id="ticketCustomerName">--</div>
-                        </div>
-                        <div>
-                            <div class="ticket-field-label">Mobile Phone</div>
-                            <div class="ticket-field-val" id="ticketCustomerPhone">--</div>
-                        </div>
-                        <div>
-                            <div class="ticket-field-label">Date &amp; Showtime</div>
-                            <div class="ticket-field-val" id="ticketShowtime">--</div>
-                        </div>
-                        <div>
-                            <div class="ticket-field-label">Auditorium / Screen</div>
-                            <div class="ticket-field-val gold" id="ticketScreen">Screen 1</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-top:auto; padding-top:1.5rem; border-top:1px solid var(--border-subtle);">
-                        <div class="ticket-field-label" style="margin-bottom:0.5rem;">Reserved Seats</div>
+                    <!-- Reserved Seats & Tiers -->
+                    <div class="ticket-seats-section">
+                        <span class="spec-label">Reserved Auditorium Seats (<span id="ticketSeatCount">0</span>)</span>
                         <div class="ticket-seats-cluster" id="ticketSeatsCluster">
-                            <span style="color:var(--text-muted); font-size:0.9rem;">--</span>
+                            <span style="color:var(--text-muted);">Loading seats...</span>
+                        </div>
+                    </div>
+
+                    <!-- Price Breakdown Bar -->
+                    <div class="ticket-price-breakdown">
+                        <div class="price-spec-item">
+                            <span class="spec-label">Subtotal</span>
+                            <span class="spec-num" id="ticketSubtotal">Rs. 0.00</span>
+                        </div>
+                        <div class="price-spec-item" id="ticketDiscountRow" style="display:none;">
+                            <span class="spec-label" id="ticketCouponLabel">Promo Discount</span>
+                            <span class="spec-num" style="color:var(--accent-emerald);" id="ticketDiscountAmount">- Rs. 0.00</span>
+                        </div>
+                        <div class="price-spec-item total-item">
+                            <span class="spec-label" style="color:var(--accent-secondary);">Total Paid</span>
+                            <span class="spec-num total-num" id="ticketTotalPaid">Rs. 0.00</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Perforated Stub Section -->
-                <div class="ticket-stub">
-                    <div class="stub-reference-block">
-                        <div class="stub-ref-label">Booking Ref</div>
-                        <div class="stub-ref-code" id="ticketRefCode">CBK-0000</div>
+                <!-- Right: Perforated Tear-Off Stub with Scannable QR -->
+                <div class="ticket-stub-col">
+                    <div class="stub-notch notch-top"></div>
+                    <div class="stub-notch notch-bottom"></div>
+
+                    <div class="stub-cinema-tag">BOARDING PASS</div>
+
+                    <!-- Server Verified Scannable QR Code -->
+                    <div class="qr-code-wrapper" id="ticketQRCodeContainer" title="Scan to verify ticket on CineBook server">
+                        <!-- SVG QR Code Injected Here -->
                     </div>
 
-                    <!-- Visual Scannable Barcode -->
-                    <div class="barcode-graphic" title="CineBook Verification Barcode"></div>
-
-                    <div class="stub-total-block">
-                        <div class="stub-ref-label">Total Paid</div>
-                        <div class="stub-total-amount" id="ticketTotalPaid">Rs. 0.00</div>
-                        <div id="ticketCouponNotice" style="font-size:0.75rem; color:var(--accent-emerald); margin-top:0.3rem; display:none;">
-                            Coupon Applied
+                    <div class="stub-verify-info">
+                        <div class="stub-secure-badge">
+                            <span>🛡️</span> Server Verified
+                        </div>
+                        <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.35rem;" id="ticketVerifyRef">
+                            REF: CBK-0000
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="ticket-actions-bar">
-                <button type="button" onclick="window.print()" class="btn-glass-primary" style="padding:0.75rem 2rem;">
-                    <span>🖨️</span> Print / Save Ticket PDF
+            <!-- Action Buttons: Download PDF, View Bookings, Book Another -->
+            <div class="ticket-actions-bar print-hide">
+                <button type="button" onclick="window.print()" class="btn-glass-primary" style="padding:0.85rem 2.2rem; font-size:0.95rem;">
+                    <span>🖨️</span> Download / Print PDF Ticket
                 </button>
-                <a href="index.html" class="btn-glass-ghost" style="padding:0.75rem 2rem;">
-                    <span>🎬</span> Book Another Movie
+                <a href="lookup.html" class="btn-glass" style="padding:0.85rem 2rem; font-size:0.95rem;">
+                    <span>🎟️</span> View My Bookings
                 </a>
-                <a href="lookup.html" class="btn-glass-ghost" style="padding:0.75rem 2rem;">
-                    <span>🎟️</span> My Bookings
+                <a href="index.html" class="btn-glass" style="padding:0.85rem 2rem; font-size:0.95rem;">
+                    <span>🎬</span> Book Another Movie
                 </a>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer>
+    <footer class="print-hide">
         <div class="container footer-copy">
-            &copy; 2026 CineBook Cinemas. College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.
+            &copy; 2026 CineBook Cinemas. Verified Digital Cinema Boarding Pass &bull; Spring Boot Web &amp; JDBC Database Persistence.
         </div>
     </footer>
 
-    <!-- Universal Auth Modal Overlay -->
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-card">
-            <button class="modal-close-btn" onclick="closeModal('authModal')">&times;</button>
-            <div id="authModalBody"></div>
-        </div>
-    </div>
-
     <!-- Scripts -->
-    <script src="js/app.js?v=2.2"></script>
+    <script src="js/app.js?v=2.7"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const bookingId = parseInt(urlParams.get('bookingId'));
@@ -172,53 +185,81 @@
                 const b = await API.getBooking(bookingId);
 
                 // Populate Fields
-                document.getElementById('ticketRefCode').innerText = `CBK-${String(b.bookingId).padStart(4, '0')}`;
+                const refCode = `CB-2026-${String(b.bookingId).padStart(4, '0')}`;
+                document.getElementById('ticketRefCode').innerText = refCode;
+                document.getElementById('ticketVerifyRef').innerText = `REF: ${refCode}`;
                 document.getElementById('ticketMovieTitle').innerText = b.movieTitle || 'Movie Screening';
                 
-                // Show official poster
+                // Show official poster & age rating
                 const meta = window.getMovieMeta(b.movieTitle);
                 const posterImg = document.getElementById('ticketPosterImg');
                 if (posterImg && meta && meta.poster) {
                     posterImg.src = meta.poster;
                     posterImg.style.display = 'block';
                 }
+                const ageBadge = document.getElementById('ticketAgeBadge');
+                if (ageBadge && meta) {
+                    ageBadge.innerText = meta.ageCert || 'UA 13+';
+                }
                 const genreEl = document.getElementById('ticketMovieGenre');
                 if (genreEl && meta) {
-                    genreEl.innerText = `${meta.ageCert || 'UA'} • Director: ${meta.director || 'Acclaimed Director'}`;
+                    genreEl.innerText = `${meta.tagline || 'Experience Cinema in Pure Dolby Atmos'} &bull; Directed by ${meta.director || 'Christopher Nolan'}`;
                 }
-                document.getElementById('ticketCustomerName').innerText = b.customerName;
-                document.getElementById('ticketCustomerPhone').innerText = b.customerPhone;
-                document.getElementById('ticketShowtime').innerText = `${b.showDate} at ${b.showTime}`;
-                document.getElementById('ticketScreen').innerText = b.screenName || 'Screen 1';
+
+                document.getElementById('ticketCustomerName').innerText = b.customerName || 'Customer';
+                
+                // Format readable date and time (e.g. Thursday, Nov 5, 2026 at 2:00 PM)
+                let readableDate = b.showDate;
+                try {
+                    const d = new Date(b.showDate + 'T' + b.showTime);
+                    readableDate = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + b.showTime;
+                } catch(e) {}
+                document.getElementById('ticketShowtime').innerText = readableDate;
+                
+                document.getElementById('ticketScreen').innerText = (b.screenName || 'Screen 1') + ' • Dolby Atmos Grand';
+                document.getElementById('ticketSubtotal').innerText = formatCurrency(b.subtotal || b.totalAmount);
                 document.getElementById('ticketTotalPaid').innerText = formatCurrency(b.totalAmount);
-                document.getElementById('ticketStatusBadge').innerHTML = `<span>●</span> ${b.status}`;
 
+                // Status
+                const statusBadge = document.getElementById('ticketStatusBadge');
                 if (b.status === 'CANCELLED') {
-                    const badge = document.getElementById('ticketStatusBadge');
-                    badge.style.borderColor = 'var(--accent-rose)';
-                    badge.style.color = '#f87171';
-                    badge.style.background = 'rgba(239, 68, 68, 0.15)';
-                    badge.innerHTML = '<span>✕</span> CANCELLED';
+                    statusBadge.className = 'ticket-status-pill status-cancelled';
+                    statusBadge.innerHTML = '<span>✕</span> CANCELLED &bull; REFUNDED';
+                } else {
+                    statusBadge.className = 'ticket-status-pill status-confirmed';
+                    statusBadge.innerHTML = '<span>●</span> CONFIRMED &bull; READY FOR ENTRY';
                 }
 
+                // Discount breakdown
                 if (b.couponCode && b.discountAmount > 0) {
-                    const notice = document.getElementById('ticketCouponNotice');
-                    notice.style.display = 'block';
-                    notice.innerText = `Discount: -${formatCurrency(b.discountAmount)} (${b.couponCode})`;
+                    document.getElementById('ticketDiscountRow').style.display = 'flex';
+                    document.getElementById('ticketCouponLabel').innerText = `Promo (${b.couponCode})`;
+                    document.getElementById('ticketDiscountAmount').innerText = `- ${formatCurrency(b.discountAmount)}`;
                 }
 
-                // Render Seat Chips
+                // Render Seat Badges with Tiers
                 const cluster = document.getElementById('ticketSeatsCluster');
                 cluster.innerHTML = '';
                 if (b.bookedSeats && b.bookedSeats.length > 0) {
+                    document.getElementById('ticketSeatCount').innerText = b.bookedSeats.length;
                     b.bookedSeats.forEach(code => {
+                        const row = code.charAt(0);
+                        const type = SeatPricing.getTypeForRow(row);
                         const chip = document.createElement('span');
-                        chip.className = 'ticket-seat-tag';
-                        chip.innerText = code;
+                        chip.className = `ticket-seat-tag tier-${type}`;
+                        chip.innerHTML = `<strong>${code}</strong> <small style="opacity:0.75; font-size:0.7rem; text-transform:uppercase;">${type}</small>`;
                         cluster.appendChild(chip);
                     });
                 } else {
                     cluster.innerHTML = '<span style="color:var(--text-muted);">None</span>';
+                }
+
+                // Generate Secure Server-Side QR Code Verification URL
+                // Contains NO private customer information (phone/billing), only ticket verification ref
+                const verifyUrl = `${window.location.origin}/api/tickets/verify?bookingId=${b.bookingId}`;
+                const qrContainer = document.getElementById('ticketQRCodeContainer');
+                if (qrContainer && window.createQRCodeSVG) {
+                    qrContainer.innerHTML = window.createQRCodeSVG(verifyUrl, 130);
                 }
 
             } catch (err) {

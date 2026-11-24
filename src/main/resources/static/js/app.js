@@ -194,16 +194,16 @@ const SeatPricing = {
     VIP: 400.0,
     getPriceForRow(rowChar) {
         const upper = (rowChar || '').toUpperCase();
-        if (upper === 'A' || upper === 'B') return this.REGULAR;
-        if (upper === 'C' || upper === 'D') return this.PREMIUM;
-        if (upper === 'E') return this.VIP;
-        return 0;
+        if (upper >= 'A' && upper <= 'F') return this.REGULAR;
+        if (upper >= 'G' && upper <= 'J') return this.PREMIUM;
+        if (upper === 'K' || upper === 'L') return this.VIP;
+        return 150.0;
     },
     getTypeForRow(rowChar) {
         const upper = (rowChar || '').toUpperCase();
-        if (upper === 'A' || upper === 'B') return 'regular';
-        if (upper === 'C' || upper === 'D') return 'premium';
-        if (upper === 'E') return 'vip';
+        if (upper >= 'A' && upper <= 'F') return 'regular';
+        if (upper >= 'G' && upper <= 'J') return 'premium';
+        if (upper === 'K' || upper === 'L') return 'vip';
         return 'regular';
     }
 };
