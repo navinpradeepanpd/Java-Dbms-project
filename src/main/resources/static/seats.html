@@ -4,48 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Seats | CineBook Cinemas</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.1">
-    <script src="js/app.js?v=2.1"></script>
+    <link rel="stylesheet" href="css/styles.css?v=2.2">
 </head>
 <body>
-    <!-- Top Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <span class="logo-badge">CB</span>
-                Cine<span>Book</span>
-            </a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">&larr; Back to Screenings</a>
-                <a href="lookup.html" class="nav-link">My Bookings</a>
-                <div class="nav-auth-group">
-                    <button type="button" class="btn-nav-ghost" onclick="openAuthModal('login')">Sign In</button>
-                    <button type="button" class="btn-nav-primary" onclick="openAuthModal('register')">Register</button>
+    <!-- Floating Glass Island Navbar -->
+    <header class="floating-nav-wrapper">
+        <nav class="navbar-glass-island">
+            <a href="index.html" class="nav-brand-pill">
+                <div class="nav-symbol-prism">
+                    <span class="symbol-core">CB</span>
                 </div>
+                <div class="nav-brand-text">
+                    <span class="brand-title">CINE<span>BOOK</span></span>
+                    <span class="brand-sub">LUXURY CINEMA</span>
+                </div>
+            </a>
+
+            <div class="nav-menu-links">
+                <a href="index.html" class="nav-glass-link">&larr; Screenings</a>
+                <a href="lookup.html" class="nav-glass-link">My Bookings</a>
             </div>
-        </div>
-    </nav>
+
+            <div class="nav-actions-island">
+                <button type="button" class="btn-glass-ghost" onclick="openAuthModal('login')">Sign In</button>
+                <button type="button" class="btn-glass-primary" onclick="openAuthModal('register')">Register</button>
+            </div>
+        </nav>
+    </header>
 
     <!-- Main Container -->
-    <main class="container" style="padding-top: 2rem;">
+    <main class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem;">
         <!-- Show Banner Header -->
-        <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:1.5rem 2rem; margin-bottom:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.2rem;">
+        <div class="glass-card" style="padding:1.5rem 2rem; margin-bottom:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.2rem;">
             <div>
-                <div style="color:var(--accent-purple-light); font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.25rem;">
+                <div style="color:var(--accent-purple-light); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.3rem;">
                     Screening Reservation
                 </div>
-                <h1 id="showMovieTitle" style="font-family:var(--font-serif); font-size:1.8rem; font-weight:700; color:var(--text-primary); margin-bottom:0.4rem;">
+                <h1 id="showMovieTitle" style="font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--text-primary); margin-bottom:0.4rem;">
                     Loading Screening...
                 </h1>
                 <div id="showMetaText" style="display:flex; align-items:center; gap:1.2rem; color:var(--text-muted); font-size:0.9rem; flex-wrap:wrap;">
-                    <span>Connecting to MySQL database...</span>
+                    <span>Connecting to database...</span>
                 </div>
             </div>
 
             <div style="display:flex; align-items:center; gap:0.75rem;">
-                <div style="background:rgba(245, 158, 11, 0.1); border:1px solid var(--border-gold); padding:0.6rem 1rem; border-radius:var(--radius-md); text-align:right;">
+                <div style="background:rgba(217, 119, 6, 0.12); border:1px solid rgba(217, 119, 6, 0.35); padding:0.6rem 1.2rem; border-radius:var(--radius-md); text-align:right;">
                     <div style="font-size:0.72rem; color:var(--accent-gold); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Auditorium</div>
-                    <div id="showScreenBadge" style="font-size:1.05rem; font-weight:800; color:var(--text-primary);">Screen 1</div>
+                    <div id="showScreenBadge" style="font-size:1.1rem; font-weight:800; color:var(--text-primary);">Screen 1</div>
                 </div>
             </div>
         </div>
@@ -54,11 +60,11 @@
         <div class="seat-selection-wrapper">
             <!-- Stage Area: Screen & Seat Matrix -->
             <section class="seat-stage-card">
-                <!-- Curved Cinema Screen -->
+                <!-- Curved Cinema Screen with Projection Light Beam -->
                 <div class="cinema-screen-container">
                     <div class="screen-cone-light"></div>
                     <div class="screen-curve-bar"></div>
-                    <span class="screen-label-text">✦ ALL EYES THIS WAY &bull; SCREEN ✦</span>
+                    <span class="screen-label-text">✦ ALL EYES THIS WAY &bull; CINEMATIC PROJECTION SCREEN ✦</span>
                 </div>
 
                 <!-- 5x8 Seat Matrix (A1 to E8 loaded from database) -->
@@ -151,7 +157,7 @@
                     <button type="submit" id="btnConfirmBooking" class="btn-confirm-checkout" disabled>
                         <span>🔒</span> Confirm &amp; Reserve Seats
                     </button>
-                    <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:0.3rem;">
+                    <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:0.4rem;">
                         Instant ACID transaction with seat row locks &amp; 80% refund protection.
                     </p>
                 </form>
@@ -166,8 +172,16 @@
         </div>
     </footer>
 
+    <!-- Universal Auth Modal Overlay -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close-btn" onclick="closeModal('authModal')">&times;</button>
+            <div id="authModalBody"></div>
+        </div>
+    </div>
+
     <!-- Scripts -->
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=2.2"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const showId = parseInt(urlParams.get('showId')) || 1;

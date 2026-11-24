@@ -3,134 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineBook 2.0 | Premium Cinema Booking Experience</title>
+    <title>CineBook 2.0 | Apple-Inspired Liquid Glass Cinema Experience</title>
     <!-- Cache-busting stylesheet -->
-    <link rel="stylesheet" href="css/styles.css?v=2.1">
+    <link rel="stylesheet" href="css/styles.css?v=2.2">
     <!-- Load Core API & Metadata Engine Early -->
-    <script src="js/app.js?v=2.1"></script>
+    <script src="js/app.js?v=2.2"></script>
 </head>
 <body>
-    <!-- Top Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <span class="logo-badge">CB</span>
-                Cine<span>Book</span>
+    <!-- Floating Glass Island Navigation Bar -->
+    <header class="floating-nav-wrapper">
+        <nav class="navbar-glass-island">
+            <a href="index.html" class="brand-group">
+                <div class="brand-icon">🎟️</div>
+                <div class="brand-name">Cine<span>Book</span></div>
             </a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">Now Showing</a>
-                <a href="#discoverSection" class="nav-link">Catalog</a>
-                <a href="lookup.html" class="nav-link">My Bookings</a>
-                <a href="lookup.html" class="nav-link">Cancel &amp; Refund</a>
-                
-                <div class="nav-auth-group">
-                    <button type="button" class="btn-nav-ghost" onclick="openAuthModal('login')">Sign In</button>
-                    <button type="button" class="btn-nav-primary" onclick="openAuthModal('register')">Register</button>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Compact Cinematic Hero Section -->
-    <header class="hero-compact">
-        <div class="container hero-compact-inner">
-            <div class="hero-text-block">
-                <div class="hero-pill-eyebrow">
-                    <span>✦</span> Ultra-HD 4K &bull; Dolby Atmos 7.1 Sound
+            <div class="nav-menu-links">
+                <a href="index.html" class="nav-link-pill active">Now Showing</a>
+                <a href="#catalogSection" class="nav-link-pill">Catalog</a>
+                <a href="lookup.html" class="nav-link-pill">My Bookings</a>
+                <a href="lookup.html" class="nav-link-pill">Cancel &amp; Refund</a>
+            </div>
+
+            <div class="nav-actions-group">
+                <button type="button" class="btn-glass" onclick="openAuthModal('login')">Sign In</button>
+                <button type="button" class="btn-glass-primary" onclick="openAuthModal('register')">Register</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Liquid Glass Hero Section -->
+        <section class="hero-glass-container">
+            <div class="hero-headline-block">
+                <div class="eyebrow-glass-badge">
+                    <span>✦</span> Apple-Grade Liquid Glass Aesthetics &bull; Dolby Atmos
                 </div>
-                <h1 class="hero-title-compact">
-                    Now Showing at <span>CineBook</span>
+                <h1 class="hero-headline">
+                    The Future of <span>Cinema</span> Booking
                 </h1>
-                <p class="hero-desc-compact">
-                    Experience movie premieres with live 5&times;8 seat selection, transparent pricing, and instant 80% refund protection.
+                <p class="hero-subhead">
+                    Immerse yourself in blockbuster screenings with live 5&times;8 recliner seat reservation, transparent pricing, and instant 80% cancellation protection.
                 </p>
-                <div style="display:flex; gap:0.85rem; flex-wrap:wrap;">
-                    <a href="#discoverSection" class="btn-primary" style="padding:0.75rem 1.6rem;">
-                        <span>🎬</span> Browse Screenings
+                <div class="hero-btn-row">
+                    <a href="#catalogSection" class="btn-glass-primary" style="padding:0.75rem 1.6rem; font-size:0.95rem;">
+                        <span>🎬</span> Explore Screenings
                     </a>
-                    <a href="lookup.html" class="btn-ghost" style="padding:0.75rem 1.4rem;">
+                    <a href="lookup.html" class="btn-glass" style="padding:0.75rem 1.4rem; font-size:0.95rem;">
                         <span>🎟️</span> Retrieve Tickets
                     </a>
                 </div>
             </div>
 
-            <!-- Cinema Quick Stats Banner -->
-            <div class="hero-stats-card">
-                <div class="hero-stat-row">
-                    <div class="hero-stat-icon">📽️</div>
+            <!-- Cinema Real-Time Stats Dock -->
+            <div class="hero-stats-panel">
+                <div class="stat-item">
+                    <div class="stat-icon-wrap">📽️</div>
                     <div>
-                        <div class="hero-stat-val" id="statsMovieCount">7 Movies</div>
-                        <div class="hero-stat-label">Blockbusters in Catalog</div>
+                        <div class="stat-value" id="statsMovieCount">7 Movies</div>
+                        <div class="stat-caption">Blockbusters in Catalog</div>
                     </div>
                 </div>
-                <div class="hero-stat-row">
-                    <div class="hero-stat-icon">🎟️</div>
+                <div class="stat-item">
+                    <div class="stat-icon-wrap">🎟️</div>
                     <div>
-                        <div class="hero-stat-val" id="statsShowCount">8 Shows</div>
-                        <div class="hero-stat-label">Screenings Available Today</div>
+                        <div class="stat-value" id="statsShowCount">8 Shows</div>
+                        <div class="stat-caption">Screenings Scheduled Today</div>
                     </div>
                 </div>
-                <div class="hero-stat-row">
-                    <div class="hero-stat-icon">💺</div>
+                <div class="stat-item">
+                    <div class="stat-icon-wrap">💺</div>
                     <div>
-                        <div class="hero-stat-val">VIP Recliners</div>
-                        <div class="hero-stat-label">Luxury Seating (Row E)</div>
+                        <div class="stat-value">VIP Recliners</div>
+                        <div class="stat-caption">Luxury Seating (Row E)</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </section>
 
-    <!-- Main Content: Movie Discovery & Catalog -->
-    <main class="container" id="discoverSection">
-        <!-- Discovery Toolbar: Search & Genre Filter -->
-        <div class="discovery-toolbar">
-            <div class="search-input-wrap">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="movieSearchInput" placeholder="Search by title or genre (e.g. Inception, Sci-Fi)...">
+        <!-- Movie Discovery Section -->
+        <main id="catalogSection">
+            <!-- Glass Search & Filter Dock -->
+            <div class="glass-dock-toolbar">
+                <div class="glass-search-box">
+                    <span class="glass-search-icon">🔍</span>
+                    <input type="text" id="movieSearchInput" placeholder="Search by title or genre (e.g. Inception, Sci-Fi)...">
+                </div>
+
+                <div class="genre-glass-filters" id="genreFilters">
+                    <button type="button" class="genre-glass-pill active" data-genre="ALL">All Movies</button>
+                    <button type="button" class="genre-glass-pill" data-genre="Sci-Fi">Sci-Fi</button>
+                    <button type="button" class="genre-glass-pill" data-genre="Action">Action</button>
+                    <button type="button" class="genre-glass-pill" data-genre="Drama">Drama</button>
+                    <button type="button" class="genre-glass-pill" data-genre="Animation">Animation</button>
+                </div>
             </div>
 
-            <div class="genre-filter-chips" id="genreFilters">
-                <button type="button" class="genre-chip active" data-genre="ALL">All Movies</button>
-                <button type="button" class="genre-chip" data-genre="Sci-Fi">Sci-Fi</button>
-                <button type="button" class="genre-chip" data-genre="Action">Action</button>
-                <button type="button" class="genre-chip" data-genre="Drama">Drama</button>
-                <button type="button" class="genre-chip" data-genre="Animation">Animation</button>
+            <!-- Section Headline -->
+            <div class="section-headline-bar">
+                <div>
+                    <h2 class="section-title-text">
+                        <span>🎬</span> Featured Screenings
+                    </h2>
+                    <p style="color:var(--text-muted); font-size:0.88rem; margin-top:0.25rem;">
+                        Select a screening to view live 5&times;8 recliner seat availability directly from MySQL
+                    </p>
+                </div>
+                <div id="movieCountBadge" style="color:var(--text-muted); font-size:0.88rem; font-weight:600;">
+                    Loading screenings...
+                </div>
             </div>
-        </div>
 
-        <!-- Section Heading -->
-        <div class="section-header">
-            <div>
-                <h2 class="section-title">
-                    <span>🎬</span> Featured Screenings
-                </h2>
-                <p class="section-tagline">
-                    Select a showtime to view live 5&times;8 recliner seat availability directly from MySQL
-                </p>
+            <!-- Dynamic Glass Movie Cards Grid -->
+            <div id="movieGrid" class="movie-grid-glass">
+                <div style="text-align:center; grid-column: 1/-1; padding: 4rem; color: var(--text-muted);">
+                    <div style="font-size:2rem; margin-bottom:0.75rem;">🎞️</div>
+                    Connecting to MySQL and loading screenings catalog...
+                </div>
             </div>
-            <div id="movieCountBadge" style="color:var(--text-muted); font-size:0.88rem; font-weight:600;">
-                Loading screenings...
-            </div>
-        </div>
+        </main>
+    </div>
 
-        <!-- Dynamic Movie Cards Grid -->
-        <div id="movieGrid" class="movie-grid">
-            <div style="text-align:center; grid-column: 1/-1; padding: 4rem; color: var(--text-muted);">
-                <div style="font-size:2rem; margin-bottom:0.75rem;">🎞️</div>
-                Connecting to MySQL and loading screenings catalog...
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
+    <!-- Liquid Glass Footer -->
     <footer>
         <div class="container">
             <div class="footer-inner">
                 <div>
-                    <div class="logo" style="margin-bottom:0.4rem;">
-                        <span class="logo-badge">CB</span>
-                        Cine<span>Book</span>
+                    <div class="brand-group" style="margin-bottom:0.4rem;">
+                        <div class="brand-icon" style="width:30px; height:30px; font-size:0.95rem;">🎟️</div>
+                        <div class="brand-name" style="font-size:1.25rem;">Cine<span>Book</span></div>
                     </div>
                     <p style="color:var(--text-muted); font-size:0.85rem; max-width:380px;">
                         College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.
@@ -168,20 +170,24 @@
         let currentGenre = 'ALL';
         let searchQuery = '';
 
-        // Safe metadata lookup helper
+        // Safe metadata lookup helper: Guaranteed to never throw ReferenceError
         function safeGetMeta(name) {
-            if (window.getMovieMeta) return window.getMovieMeta(name);
-            if (window.MovieMetadata && window.MovieMetadata[name]) return window.MovieMetadata[name];
+            if (typeof window !== 'undefined' && typeof window.getMovieMeta === 'function') {
+                return window.getMovieMeta(name);
+            }
+            if (typeof window !== 'undefined' && window.MovieMetadata && window.MovieMetadata[name]) {
+                return window.MovieMetadata[name];
+            }
             return {
                 rating: '8.5',
                 votes: '500K',
                 director: 'Acclaimed Director',
                 cast: 'Ensemble Cast',
                 tagline: 'An unforgettable cinema experience.',
-                synopsis: 'Experience this movie in crystal-clear projection and immersive Dolby surround sound at CineBook Cinemas.',
+                synopsis: 'Experience this movie in crystal-clear projection and immersive Dolby Atmos surround sound at CineBook Cinemas.',
                 ageCert: 'UA',
                 poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
-                palette: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
+                palette: 'linear-gradient(135deg, #080A12 0%, #161D2E 100%)',
                 symbol: '🎬'
             };
         }
@@ -211,10 +217,10 @@
                     renderMovies();
                 });
 
-                // Setup Genre Chip Listeners
-                document.querySelectorAll('.genre-chip').forEach(btn => {
+                // Setup Genre Filter Listeners
+                document.querySelectorAll('.genre-glass-pill').forEach(btn => {
                     btn.addEventListener('click', () => {
-                        document.querySelectorAll('.genre-chip').forEach(c => c.classList.remove('active'));
+                        document.querySelectorAll('.genre-glass-pill').forEach(c => c.classList.remove('active'));
                         btn.classList.add('active');
                         currentGenre = btn.getAttribute('data-genre');
                         renderMovies();
@@ -223,10 +229,9 @@
 
             } catch (err) {
                 console.error('Data loading error:', err);
-                // Differentiate frontend JS error vs backend connection error
                 const isClientError = (err.name === 'TypeError' || err.name === 'ReferenceError');
                 movieGrid.innerHTML = `
-                    <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--accent-rose); background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-subtle);">
+                    <div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--accent-rose); background:var(--glass-surface-base); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
                         <div style="font-size:2.2rem; margin-bottom:0.5rem;">⚠️</div>
                         <h3>${isClientError ? 'Client Rendering Exception' : 'Server Connection Issue'}</h3>
                         <p style="color:var(--text-muted); margin-top:0.4rem; font-size:0.9rem;">${err.message}</p>
@@ -253,7 +258,7 @@
 
             if (filtered.length === 0) {
                 movieGrid.innerHTML = `
-                    <div style="text-align:center; grid-column:1/-1; padding:4rem; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-lg); border:1px dashed var(--border-subtle);">
+                    <div style="text-align:center; grid-column:1/-1; padding:4rem; color:var(--text-muted); background:var(--glass-surface-base); border-radius:var(--radius-lg); border:1px dashed var(--border-glass);">
                         <div style="font-size:2.2rem; margin-bottom:0.5rem;">🔍</div>
                         <h3 style="color:var(--text-primary); margin-bottom:0.3rem;">No movies found</h3>
                         <p>No titles matched "${searchQuery || currentGenre}". Try clearing the search filter.</p>
@@ -277,12 +282,12 @@
                 let showsHtml = '';
                 if (movieShows.length > 0) {
                     showsHtml = movieShows.map(s => `
-                        <a href="seats.html?showId=${s.showId}" class="show-item-pill">
+                        <a href="seats.html?showId=${s.showId}" class="glass-show-pill">
                             <div>
-                                <div class="show-item-time">🕒 ${s.showTime}</div>
-                                <div class="show-item-meta">📅 ${s.showDate} &bull; ${s.screenName || 'Screen 1'}</div>
+                                <div class="show-pill-time">🕒 ${s.showTime}</div>
+                                <div class="show-pill-meta">📅 ${s.showDate} &bull; ${s.screenName || 'Screen 1'}</div>
                             </div>
-                            <span class="show-btn-book">Book Seats &rarr;</span>
+                            <span class="btn-book-capsule">Book Seats &rarr;</span>
                         </a>
                     `).join('');
                 } else {
@@ -290,39 +295,39 @@
                 }
 
                 const card = document.createElement('div');
-                card.className = 'movie-card';
+                card.className = 'movie-card-glass';
                 card.innerHTML = `
-                    <div class="movie-poster-wrap" style="background:${meta.palette || '#090c13'};">
-                        <img src="${meta.poster}" alt="${movie.movieName}" class="movie-poster-img" loading="lazy" onerror="this.style.display='none';">
-                        <div class="movie-poster-gradient"></div>
-                        <div class="movie-badge-rating">
+                    <div class="movie-poster-frame" style="background:${meta.palette || '#080A12'};">
+                        <img src="${meta.poster}" alt="${movie.movieName}" class="movie-poster-photo" loading="lazy" onerror="this.style.display='none';">
+                        <div class="movie-poster-glass-grad"></div>
+                        <div class="badge-glass-rating">
                             <span>★</span> ${meta.rating || '8.5'}
                         </div>
-                        <div class="movie-badge-lang">${movie.language}</div>
+                        <div class="badge-glass-cert">${movie.language}</div>
                     </div>
-                    <div class="movie-body">
-                        <div class="movie-genre-text">${movie.genre}</div>
-                        <h3 class="movie-title">${movie.movieName}</h3>
+                    <div class="movie-details-body">
+                        <div class="movie-genre-label">${movie.genre}</div>
+                        <h3 class="movie-card-title">${movie.movieName}</h3>
                         
-                        <div class="movie-meta-strip">
-                            <span class="movie-meta-item">⏱ ${movie.duration} mins</span>
-                            <span class="movie-meta-item">🛡 ${meta.ageCert || 'UA'}</span>
-                            <span class="movie-meta-item">🎟 ${movieShows.length} Shows</span>
+                        <div class="movie-specs-row">
+                            <span>⏱ ${movie.duration} mins</span>
+                            <span>🛡 ${meta.ageCert || 'UA'}</span>
+                            <span>🎟 ${movieShows.length} Shows</span>
                         </div>
 
-                        <div class="movie-shows-section">
-                            <div class="movie-shows-label">
+                        <div class="movie-showtimes-dock">
+                            <div class="showtimes-header-text">
                                 <span>Available Showtimes</span>
-                                <span style="color:var(--accent-gold); font-size:0.75rem;">● Live Seats</span>
+                                <span style="color:var(--accent-secondary); font-size:0.75rem;">● Live Seats</span>
                             </div>
-                            <div class="movie-shows-grid">
+                            <div class="showtimes-pills-list">
                                 ${showsHtml}
                             </div>
                         </div>
 
-                        <div class="card-footer-actions">
-                            <button type="button" class="btn-card-details" onclick='openMovieDetailsModal(${JSON.stringify(movie).replace(/'/g, "&#39;")}, ${JSON.stringify(movieShows).replace(/'/g, "&#39;")})'>
-                                ℹ View Details &amp; Synopsis
+                        <div class="card-bottom-actions">
+                            <button type="button" class="btn-quick-details" onclick='openMovieDetailsModal(${JSON.stringify(movie).replace(/'/g, "&#39;")}, ${JSON.stringify(movieShows).replace(/'/g, "&#39;")})'>
+                                ℹ View Synopsis &amp; Cast
                             </button>
                         </div>
                     </div>

@@ -202,6 +202,14 @@ const SeatPricing = {
     }
 };
 
+window.SeatPricing = SeatPricing;
+window.formatCurrency = formatCurrency;
+window.showToast = showToast;
+window.openAuthModal = openAuthModal;
+window.openMovieDetailsModal = openMovieDetailsModal;
+window.closeModal = closeModal;
+window.API = API;
+
 // Format Currency
 function formatCurrency(amount) {
     return `Rs. ${Number(amount || 0).toFixed(2)}`;
