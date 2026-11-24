@@ -43,6 +43,12 @@
     <main class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem;">
         <!-- Hero Section -->
         <section class="lookup-hero">
+            <div id="adminNoticeBanner" style="display:none; background:rgba(251,113,133,0.15); border:1px solid rgba(251,113,133,0.4); border-radius:var(--radius-md); padding:0.75rem 1.25rem; margin-bottom:1.5rem; text-align:center;">
+                <span style="color:var(--accent-rose); font-weight:700;">👑 Administrator Session Detected:</span>
+                <span style="color:var(--text-secondary); margin-left:0.4rem;">Viewing master system reservations across all customers.</span>
+                <a href="admin.html" class="btn-glass-primary" style="margin-left:1rem; padding:0.35rem 0.85rem; font-size:0.8rem; display:inline-flex;">Open Admin Dashboard &rarr;</a>
+            </div>
+
             <div class="hero-eyebrow">
                 <span>🛡️</span> 100% Secure Cinema Verification
             </div>
@@ -159,6 +165,15 @@
         async function loadMyBookings() {
             const container = document.getElementById('resultsContainer');
             try {
+                // Check if user is admin
+                try {
+                    const me = await fetch('/api/auth/me').then(r => r.json());
+                    if (me && me.role === 'ADMIN') {
+                        const banner = document.getElementById('adminNoticeBanner');
+                        if (banner) banner.style.display = 'block';
+                    }
+                } catch(e) {}
+
                 const bookings = await API.getMyBookings();
                 allUserBookings = bookings || [];
 

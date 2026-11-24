@@ -64,8 +64,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
+        ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("success", false, "message", "Something went wrong while processing your request. Please try again."));
+                .body(Map.of("success", false, "message", "Error: " + ex.getClass().getSimpleName() + " - " + ex.getMessage()));
     }
 }
 

@@ -1,5 +1,6 @@
 package com.cinebook.controller;
 
+import com.cinebook.dao.BookingDAO;
 import com.cinebook.dto.BookingRequest;
 import com.cinebook.dto.BookingResponse;
 import com.cinebook.dto.CancellationResponse;
@@ -34,9 +35,11 @@ import java.util.Optional;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final BookingDAO bookingDAO;
 
     public BookingController() {
         this.bookingService = new BookingService();
+        this.bookingDAO = new BookingDAO();
     }
 
     @PostMapping
@@ -83,6 +86,20 @@ public class BookingController {
     @GetMapping("/my")
     public List<Booking> getMyBookings(Authentication authentication) throws SQLException {
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            boolean isAdmin = "ADMIN".equalsIgnoreCase(userDetails.getRole());
+            if (isAdmin) {
+                // Administrators viewing reservations see all customer bookings across the system
+                return bookingDAO.getAllBookings();
+            }
+
+            // Customer account: look up by customerId first if present, otherwise by phone/username
+            if (userDetails.getCustomerId() != null) {
+                List<Booking> byId = bookingDAO.getBookingsByCustomerId(userDetails.getCustomerId(), false);
+                if (!byId.isEmpty()) {
+                    return byId;
+                }
+            }
+
             String phone = userDetails.getUsername();
             // Return all customer bookings (confirmed + cancelled) for history view
             return bookingService.getCustomerBookings(phone, false);

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | CineBook Cinema System</title>
-    <link rel="stylesheet" href="css/styles.css?v=2.6">
+    <title>Admin Dashboard &bull; All Reservations | CineBook</title>
+    <link rel="stylesheet" href="css/styles.css?v=2.7">
 </head>
 <body>
     <!-- Ambient Depth Background with Floating Orbs -->
@@ -24,14 +24,14 @@
                 </div>
                 <div class="nav-brand-text">
                     <span class="brand-title">CINE<span>BOOK</span></span>
-                    <span class="brand-sub" style="color:var(--accent-rose);">ADMIN PORTAL</span>
+                    <span class="brand-sub" style="color:var(--accent-rose);">ADMIN CONSOLE</span>
                 </div>
             </a>
 
             <div class="nav-menu-links">
-                <a href="index.html" class="nav-glass-link">Movie Site</a>
-                <a href="admin.html" class="nav-glass-link active">Admin Console</a>
-                <a href="lookup.html" class="nav-glass-link">Customer Bookings</a>
+                <a href="index.html" class="nav-glass-link">Customer View</a>
+                <a href="admin.html" class="nav-glass-link active">All Reservations</a>
+                <a href="lookup.html" class="nav-glass-link">My Bookings</a>
             </div>
 
             <div class="nav-actions-island" id="navAuthSection">
@@ -42,99 +42,95 @@
 
     <!-- Main Container -->
     <main class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem;">
-        <div class="glass-card" style="padding:2rem; margin-bottom:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div class="glass-card" style="padding:2rem; margin-bottom:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.2rem;">
             <div>
                 <div style="color:var(--accent-rose); font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; margin-bottom:0.25rem;">
-                    RESTRICTED TO ROLE_ADMIN
+                    RESTRICTED ROLE: SYSTEM ADMINISTRATOR
                 </div>
                 <h1 style="font-family:var(--font-serif); font-size:2.2rem; color:var(--text-primary); margin-bottom:0.3rem;">
-                    Cinema Administration &amp; Auditing
+                    All Cinema Reservations
                 </h1>
                 <p style="color:var(--text-secondary); font-size:0.95rem;">
-                    Real-time transaction tracking, movie catalogue monitoring, and seat reservation inventory.
+                    Master overview of all customer bookings, actual theatrical artwork, audit status, and live ACID transaction logs.
                 </p>
             </div>
             <div>
-                <span class="ticket-status-pill" style="border-color:var(--accent-emerald); color:var(--accent-emerald); background:rgba(16,185,129,0.15);">
+                <span class="ticket-status-pill" style="border-color:var(--accent-emerald); color:var(--accent-emerald); background:rgba(16,185,129,0.15); padding:0.4rem 1rem;">
                     ● DATABASE CONNECTED (MySQL 8)
                 </span>
             </div>
         </div>
 
         <!-- Metric Stat Cards -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1.5rem; margin-bottom:2.5rem;">
-            <div class="glass-card" style="padding:1.5rem; text-align:center;">
-                <div style="font-size:2rem; margin-bottom:0.4rem;">🎬</div>
-                <div style="font-size:0.82rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Active Movies</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:1.2rem; margin-bottom:2.2rem;">
+            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+                <div style="font-size:1.8rem; margin-bottom:0.3rem;">🎬</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Active Movies</div>
                 <div id="statMovies" style="font-size:1.8rem; font-weight:800; color:var(--text-primary); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
             </div>
-            <div class="glass-card" style="padding:1.5rem; text-align:center;">
-                <div style="font-size:2rem; margin-bottom:0.4rem;">🕒</div>
-                <div style="font-size:0.82rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Total Shows</div>
+            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+                <div style="font-size:1.8rem; margin-bottom:0.3rem;">🕒</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Total Shows</div>
                 <div id="statShows" style="font-size:1.8rem; font-weight:800; color:var(--text-primary); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
             </div>
-            <div class="glass-card" style="padding:1.5rem; text-align:center;">
-                <div style="font-size:2rem; margin-bottom:0.4rem;">🎟️</div>
-                <div style="font-size:0.82rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Confirmed Bookings</div>
+            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+                <div style="font-size:1.8rem; margin-bottom:0.3rem;">🎟️</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Total Bookings</div>
+                <div id="statTotalBookings" style="font-size:1.8rem; font-weight:800; color:var(--text-primary); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
+            </div>
+            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+                <div style="font-size:1.8rem; margin-bottom:0.3rem;">✅</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Confirmed</div>
                 <div id="statConfirmed" style="font-size:1.8rem; font-weight:800; color:var(--accent-emerald); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
             </div>
-            <div class="glass-card" style="padding:1.5rem; text-align:center;">
-                <div style="font-size:2rem; margin-bottom:0.4rem;">💰</div>
-                <div style="font-size:0.82rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Audited Revenue</div>
+            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+                <div style="font-size:1.8rem; margin-bottom:0.3rem;">💰</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Confirmed Revenue</div>
                 <div id="statRevenue" style="font-size:1.8rem; font-weight:800; color:var(--accent-gold); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
             </div>
         </div>
 
-        <!-- Master Reservations Table -->
-        <section class="glass-card" style="padding:2rem;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-                <div>
-                    <h2 style="font-family:var(--font-serif); font-size:1.5rem; color:var(--text-primary); margin-bottom:0.2rem;">
-                        All Cinema Reservations
-                    </h2>
-                    <p style="color:var(--text-muted); font-size:0.88rem;">Live transactions across all screens with ACID row locks</p>
-                </div>
-                <button type="button" class="btn-glass-primary" onclick="loadAdminData()" style="padding:0.5rem 1.2rem; font-size:0.85rem;">
-                    🔄 Refresh Data
+        <!-- Filter & Search Toolbar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button type="button" class="btn-filter-tab active" data-filter="all" onclick="filterAdminBookings('all')">
+                    All (<span id="countAdminAll">0</span>)
+                </button>
+                <button type="button" class="btn-filter-tab" data-filter="CONFIRMED" onclick="filterAdminBookings('CONFIRMED')">
+                    Confirmed (<span id="countAdminConfirmed">0</span>)
+                </button>
+                <button type="button" class="btn-filter-tab" data-filter="CANCELLED" onclick="filterAdminBookings('CANCELLED')">
+                    Cancelled &amp; Refunded (<span id="countAdminCancelled">0</span>)
                 </button>
             </div>
 
-            <div style="overflow-x:auto;">
-                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.9rem;">
-                    <thead>
-                        <tr style="border-bottom:1px solid var(--border-glass); color:var(--text-secondary);">
-                            <th style="padding:0.8rem;">Ref ID</th>
-                            <th style="padding:0.8rem;">Movie Title</th>
-                            <th style="padding:0.8rem;">Customer Name</th>
-                            <th style="padding:0.8rem;">Phone</th>
-                            <th style="padding:0.8rem;">Screen &amp; Showtime</th>
-                            <th style="padding:0.8rem;">Seats</th>
-                            <th style="padding:0.8rem;">Paid Amount</th>
-                            <th style="padding:0.8rem;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminBookingsTableBody">
-                        <tr>
-                            <td colspan="8" style="padding:2.5rem; text-align:center; color:var(--text-muted);">
-                                Loading master booking logs from MySQL...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div style="position:relative; width:300px;">
+                <input type="text" id="adminSearchInput" placeholder="Filter by customer, phone, or title..." style="width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); border-radius:var(--radius-pill); padding:0.55rem 1rem; color:var(--text-primary); font-size:0.88rem;">
             </div>
-        </section>
+        </div>
+
+        <!-- Master Reservations Cards -->
+        <div id="adminReservationsContainer">
+            <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:rgba(25, 29, 48, 0.78); border-radius:var(--radius-xl); border:1px dashed var(--border-glass);">
+                <div style="font-size:2.4rem; margin-bottom:0.5rem;">⏳</div>
+                <h3 style="color:var(--text-primary); font-size:1.2rem;">Loading Master Reservations from MySQL...</h3>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="container footer-copy">
-            &copy; 2026 CineBook Cinemas &bull; System Administration Console
+            &copy; 2026 CineBook Cinemas &bull; System Administration &amp; Audit Portal
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="js/app.js?v=2.6"></script>
+    <script src="js/app.js?v=2.7"></script>
     <script>
+        let allMasterBookings = [];
+        let currentAdminFilter = 'all';
+
         document.addEventListener('DOMContentLoaded', async () => {
             // Verify admin privilege
             try {
@@ -150,6 +146,10 @@
             }
 
             await loadAdminData();
+
+            document.getElementById('adminSearchInput').addEventListener('input', (e) => {
+                renderAdminBookings(e.target.value.trim().toLowerCase());
+            });
         });
 
         async function loadAdminData() {
@@ -159,44 +159,142 @@
                     fetch('/api/admin/bookings').then(r => r.json())
                 ]);
 
+                allMasterBookings = bookings || [];
+
                 // Render Stats
                 document.getElementById('statMovies').innerText = stats.totalMovies || 0;
                 document.getElementById('statShows').innerText = stats.totalShows || 0;
+                document.getElementById('statTotalBookings').innerText = stats.totalBookings || 0;
                 document.getElementById('statConfirmed').innerText = stats.confirmedBookings || 0;
                 document.getElementById('statRevenue').innerText = formatCurrency(stats.totalRevenue || 0);
 
-                // Render Table
-                const tbody = document.getElementById('adminBookingsTableBody');
-                if (!bookings || bookings.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" style="padding:2rem; text-align:center; color:var(--text-muted);">No booking transactions logged yet.</td></tr>`;
-                    return;
-                }
+                // Counters
+                const conf = allMasterBookings.filter(b => b.status === 'CONFIRMED').length;
+                const canc = allMasterBookings.filter(b => b.status === 'CANCELLED').length;
+                document.getElementById('countAdminAll').innerText = allMasterBookings.length;
+                document.getElementById('countAdminConfirmed').innerText = conf;
+                document.getElementById('countAdminCancelled').innerText = canc;
 
-                tbody.innerHTML = bookings.map(b => {
-                    const isConfirmed = b.status === 'CONFIRMED';
-                    const badge = isConfirmed
-                        ? `<span style="color:var(--accent-emerald); font-weight:700;">● CONFIRMED</span>`
-                        : `<span style="color:var(--accent-rose); font-weight:700;">✕ CANCELLED</span>`;
-                    const seats = (b.bookedSeats && b.bookedSeats.length > 0) ? b.bookedSeats.join(', ') : 'None';
-
-                    return `
-                        <tr style="border-bottom:1px solid rgba(255,255,255,0.06); color:var(--text-primary);">
-                            <td style="padding:0.9rem; font-family:monospace; color:var(--accent-primary-light);">CBK-${String(b.bookingId).padStart(4, '0')}</td>
-                            <td style="padding:0.9rem; font-weight:600; color:var(--accent-gold);">${b.movieTitle}</td>
-                            <td style="padding:0.9rem;">${b.customerName}</td>
-                            <td style="padding:0.9rem; color:var(--text-secondary);">${b.customerPhone}</td>
-                            <td style="padding:0.9rem; font-size:0.85rem;">${b.screenName || 'Screen 1'}<br><span style="color:var(--text-muted);">${b.showDate} at ${b.showTime}</span></td>
-                            <td style="padding:0.9rem; color:var(--accent-primary-light); font-weight:700;">${seats}</td>
-                            <td style="padding:0.9rem; font-weight:700; color:var(--accent-gold);">${formatCurrency(b.totalAmount)}</td>
-                            <td style="padding:0.9rem;">${badge}</td>
-                        </tr>
-                    `;
-                }).join('');
+                renderAdminBookings();
 
             } catch (err) {
                 console.error(err);
                 showToast('Failed to load admin data: ' + err.message, 'error');
             }
+        }
+
+        function filterAdminBookings(status) {
+            currentAdminFilter = status;
+            document.querySelectorAll('.btn-filter-tab').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === status);
+            });
+            renderAdminBookings(document.getElementById('adminSearchInput').value.trim().toLowerCase());
+        }
+
+        function renderAdminBookings(searchTerm = '') {
+            const container = document.getElementById('adminReservationsContainer');
+            let list = allMasterBookings;
+
+            if (currentAdminFilter !== 'all') {
+                list = list.filter(b => b.status === currentAdminFilter);
+            }
+
+            if (searchTerm) {
+                list = list.filter(b => 
+                    (b.customerName && b.customerName.toLowerCase().includes(searchTerm)) ||
+                    (b.customerPhone && b.customerPhone.includes(searchTerm)) ||
+                    (b.movieTitle && b.movieTitle.toLowerCase().includes(searchTerm)) ||
+                    String(b.bookingId).includes(searchTerm)
+                );
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:3.5rem; color:var(--text-muted); background:rgba(25, 29, 48, 0.78); border-radius:var(--radius-xl); border:1px dashed var(--border-glass);">
+                        <div style="font-size:2.4rem; margin-bottom:0.75rem;">🎟️</div>
+                        <h3 style="color:var(--text-primary); font-size:1.2rem; margin-bottom:0.4rem;">No Reservations Found</h3>
+                        <p>No bookings match the selected filter or search term.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            list.forEach(b => {
+                const card = document.createElement('div');
+                card.className = 'booking-ticket-card-glass';
+
+                const meta = window.getMovieMeta(b.movieTitle);
+                const seatsText = (b.bookedSeats && b.bookedSeats.length > 0) ? b.bookedSeats.join(', ') : 'None';
+                const isConfirmed = b.status === 'CONFIRMED';
+
+                const statusBadge = isConfirmed
+                    ? `<div class="ticket-status-pill status-confirmed"><span>●</span> CONFIRMED</div>`
+                    : `<div class="ticket-status-pill status-cancelled"><span>✕</span> CANCELLED &bull; REFUNDED</div>`;
+
+                const refundNotice = isConfirmed
+                    ? ''
+                    : `<div class="refund-record-badge">
+                            <span>✓</span> 80% Refund Credited: ${formatCurrency(b.totalAmount * 0.80)}
+                       </div>`;
+
+                card.innerHTML = `
+                    <div class="ticket-poster-side">
+                        <img src="${meta.poster}" alt="${b.movieTitle} Theatrical Poster" class="ticket-movie-poster" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&q=80';">
+                        <div class="poster-rating-chip">★ ${meta.rating}</div>
+                    </div>
+
+                    <div class="ticket-content-side">
+                        <div class="ticket-header-strip">
+                            <div>
+                                <div class="ticket-ref-eyebrow">BOOKING REF &bull; CBK-${String(b.bookingId).padStart(4, '0')} (Cust #${b.customerId})</div>
+                                <h2 class="ticket-movie-name">${b.movieTitle}</h2>
+                            </div>
+                            ${statusBadge}
+                        </div>
+
+                        <div class="ticket-meta-grid">
+                            <div class="ticket-meta-item">
+                                <span class="meta-item-label">Customer Name</span>
+                                <span class="meta-item-val" style="color:var(--text-primary); font-weight:700;">${b.customerName}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="meta-item-label">Mobile Phone</span>
+                                <span class="meta-item-val" style="color:var(--accent-secondary); font-family:monospace;">${b.customerPhone}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="meta-item-label">Screen &amp; Showtime</span>
+                                <span class="meta-item-val">${b.screenName || 'Screen 1'} &bull; ${b.showDate} at ${b.showTime}</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <span class="meta-item-label">Booking Timestamp</span>
+                                <span class="meta-item-val" style="font-size:0.85rem; color:var(--text-muted);">${b.bookingTime ? b.bookingTime.replace('T', ' ') : '--'}</span>
+                            </div>
+                            <div class="ticket-meta-item" style="grid-column: 1 / -1;">
+                                <span class="meta-item-label">Reserved Seats (${b.bookedSeats ? b.bookedSeats.length : 0})</span>
+                                <div class="ticket-seat-badges-cluster">
+                                    ${b.bookedSeats ? b.bookedSeats.map(s => `<span class="glass-seat-tag">${s}</span>`).join('') : '<span style="color:var(--text-muted);">None</span>'}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ticket-footer-bar">
+                            <div class="ticket-price-block">
+                                <span class="price-block-label">Total Amount Paid</span>
+                                <span class="price-block-amount">${formatCurrency(b.totalAmount)}</span>
+                            </div>
+
+                            <div class="ticket-actions-group">
+                                ${refundNotice}
+                                <a href="confirmation.html?bookingId=${b.bookingId}" class="btn-card-details" target="_blank">
+                                    <span>🖨️</span> Boarding Pass
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
     </script>
 </body>
