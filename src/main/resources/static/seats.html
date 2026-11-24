@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Seats | CineBook Cinemas</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-badge">CB</span>
+                Cine<span>Book</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">&larr; Back to Movies</a>
+                <a href="lookup.html" class="nav-link">My Bookings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Show Header -->
+        <div class="section-header">
+            <div>
+                <h2 id="showTitle">Loading Show Details...</h2>
+                <p id="showMeta">Connecting to MySQL database for real-time seat status</p>
+            </div>
+        </div>
+
+        <div class="booking-layout">
+            <!-- Seat Selection Stage Card -->
+            <div class="seat-stage-card">
+                <!-- Screen Indicator -->
+                <div class="screen-indicator">
+                    <div class="screen-curve"></div>
+                    <span class="screen-text">Screen This Way</span>
+                </div>
+
+                <!-- 5x8 Seat Matrix (Rendered via JS from MySQL) -->
+                <div id="seatMatrix" class="seat-grid-container">
+                    <p style="color:var(--text-muted); padding: 2rem;">Loading 5x8 seat inventory...</p>
+                </div>
+
+                <!-- Pricing & Status Legend -->
+                <div class="legend-container">
+                    <div class="legend-item">
+                        <div class="legend-box regular"></div>
+                        <span>Regular (Rs.150)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box premium"></div>
+                        <span>Premium (Rs.250)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box vip"></div>
+                        <span>VIP (Rs.400)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box selected"></div>
+                        <span>Selected</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box booked"></div>
+                        <span>Booked (Unavailable)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Summary & Checkout Sidebar -->
+            <div class="booking-sidebar">
+                <h3 class="sidebar-title">Booking Summary</h3>
+
+                <div class="summary-row">
+                    <span style="color:var(--text-muted)">Show ID:</span>
+                    <strong id="sidebarShowId">--</strong>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    <span class="form-label">Selected Seats:</span>
+                    <div id="selectedSeatsTags" class="badge-seats">
+                        <span style="color:var(--text-muted); font-size:0.85rem;">No seats selected yet</span>
+                    </div>
+                </div>
+
+                <div class="summary-row">
+                    <span style="color:var(--text-muted)">Subtotal:</span>
+                    <strong id="summarySubtotal">Rs. 0.00</strong>
+                </div>
+
+                <!-- Coupon Discount Group -->
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label" for="couponInput">Have a Coupon? (e.g. CINE10)</label>
+                    <div class="coupon-group">
+                        <input type="text" id="couponInput" class="form-input" placeholder="Enter coupon" uppercase style="text-transform:uppercase;">
+                        <button type="button" id="btnApplyCoupon" class="btn-apply">Apply</button>
+                    </div>
+                </div>
+
+                <div id="discountRow" class="summary-row" style="display:none; color: var(--seat-available);">
+                    <span>Discount (CINE10 - 10%):</span>
+                    <strong id="summaryDiscount">- Rs. 0.00</strong>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Final Amount:</span>
+                    <span id="summaryTotal">Rs. 0.00</span>
+                </div>
+
+                <!-- Customer Details Form -->
+                <form id="bookingForm" style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="customerName">Full Name *</label>
+                        <input type="text" id="customerName" class="form-input" required placeholder="e.g. Rahul Sharma">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="customerPhone">Phone Number *</label>
+                        <input type="tel" id="customerPhone" class="form-input" required placeholder="e.g. 9876543210" pattern="[0-9]{7,15}">
+                    </div>
+
+                    <button type="submit" id="btnConfirmBooking" class="btn-submit-booking" disabled>
+                        Confirm &amp; Book Tickets
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 CineBook Cinemas. College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const showId = parseInt(urlParams.get('showId')) || 1;
+
+        let currentShow = null;
+        let selectedSeats = new Set();
+        let appliedCoupon = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('sidebarShowId').innerText = `#${showId}`;
+
+            try {
+                // Fetch Show details and seat map in parallel
+                const [shows, seats] = await Promise.all([API.getShows(), API.getSeatMap(showId)]);
+                currentShow = shows.find(s => s.showId === showId);
+
+                if (currentShow) {
+                    document.getElementById('showTitle').innerText = `🎬 ${currentShow.movieName}`;
+                    document.getElementById('showMeta').innerText = `📅 ${currentShow.showDate} at 🕒 ${currentShow.showTime} &bull; ${currentShow.screenName || 'Screen 1'} (${currentShow.language || 'English'})`;
+                } else {
+                    document.getElementById('showTitle').innerText = `Show #${showId}`;
+                }
+
+                renderSeatMap(seats);
+
+            } catch (err) {
+                console.error(err);
+                showToast("Failed to load seat data: " + err.message, "error");
+            }
+
+            // Coupon Apply button
+            document.getElementById('btnApplyCoupon').addEventListener('click', () => {
+                const code = document.getElementById('couponInput').value.trim().toUpperCase();
+                if (!code) {
+                    appliedCoupon = null;
+                    showToast("Coupon cleared", "info");
+                } else if (code === 'CINE10') {
+                    appliedCoupon = 'CINE10';
+                    showToast("Coupon 'CINE10' applied: 10% discount!", "success");
+                } else {
+                    appliedCoupon = null;
+                    showToast("Invalid coupon code '" + code + "'. Only 'CINE10' is supported.", "error");
+                }
+                updateSidebarSummary();
+            });
+
+            // Booking Form Submit
+            document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (selectedSeats.size === 0) {
+                    showToast("Please select at least one seat.", "error");
+                    return;
+                }
+
+                const name = document.getElementById('customerName').value.trim();
+                const phone = document.getElementById('customerPhone').value.trim();
+                const coupon = appliedCoupon;
+
+                const submitBtn = document.getElementById('btnConfirmBooking');
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Processing Transaction in MySQL...";
+
+                try {
+                    const response = await API.bookTickets({
+                        customerName: name,
+                        phone: phone,
+                        showId: showId,
+                        seatCodes: Array.from(selectedSeats),
+                        couponCode: coupon
+                    });
+
+                    showToast("Booking successful!", "success");
+                    setTimeout(() => {
+                        window.location.href = `confirmation.html?bookingId=${response.booking.bookingId}`;
+                    }, 800);
+
+                } catch (err) {
+                    showToast(err.message, "error");
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Confirm & Book Tickets";
+                    
+                    // Refresh seats in case they were booked by another request
+                    try {
+                        const refreshedSeats = await API.getSeatMap(showId);
+                        renderSeatMap(refreshedSeats);
+                    } catch (e) {}
+                }
+            });
+        });
+
+        function renderSeatMap(seats) {
+            const matrixContainer = document.getElementById('seatMatrix');
+            matrixContainer.innerHTML = '';
+
+            // Group seats by row A-E
+            const rows = ['A', 'B', 'C', 'D', 'E'];
+            const seatsByCode = {};
+            seats.forEach(s => seatsByCode[s.seatCode.toUpperCase()] = s);
+
+            rows.forEach(rowLetter => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'seat-row';
+
+                // Row Label
+                const label = document.createElement('div');
+                label.className = 'row-label';
+                label.innerText = rowLetter;
+                rowDiv.appendChild(label);
+
+                // 8 Seats per Row
+                for (let col = 1; col <= 8; col++) {
+                    const code = `${rowLetter}${col}`;
+                    const seatData = seatsByCode[code];
+
+                    const seatDiv = document.createElement('div');
+                    const tier = SeatPricing.getTypeForRow(rowLetter);
+                    seatDiv.dataset.code = code;
+                    seatDiv.innerText = col;
+
+                    if (seatData && seatData.status === 'BOOKED') {
+                        seatDiv.className = `seat booked`;
+                        seatDiv.title = `Seat ${code} is already booked`;
+                    } else {
+                        const isSelected = selectedSeats.has(code);
+                        seatDiv.className = `seat available ${tier} ${isSelected ? 'selected' : ''}`;
+                        seatDiv.title = `Seat ${code} (${tier.toUpperCase()} - Rs. ${SeatPricing.getPriceForRow(rowLetter)})`;
+                        
+                        seatDiv.addEventListener('click', () => toggleSeat(code));
+                    }
+
+                    rowDiv.appendChild(seatDiv);
+                }
+
+                matrixContainer.appendChild(rowDiv);
+            });
+        }
+
+        function toggleSeat(code) {
+            if (selectedSeats.has(code)) {
+                selectedSeats.delete(code);
+            } else {
+                selectedSeats.add(code);
+            }
+
+            // Update seat styling
+            const seatEl = document.querySelector(`.seat[data-code="${code}"]`);
+            if (seatEl) {
+                seatEl.classList.toggle('selected', selectedSeats.has(code));
+            }
+
+            updateSidebarSummary();
+        }
+
+        function updateSidebarSummary() {
+            const tagsContainer = document.getElementById('selectedSeatsTags');
+            const subtotalEl = document.getElementById('summarySubtotal');
+            const discountRow = document.getElementById('discountRow');
+            const discountEl = document.getElementById('summaryDiscount');
+            const totalEl = document.getElementById('summaryTotal');
+            const submitBtn = document.getElementById('btnConfirmBooking');
+
+            if (selectedSeats.size === 0) {
+                tagsContainer.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">No seats selected yet</span>';
+                subtotalEl.innerText = formatCurrency(0);
+                discountRow.style.display = 'none';
+                totalEl.innerText = formatCurrency(0);
+                submitBtn.disabled = true;
+                return;
+            }
+
+            // Render tags
+            const sorted = Array.from(selectedSeats).sort((a,b) => {
+                if (a[0] !== b[0]) return a[0].localeCompare(b[0]);
+                return parseInt(a.slice(1)) - parseInt(b.slice(1));
+            });
+            tagsContainer.innerHTML = sorted.map(code => `<span class="seat-tag">${code}</span>`).join('');
+
+            // Calculate subtotal
+            let subtotal = 0;
+            sorted.forEach(code => {
+                subtotal += SeatPricing.getPriceForRow(code[0]);
+            });
+
+            subtotalEl.innerText = formatCurrency(subtotal);
+
+            // Calculate discount
+            let discount = 0;
+            if (appliedCoupon === 'CINE10') {
+                discount = subtotal * 0.10;
+                discountRow.style.display = 'flex';
+                discountEl.innerText = `- ${formatCurrency(discount)}`;
+            } else {
+                discountRow.style.display = 'none';
+            }
+
+            const finalTotal = Math.max(0, subtotal - discount);
+            totalEl.innerText = formatCurrency(finalTotal);
+            submitBtn.disabled = false;
+        }
+    </script>
+</body>
+</html>
+

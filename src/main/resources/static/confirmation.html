@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed | CineBook Cinemas</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-badge">CB</span>
+                Cine<span>Book</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="lookup.html" class="nav-link">My Bookings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div id="receiptContainer" class="receipt-card">
+            <!-- Header -->
+            <div class="receipt-header">
+                <div class="receipt-icon">🎟️</div>
+                <h2>BOOKING CONFIRMED</h2>
+                <p>Your ticket is successfully persisted in the database</p>
+            </div>
+
+            <!-- Body (Populated via JS) -->
+            <div id="receiptContent" class="receipt-body">
+                <p style="text-align:center; color: var(--text-muted); padding: 2rem;">Loading booking details...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 CineBook Cinemas. College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = parseInt(urlParams.get('bookingId'));
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const content = document.getElementById('receiptContent');
+
+            if (!bookingId) {
+                content.innerHTML = '<p style="text-align:center; color:var(--seat-booked);">No Booking ID provided in URL.</p>';
+                return;
+            }
+
+            try {
+                const b = await API.getBooking(bookingId);
+
+                const discountRow = b.discountAmount > 0 
+                    ? `<div class="receipt-row">
+                           <span class="receipt-label">Coupon Discount (${b.couponCode}):</span>
+                           <span class="receipt-value" style="color:var(--seat-available);">- ${formatCurrency(b.discountAmount)}</span>
+                       </div>` 
+                    : '';
+
+                content.innerHTML = `
+                    <div class="receipt-row">
+                        <span class="receipt-label">Booking Reference:</span>
+                        <span class="receipt-value" style="color:var(--accent-gold); font-size:1.1rem; font-weight:800;">
+                            CBK-${String(b.bookingId).padStart(4, '0')}
+                        </span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Customer Details:</span>
+                        <span class="receipt-value">${b.customerName} (${b.customerPhone})</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Movie:</span>
+                        <span class="receipt-value">${b.movieTitle}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Showtime:</span>
+                        <span class="receipt-value">${b.showDate} at ${b.showTime}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Screen:</span>
+                        <span class="receipt-value">${b.screenName || 'Screen 1'}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Seats Reserved:</span>
+                        <span class="receipt-value" style="color:var(--accent-gold); font-weight:700;">
+                            ${b.bookedSeats ? b.bookedSeats.join(', ') : 'None'} (${b.bookedSeats ? b.bookedSeats.length : 0} seats)
+                        </span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Subtotal:</span>
+                        <span class="receipt-value">${formatCurrency(b.subtotal)}</span>
+                    </div>
+                    ${discountRow}
+                    <div class="receipt-total">
+                        <span>Total Paid:</span>
+                        <span>${formatCurrency(b.totalAmount)}</span>
+                    </div>
+                    <div class="receipt-row" style="margin-top:1rem; border-top:none;">
+                        <span class="receipt-label">Status:</span>
+                        <span class="receipt-value" style="color:var(--seat-available); font-weight:800;">● ${b.status}</span>
+                    </div>
+
+                    <div class="receipt-actions">
+                        <a href="index.html" class="btn-secondary">&larr; Book Another</a>
+                        <button onclick="window.print()" class="btn-secondary" style="background:var(--accent-gold); color:#000; font-weight:700;">🖨️ Print Ticket</button>
+                    </div>
+                `;
+
+            } catch (err) {
+                content.innerHTML = `<p style="text-align:center; color:var(--seat-booked);">${err.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
+

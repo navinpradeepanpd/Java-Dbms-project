@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Lookup &amp; Cancellation | CineBook</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-badge">CB</span>
+                Cine<span>Book</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Movies &amp; Shows</a>
+                <a href="lookup.html" class="nav-link active">My Bookings</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Search Section -->
+        <div class="hero" style="padding: 2rem 1rem; margin-bottom: 2rem;">
+            <h2>Manage Your Bookings</h2>
+            <p>Look up ticket details, verify reservation status, or cancel an eligible booking with an 80% refund.</p>
+
+            <div style="max-width: 550px; margin: 1.5rem auto 0 auto;">
+                <form id="searchForm" style="display:flex; gap:0.5rem;">
+                    <input type="text" id="searchInput" class="form-input" placeholder="Enter Booking ID (e.g. 23) or Phone (e.g. 4545454545)" required>
+                    <button type="submit" class="nav-btn" style="border:none; cursor:pointer; white-space:nowrap; padding: 0.75rem 1.4rem;">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Results Container -->
+        <div id="resultsContainer">
+            <p style="text-align:center; color: var(--text-muted); padding: 2rem;">
+                Enter a Booking ID or customer phone number above to view details.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 CineBook Cinemas. College Java Semester Project powered by Spring Boot Web &amp; JDBC Database Persistence.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryId = urlParams.get('bookingId');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (queryId) {
+                document.getElementById('searchInput').value = queryId;
+                performSearch(queryId);
+            }
+
+            document.getElementById('searchForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const term = document.getElementById('searchInput').value.trim();
+                performSearch(term);
+            });
+        });
+
+        async function performSearch(term) {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Searching database...</p>';
+
+            // Check if term is Booking ID (numeric or CBK-xxxx) or Phone
+            let cleanTerm = term.replace(/^CBK-/i, '').trim();
+            let digitsOnly = cleanTerm.replace(/\D/g, '');
+
+            try {
+                if (/^\d{1,6}$/.test(cleanTerm)) {
+                    // Search single booking by ID
+                    const booking = await API.getBooking(parseInt(cleanTerm));
+                    if (!booking || booking.status !== 'CONFIRMED') {
+                        container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">No active bookings found for ID: ${term}</p>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    renderBookingCard(booking, container);
+                } else if (digitsOnly.length >= 7 && digitsOnly.length <= 15) {
+                    // Search by customer phone (backend returns only CONFIRMED)
+                    const bookings = await API.getCustomerBookings(digitsOnly);
+                    if (!bookings || bookings.length === 0) {
+                        container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:2rem;">No active bookings found for phone: ${term}</p>`;
+                        return;
+                    }
+                    container.innerHTML = `<h3 style="margin-bottom:1.5rem; text-align:center;">Found ${bookings.length} Active Booking(s)</h3>`;
+                    bookings.forEach(b => {
+                        const cardWrapper = document.createElement('div');
+                        renderBookingCard(b, cardWrapper);
+                        container.appendChild(cardWrapper);
+                    });
+                } else {
+                    container.innerHTML = `<p style="text-align:center; color:var(--seat-booked);">Please enter a valid numeric Booking ID or 7-15 digit phone number.</p>`;
+                }
+            } catch (err) {
+                container.innerHTML = `<p style="text-align:center; color:var(--seat-booked); padding:2rem;">${err.message}</p>`;
+            }
+        }
+
+        function renderBookingCard(b, parent) {
+            const card = document.createElement('div');
+            card.className = 'receipt-card';
+            card.dataset.bookingId = b.bookingId;
+            card.style.marginBottom = '2rem';
+            card.innerHTML = `
+                <div class="receipt-header">
+                    <div class="receipt-icon">🎟️</div>
+                    <h2>ACTIVE BOOKING</h2>
+                    <p>Booking Reference: CBK-${String(b.bookingId).padStart(4, '0')}</p>
+                </div>
+                <div class="receipt-body">
+                    <div class="receipt-row">
+                        <span class="receipt-label">Customer:</span>
+                        <span class="receipt-value">${b.customerName} (${b.customerPhone})</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Movie:</span>
+                        <span class="receipt-value">${b.movieTitle}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Showtime:</span>
+                        <span class="receipt-value">${b.showDate} at ${b.showTime}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Screen:</span>
+                        <span class="receipt-value">${b.screenName || 'Screen 1'}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Seats:</span>
+                        <span class="receipt-value" style="color:var(--accent-gold); font-weight:700;">
+                            ${b.bookedSeats ? b.bookedSeats.join(', ') : 'None'}
+                        </span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Total Amount Paid:</span>
+                        <span class="receipt-value">${formatCurrency(b.totalAmount)}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Status:</span>
+                        <span class="receipt-value" style="color:var(--seat-available); font-weight:800;">
+                            ● ${b.status}
+                        </span>
+                    </div>
+
+                    <div class="receipt-actions">
+                        <button onclick="handleCancel(${b.bookingId}, ${b.totalAmount})" class="btn-danger">
+                            🚫 Cancel Booking (80% Refund)
+                        </button>
+                    </div>
+                </div>
+            `;
+            parent.appendChild(card);
+        }
+
+        async function handleCancel(bookingId, totalAmount) {
+            const refund = totalAmount * 0.80;
+            const confirmMsg = `Are you sure you want to cancel Booking #CBK-${String(bookingId).padStart(4, '0')}?\n\nOriginal Amount: ${formatCurrency(totalAmount)}\nEligible Refund (80%): ${formatCurrency(refund)}\n\nYour reserved seats will be released back to the cinema pool immediately.`;
+            
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            try {
+                const response = await API.cancelBooking(bookingId);
+                showToast(`Cancellation successful! Refund: ${formatCurrency(response.refundAmount)}`, "success");
+                
+                // Immediately remove the cancelled card from view
+                const card = document.querySelector(`.receipt-card[data-booking-id="${bookingId}"]`);
+                if (card) {
+                    const parentBlock = card.parentElement;
+                    if (parentBlock && parentBlock.id !== 'resultsContainer') {
+                        parentBlock.remove();
+                    } else {
+                        card.remove();
+                    }
+                }
+                const remaining = document.querySelectorAll('.receipt-card');
+                if (remaining.length === 0) {
+                    document.getElementById('resultsContainer').innerHTML = 
+                        '<p style="text-align:center; color:var(--text-muted); padding:2rem;">No active bookings found.</p>';
+                } else {
+                    const countHeader = document.querySelector('#resultsContainer h3');
+                    if (countHeader) {
+                        countHeader.innerText = `Found ${remaining.length} Active Booking(s)`;
+                    }
+                }
+
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+    </script>
+</body>
+</html>
