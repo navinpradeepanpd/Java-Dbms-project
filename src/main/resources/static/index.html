@@ -10,30 +10,36 @@
     <script src="js/app.js?v=2.2"></script>
 </head>
 <body>
-    <!-- Ambient Depth Background with Slow Floating Orbs -->
-    <div class="ambient-cosmos">
+    <!-- Shared Cinematic Ambient Background -->
+    <div class="cinematic-ambient-bg" aria-hidden="true">
+        <div class="ambient-aurora-layer"></div>
+        <div class="ambient-light-rays"></div>
         <div class="ambient-orb orb-primary"></div>
         <div class="ambient-orb orb-secondary"></div>
         <div class="ambient-orb orb-accent"></div>
-        <div class="particles-field"></div>
+        <canvas id="ambientParticlesCanvas" class="ambient-particles-canvas"></canvas>
     </div>
+
     <!-- Floating Glass Island Navigation Bar -->
     <header class="floating-nav-wrapper">
         <nav class="navbar-glass-island">
-            <a href="index.html" class="brand-group">
-                <div class="brand-icon">🎟️</div>
-                <div class="brand-name">Cine<span>Book</span></div>
+            <a href="index.html" class="nav-brand-group">
+                <div class="nav-brand-icon-prism">🎟️</div>
+                <div class="nav-brand-titles">
+                    <span class="nav-brand-title">CINE<span>BOOK</span></span>
+                    <span class="nav-brand-sub">LUXURY CINEMA</span>
+                </div>
             </a>
 
             <div class="nav-menu-links">
                 <a href="index.html" class="nav-link-pill active">Now Showing</a>
                 <a href="#catalogSection" class="nav-link-pill">Movie Catalog</a>
                 <a href="lookup.html" class="nav-link-pill">My Bookings</a>
-                <a href="lookup.html" class="nav-link-pill">Cancel &amp; Refund</a>
+                <a href="lookup.html#cancelSection" class="nav-link-pill">Cancel &amp; Refund</a>
             </div>
 
             <div class="nav-actions-group" id="navAuthSection">
-                <button type="button" class="btn-glass" onclick="handleLogout()">Sign Out</button>
+                <button type="button" class="btn-nav-signout" onclick="handleLogout()">Sign Out</button>
             </div>
         </nav>
     </header>

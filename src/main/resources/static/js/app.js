@@ -356,6 +356,258 @@ function closeModal(modalId) {
 }
 
 
+// =========================================================================
+// CINEMATIC AMBIENT BACKGROUND ENGINE
+// Ultra-lightweight particle canvas, pause-on-hidden, reduced-motion aware
+// =========================================================================
+function initCinematicAmbient() {
+    let canvas = document.getElementById('ambientParticlesCanvas');
+    if (!canvas) {
+        const container = document.querySelector('.cinematic-ambient-bg, .ambient-cosmos');
+        if (container) {
+            canvas = document.createElement('canvas');
+            canvas.id = 'ambientParticlesCanvas';
+            canvas.className = 'ambient-particles-canvas';
+            container.appendChild(canvas);
+        } else {
+            return;
+        }
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    let animationFrameId = null;
+    let isPaused = false;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    // Subtle particles: 35 particles only for maximum performance & elegance
+    const count = 35;
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 1.6 + 0.6,
+            vx: (Math.random() - 0.5) * 0.28,
+            vy: (Math.random() - 0.5) * 0.28,
+            alpha: Math.random() * 0.5 + 0.2,
+            pulseSpeed: Math.random() * 0.015 + 0.005,
+            color: Math.random() > 0.4 ? '167, 139, 250' : '197, 164, 109' // Lavender or Champagne Gold
+        });
+    }
+
+    function render() {
+        if (isPaused) return;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Draw connections
+        for (let i = 0; i < count; i++) {
+            const p1 = particles[i];
+            for (let j = i + 1; j < count; j++) {
+                const p2 = particles[j];
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 95) {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.04 * (1 - dist / 95)})`;
+                    ctx.lineWidth = 0.6;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Draw particles
+        for (let i = 0; i < count; i++) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < 0) p.x = width;
+            else if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            else if (p.y > height) p.y = 0;
+
+            p.alpha += Math.sin(Date.now() * p.pulseSpeed) * 0.005;
+            const currentAlpha = Math.max(0.12, Math.min(0.7, p.alpha));
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.color}, ${currentAlpha})`;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = `rgba(${p.color}, 0.6)`;
+            ctx.fill();
+        }
+
+        if (!prefersReducedMotion) {
+            animationFrameId = requestAnimationFrame(render);
+        }
+    }
+
+    // Pause when tab is not active
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            isPaused = true;
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        } else {
+            isPaused = false;
+            if (!prefersReducedMotion) animationFrameId = requestAnimationFrame(render);
+        }
+    });
+
+    if (!prefersReducedMotion) {
+        animationFrameId = requestAnimationFrame(render);
+    } else {
+        render(); // Single static frame
+    }
+}
+
+// =========================================================================
+// UNIFIED RESPONSIVE NAVBAR SYSTEM
+// Role-aware: Customer vs Admin, consistent height, active indicator, mobile drawer
+// =========================================================================
+function initUnifiedNavbar(user) {
+    const navIsland = document.querySelector('.navbar-glass-island');
+    if (!navIsland) return;
+
+    const path = window.location.pathname;
+    const isHomePage = path.endsWith('index.html') || path === '/' || path === '';
+    const isLookupPage = path.endsWith('lookup.html');
+    const isAdminPage = path.endsWith('admin.html');
+
+    const role = user && user.role ? user.role.toUpperCase() : 'CUSTOMER';
+    const isAdmin = role === 'ADMIN';
+    const displayName = user ? (user.fullName || user.username || 'User') : 'Guest';
+    const initial = displayName.charAt(0).toUpperCase();
+
+    // 1. Build Left Brand Group
+    let brandHtml = '';
+    if (isAdmin) {
+        brandHtml = `
+            <a href="admin.html" class="nav-brand-group">
+                <div class="nav-brand-icon-prism admin-prism">👑</div>
+                <div class="nav-brand-titles">
+                    <span class="nav-brand-title">CINE<span>BOOK</span></span>
+                    <span class="nav-brand-sub admin-sub">ADMIN CONSOLE</span>
+                </div>
+            </a>
+        `;
+    } else {
+        brandHtml = `
+            <a href="index.html" class="nav-brand-group">
+                <div class="nav-brand-icon-prism">🎟️</div>
+                <div class="nav-brand-titles">
+                    <span class="nav-brand-title">CINE<span>BOOK</span></span>
+                    <span class="nav-brand-sub">LUXURY CINEMA</span>
+                </div>
+            </a>
+        `;
+    }
+
+    // 2. Build Center Menu Links
+    let menuLinks = [];
+    if (isAdmin) {
+        menuLinks = [
+            { label: 'Customer View', href: 'index.html', active: isHomePage },
+            { label: 'All Reservations', href: 'admin.html', active: isAdminPage },
+            { label: 'My Bookings', href: 'lookup.html', active: isLookupPage }
+        ];
+    } else {
+        menuLinks = [
+            { label: 'Now Showing', href: 'index.html', active: isHomePage },
+            { label: 'Movie Catalog', href: 'index.html#catalogSection', active: false },
+            { label: 'My Bookings', href: 'lookup.html', active: isLookupPage },
+            { label: 'Cancel & Refund', href: 'lookup.html#cancelSection', active: false }
+        ];
+    }
+
+    const linksHtml = `
+        <div class="nav-menu-links">
+            ${menuLinks.map(l => `<a href="${l.href}" class="nav-link-pill ${l.active ? 'active' : ''}">${l.label}</a>`).join('')}
+        </div>
+    `;
+
+    // 3. Build Right Actions (Account Info & Sign Out & Mobile Toggle)
+    const userRoleClass = isAdmin ? 'admin-tag' : '';
+    const avatarClass = isAdmin ? 'admin-avatar' : '';
+    const actionsHtml = `
+        <div class="nav-actions-group">
+            <div class="nav-user-pill">
+                <div class="nav-user-avatar ${avatarClass}">${initial}</div>
+                <span class="nav-user-name">${displayName}</span>
+                <span class="nav-role-tag ${userRoleClass}">${role}</span>
+            </div>
+            <button type="button" class="btn-nav-signout" onclick="handleLogout()" title="Sign out of CineBook">
+                <span>✕</span> Sign Out
+            </button>
+            <button type="button" class="nav-mobile-toggle" id="navMobileToggle" aria-label="Toggle Navigation Menu">
+                ☰
+            </button>
+        </div>
+    `;
+
+    // 4. Inject into Island Navbar
+    navIsland.innerHTML = brandHtml + linksHtml + actionsHtml;
+
+    // 5. Build or Update Mobile Drawer
+    let drawer = document.getElementById('navMobileDrawer');
+    if (!drawer) {
+        drawer = document.createElement('div');
+        drawer.id = 'navMobileDrawer';
+        drawer.className = 'nav-mobile-drawer';
+        navIsland.parentElement.appendChild(drawer);
+    }
+
+    drawer.innerHTML = `
+        ${menuLinks.map(l => `<a href="${l.href}" class="nav-link-pill ${l.active ? 'active' : ''}">${l.label}</a>`).join('')}
+        <div class="nav-mobile-user-row">
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+                <div class="nav-user-avatar ${avatarClass}">${initial}</div>
+                <div>
+                    <div style="font-weight:700; font-size:0.9rem; color:var(--text-primary);">${displayName}</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">${role}</div>
+                </div>
+            </div>
+            <button type="button" class="btn-nav-signout" onclick="handleLogout()">Sign Out</button>
+        </div>
+    `;
+
+    // 6. Bind Mobile Toggle
+    const toggleBtn = document.getElementById('navMobileToggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            drawer.classList.toggle('open');
+        });
+    }
+
+    // Close drawer when clicking any link inside it
+    drawer.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => drawer.classList.remove('open'));
+    });
+
+    // Close drawer when clicking outside
+    document.addEventListener('click', (e) => {
+        if (drawer.classList.contains('open') && !drawer.contains(e.target) && e.target !== toggleBtn) {
+            drawer.classList.remove('open');
+        }
+    });
+}
+
 // Session and Logout Management
 async function checkAuthSession() {
     try {
@@ -366,22 +618,7 @@ async function checkAuthSession() {
         }
         const data = await r.json();
         if (data.authenticated) {
-            const authSection = document.getElementById('navAuthSection');
-            if (authSection) {
-                const displayName = data.fullName || data.username || 'User';
-                const roleBadge = data.role === 'ADMIN' ? ' [ADMIN]' : '';
-                const adminLink = data.role === 'ADMIN' 
-                    ? `<a href="admin.html" class="btn-glass" style="padding:0.4rem 0.9rem; font-size:0.82rem; margin-right:0.4rem; color:var(--accent-rose); border-color:rgba(251,113,133,0.35);">Admin Console</a>` 
-                    : '';
-                authSection.innerHTML = `
-                    ${adminLink}
-                    <div class="nav-user-badge">
-                        <div class="nav-user-avatar">${displayName.charAt(0).toUpperCase()}</div>
-                        <span>${displayName}${roleBadge}</span>
-                    </div>
-                    <button type="button" class="btn-glass" onclick="handleLogout()" style="padding:0.4rem 0.9rem; font-size:0.82rem; margin-left:0.4rem;">Sign Out</button>
-                `;
-            }
+            initUnifiedNavbar(data);
         } else {
             // Not authenticated, redirect to login
             if (!window.location.pathname.endsWith('login.html') && !window.location.pathname.endsWith('register.html')) {
@@ -408,6 +645,13 @@ async function handleLogout() {
 
 window.checkAuthSession = checkAuthSession;
 window.handleLogout = handleLogout;
+window.initCinematicAmbient = initCinematicAmbient;
+window.initUnifiedNavbar = initUnifiedNavbar;
+
+// Initialize Ambient Background on every page
+document.addEventListener('DOMContentLoaded', () => {
+    initCinematicAmbient();
+});
 
 // Run auth check automatically on protected pages
 if (!window.location.pathname.endsWith('login.html') && !window.location.pathname.endsWith('register.html')) {

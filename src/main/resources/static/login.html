@@ -7,16 +7,19 @@
     <link rel="stylesheet" href="css/styles.css?v=2.5">
 </head>
 <body class="auth-page-body">
-    <!-- Ambient Depth Background with Slow Floating Orbs -->
-    <div class="ambient-cosmos">
+    <!-- Shared Cinematic Ambient Background -->
+    <div class="cinematic-ambient-bg" aria-hidden="true">
+        <div class="ambient-aurora-layer"></div>
+        <div class="ambient-light-rays"></div>
         <div class="ambient-orb orb-primary"></div>
         <div class="ambient-orb orb-secondary"></div>
         <div class="ambient-orb orb-accent"></div>
-        <div class="particles-field"></div>
+        <canvas id="ambientParticlesCanvas" class="ambient-particles-canvas"></canvas>
     </div>
 
-    <!-- Centered Glass Login Card -->
+    <!-- Centered Glass Login Card with Ambient Halo Ring -->
     <main class="auth-center-wrapper">
+        <div class="auth-card-halo" aria-hidden="true"></div>
         <div class="auth-glass-card">
             <!-- Brand Mark -->
             <div class="auth-brand-dock">
@@ -63,6 +66,7 @@
 
     <!-- Scripts -->
     <script src="js/app.js?v=2.5"></script>
+    <script src="js/app.js?v=2.6"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('loginForm');
