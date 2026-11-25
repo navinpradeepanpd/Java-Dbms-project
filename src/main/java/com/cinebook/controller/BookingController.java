@@ -29,7 +29,8 @@ import java.util.Optional;
 
 /**
  * Web REST Controller for Booking and Cancellation transactions.
- * Calls existing Bookable / BookingService interface for strict ACID guarantees.
+ * Calls existing Bookable / BookingService interface for strict ACID
+ * guarantees.
  */
 @RestController
 @RequestMapping("/api/bookings")
@@ -72,14 +73,16 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable("id") int id, Authentication authentication) throws SQLException, BookingNotFoundException {
+    public ResponseEntity<Booking> getBookingById(@PathVariable("id") int id, Authentication authentication)
+            throws SQLException, BookingNotFoundException {
         Optional<Booking> opt = bookingService.getBookingDetails(id);
         if (opt.isEmpty()) {
             throw new BookingNotFoundException("Booking #" + id + " was not found.");
         }
         Booking b = opt.get();
 
-        // Enforce ownership check: Customer can only view their own booking unless they are an ADMIN
+        // Enforce ownership check: Customer can only view their own booking unless they
+        // are an ADMIN
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             boolean isAdmin = "ADMIN".equalsIgnoreCase(userDetails.getRole());
             if (!isAdmin) {
@@ -117,11 +120,13 @@ public class BookingController {
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             boolean isAdmin = "ADMIN".equalsIgnoreCase(userDetails.getRole());
             if (isAdmin) {
-                // Administrators viewing reservations see all customer bookings across the system
+                // Administrators viewing reservations see all customer bookings across the
+                // system
                 return bookingDAO.getAllBookings();
             }
 
-            // Customer account: look up by customerId first if present, otherwise by phone/username
+            // Customer account: look up by customerId first if present, otherwise by
+            // phone/username
             Integer custId = userDetails.getCustomerId();
             if (custId == null) {
                 try {
@@ -147,8 +152,10 @@ public class BookingController {
     }
 
     @GetMapping("/customer/{phone}")
-    public List<Booking> getCustomerBookings(@PathVariable("phone") String phone, Authentication authentication) throws SQLException {
-        // Enforce ownership check: Customer can only view their own phone bookings unless they are an ADMIN
+    public List<Booking> getCustomerBookings(@PathVariable("phone") String phone, Authentication authentication)
+            throws SQLException {
+        // Enforce ownership check: Customer can only view their own phone bookings
+        // unless they are an ADMIN
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             boolean isAdmin = "ADMIN".equalsIgnoreCase(userDetails.getRole());
             if (!isAdmin && !phone.equals(userDetails.getUsername())) {
@@ -160,7 +167,8 @@ public class BookingController {
     }
 
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<CancellationResponse> cancelBooking(@PathVariable("id") int id) throws CineBookException, SQLException {
+    public ResponseEntity<CancellationResponse> cancelBooking(@PathVariable("id") int id)
+            throws CineBookException, SQLException {
         Optional<Booking> opt = bookingService.getBookingDetails(id);
         if (opt.isEmpty()) {
             throw new BookingNotFoundException("Booking #" + id + " was not found.");
@@ -175,8 +183,6 @@ public class BookingController {
                 "Booking successfully cancelled and 80% refund issued.",
                 id,
                 "CANCELLED",
-                refundAmount
-        ));
+                refundAmount));
     }
 }
-

@@ -23,9 +23,9 @@ public class BookingDAO {
      */
     public int createBooking(Connection conn, Booking booking) throws SQLException {
         String sql = """
-            INSERT INTO booking (customer_id, show_id, subtotal, discount_amount, total_amount, coupon_code, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """;
+                INSERT INTO booking (customer_id, show_id, subtotal, discount_amount, total_amount, coupon_code, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, booking.getCustomerId());
@@ -51,10 +51,12 @@ public class BookingDAO {
     }
 
     /**
-     * Links reserved seats to a booking in the junction table booking_seat within a transaction.
+     * Links reserved seats to a booking in the junction table booking_seat within a
+     * transaction.
      */
     public void linkBookingSeats(Connection conn, int bookingId, List<Integer> seatIds) throws SQLException {
-        if (seatIds == null || seatIds.isEmpty()) return;
+        if (seatIds == null || seatIds.isEmpty())
+            return;
 
         String sql = "INSERT INTO booking_seat (booking_id, seat_id) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -86,7 +88,8 @@ public class BookingDAO {
 
     /**
      * Updates booking status (e.g. to CANCELLED) inside a transaction.
-     * Ensures atomic state transition: only an active 'CONFIRMED' booking can be cancelled.
+     * Ensures atomic state transition: only an active 'CONFIRMED' booking can be
+     * cancelled.
      */
     public boolean updateBookingStatus(Connection conn, int bookingId, BookingStatus status) throws SQLException {
         String sql = "UPDATE booking SET status = ? WHERE booking_id = ? AND status = 'CONFIRMED'";
@@ -98,7 +101,8 @@ public class BookingDAO {
     }
 
     /**
-     * Retrieves a complete booking record by its ID, including movie, show, customer, and seat details.
+     * Retrieves a complete booking record by its ID, including movie, show,
+     * customer, and seat details.
      */
     public Optional<Booking> getBookingById(int bookingId) throws SQLException {
         String sql = """
@@ -114,7 +118,7 @@ public class BookingDAO {
             """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, bookingId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -131,7 +135,8 @@ public class BookingDAO {
     }
 
     /**
-     * Retrieves all active CONFIRMED bookings for a customer identified by phone number.
+     * Retrieves all active CONFIRMED bookings for a customer identified by phone
+     * number.
      * Cancelled bookings are excluded from customer-facing lookup results.
      */
     public List<Booking> getBookingsByCustomerPhone(String phone) throws SQLException {
@@ -232,8 +237,8 @@ public class BookingDAO {
             """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             SeatDAO seatDAO = new SeatDAO();
             while (rs.next()) {
@@ -255,8 +260,7 @@ public class BookingDAO {
                 rs.getDouble("discount_amount"),
                 rs.getDouble("total_amount"),
                 rs.getString("coupon_code"),
-                BookingStatus.fromString(rs.getString("status"))
-        );
+                BookingStatus.fromString(rs.getString("status")));
         booking.setCustomerName(rs.getString("customer_name"));
         booking.setCustomerPhone(rs.getString("phone"));
         booking.setMovieId(rs.getInt("movie_id"));
@@ -267,4 +271,3 @@ public class BookingDAO {
         return booking;
     }
 }
-
