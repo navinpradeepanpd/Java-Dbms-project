@@ -71,30 +71,30 @@
 
         <!-- Metric Stat Cards -->
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:1.2rem; margin-bottom:2.2rem;">
-            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+            <div class="glass-card" style="padding:1.4rem; text-align:center; background:rgba(22, 27, 46, 0.94); border:1px solid rgba(255,255,255,0.18);">
                 <div style="font-size:1.8rem; margin-bottom:0.3rem;">🎬</div>
-                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Active Movies</div>
-                <div id="statMovies" style="font-size:1.8rem; font-weight:800; color:var(--text-primary); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
+                <div style="font-size:0.8rem; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Active Movies</div>
+                <div id="statMovies" style="font-size:2.2rem; font-weight:800; color:#FFFFFF; font-family:var(--font-serif); margin-top:0.2rem; text-shadow:0 2px 8px rgba(0,0,0,0.7);">--</div>
             </div>
-            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+            <div class="glass-card" style="padding:1.4rem; text-align:center; background:rgba(22, 27, 46, 0.94); border:1px solid rgba(255,255,255,0.18);">
                 <div style="font-size:1.8rem; margin-bottom:0.3rem;">🕒</div>
-                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Total Shows</div>
-                <div id="statShows" style="font-size:1.8rem; font-weight:800; color:var(--text-primary); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
+                <div style="font-size:0.8rem; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Total Shows</div>
+                <div id="statShows" style="font-size:2.2rem; font-weight:800; color:var(--accent-primary-light); font-family:var(--font-serif); margin-top:0.2rem; text-shadow:0 2px 8px rgba(0,0,0,0.7);">--</div>
             </div>
-            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+            <div class="glass-card" style="padding:1.4rem; text-align:center; background:rgba(22, 27, 46, 0.94); border:1px solid rgba(255,255,255,0.18);">
                 <div style="font-size:1.8rem; margin-bottom:0.3rem;">🎟️</div>
-                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Total Bookings</div>
-                <div id="statTotalBookings" style="font-size:1.8rem; font-weight:800; color:var(--text-primary); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
+                <div style="font-size:0.8rem; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Total Bookings</div>
+                <div id="statTotalBookings" style="font-size:2.2rem; font-weight:800; color:#FFFFFF; font-family:var(--font-serif); margin-top:0.2rem; text-shadow:0 2px 8px rgba(0,0,0,0.7);">--</div>
             </div>
-            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+            <div class="glass-card" style="padding:1.4rem; text-align:center; background:rgba(22, 27, 46, 0.94); border:1px solid rgba(255,255,255,0.18);">
                 <div style="font-size:1.8rem; margin-bottom:0.3rem;">✅</div>
-                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Confirmed</div>
-                <div id="statConfirmed" style="font-size:1.8rem; font-weight:800; color:var(--accent-emerald); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
+                <div style="font-size:0.8rem; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Confirmed</div>
+                <div id="statConfirmed" style="font-size:2.2rem; font-weight:800; color:var(--accent-emerald); font-family:var(--font-serif); margin-top:0.2rem; text-shadow:0 2px 8px rgba(0,0,0,0.7);">--</div>
             </div>
-            <div class="glass-card" style="padding:1.4rem; text-align:center;">
+            <div class="glass-card" style="padding:1.4rem; text-align:center; background:rgba(22, 27, 46, 0.94); border:1px solid rgba(255,255,255,0.18);">
                 <div style="font-size:1.8rem; margin-bottom:0.3rem;">💰</div>
-                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Confirmed Revenue</div>
-                <div id="statRevenue" style="font-size:1.8rem; font-weight:800; color:var(--accent-gold); font-family:var(--font-serif); margin-top:0.2rem;">--</div>
+                <div style="font-size:0.8rem; color:#CBD5E1; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Confirmed Revenue</div>
+                <div id="statRevenue" style="font-size:2.2rem; font-weight:800; color:#FBBF24; font-family:var(--font-serif); margin-top:0.2rem; text-shadow:0 2px 8px rgba(0,0,0,0.7);">--</div>
             </div>
         </div>
 
@@ -366,7 +366,7 @@
                     <div class="ticket-content-side">
                         <div class="ticket-header-strip">
                             <div>
-                                <div class="ticket-ref-eyebrow">BOOKING REF &bull; CBK-${String(b.bookingId).padStart(4, '0')} (Cust #${b.customerId})</div>
+                                <div class="ticket-ref-eyebrow">BOOKING REF &bull; CB-2026-${String(b.bookingId).padStart(4, '0')} (Cust #${b.customerId})</div>
                                 <h2 class="ticket-movie-name">${b.movieTitle}</h2>
                             </div>
                             ${statusBadge}

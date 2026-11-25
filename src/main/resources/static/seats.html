@@ -231,6 +231,23 @@
                 // Render Seat Grid
                 renderSeatGrid(seatList);
 
+                // Auto-fill logged-in customer info if available
+                try {
+                    const me = await fetch('/api/auth/me').then(r => r.json());
+                    if (me && me.authenticated) {
+                        const nameInput = document.getElementById('customerName');
+                        const phoneInput = document.getElementById('customerPhone');
+                        if (nameInput && me.fullName && !nameInput.value) {
+                            nameInput.value = me.fullName;
+                        }
+                        if (phoneInput && !phoneInput.value) {
+                            if (me.username && /^[0-9]{7,15}$/.test(me.username)) {
+                                phoneInput.value = me.username;
+                            }
+                        }
+                    }
+                } catch(ignored) {}
+
             } catch (err) {
                 console.error(err);
                 showToast(err.message, 'error');
@@ -303,12 +320,15 @@
                     };
 
                     const response = await API.bookTickets(payload);
-                    showToast('Reservation confirmed successfully!', 'success');
+                    if (!response || !response.booking || !response.booking.bookingId) {
+                        throw new Error('Booking transaction succeeded but response was missing booking identifier.');
+                    }
+                    showToast('Reservation confirmed successfully! Generating ticket...', 'success');
 
-                    // Clean redirect to digital ticket
+                    // Clean redirect to digital ticket using exact booking ID from database
                     setTimeout(() => {
                         window.location.href = `confirmation.html?bookingId=${response.booking.bookingId}`;
-                    }, 500);
+                    }, 400);
 
                 } catch (err) {
                     showToast(err.message, 'error');

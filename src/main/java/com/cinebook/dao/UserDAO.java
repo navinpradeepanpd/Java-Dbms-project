@@ -81,6 +81,16 @@ public class UserDAO {
         }
     }
 
+    public void updateUserCustomerId(int userId, int customerId) throws SQLException {
+        String sql = "UPDATE users SET customer_id = ? WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, customerId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        }
+    }
+
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User u = new User();
         u.setUserId(rs.getInt("user_id"));

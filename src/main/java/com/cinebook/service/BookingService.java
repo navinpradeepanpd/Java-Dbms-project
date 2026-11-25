@@ -228,6 +228,7 @@ public class BookingService implements Bookable {
             booking.setBookingId(bookingId);
             booking.setCustomerName(customer.getCustomerName());
             booking.setCustomerPhone(customer.getPhone());
+            booking.setMovieId(show.getMovieId());
             booking.setMovieTitle(show.getMovieName());
             booking.setShowDate(show.getShowDate());
             booking.setShowTime(show.getShowTime());

@@ -165,23 +165,39 @@ window.MovieMetadata = {
 
 // Safe helper that ALWAYS returns a valid metadata object and never throws
 window.getMovieMeta = function(movieName) {
-    if (window.MovieMetadata && window.MovieMetadata[movieName]) {
-        return window.MovieMetadata[movieName];
+    if (!movieName) {
+        return window.MovieMetadata['Inception'] || defaultFallbackMeta();
     }
+    const trimmed = String(movieName).trim();
+    if (window.MovieMetadata && window.MovieMetadata[trimmed]) {
+        return window.MovieMetadata[trimmed];
+    }
+    if (window.MovieMetadata) {
+        const lower = trimmed.toLowerCase();
+        for (const [key, val] of Object.entries(window.MovieMetadata)) {
+            if (key.toLowerCase() === lower || lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)) {
+                return val;
+            }
+        }
+    }
+    return defaultFallbackMeta();
+};
+
+function defaultFallbackMeta() {
     return {
-        poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80',
-        backdrop: null,
-        rating: '8.5',
-        votes: '500K',
-        director: 'Acclaimed Director',
-        cast: 'Stellar Ensemble Cast',
-        tagline: 'Experience this cinematic premiere.',
+        poster: 'https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg',
+        backdrop: 'https://image.tmdb.org/t/p/w1280/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
+        rating: '8.8',
+        votes: '2.4M',
+        director: 'Christopher Nolan',
+        cast: 'Ensemble Cast',
+        tagline: 'Experience this cinema premiere in Dolby Atmos.',
         synopsis: 'Experience this movie in crystal-clear projection and immersive Dolby Atmos surround sound at CineBook Cinemas.',
-        ageCert: 'UA',
-        palette: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
+        ageCert: 'UA 13+',
+        palette: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0284c7 100%)',
         symbol: '🎬'
     };
-};
+}
 
 // Also expose as local variable for direct access
 const MovieMetadata = window.MovieMetadata;

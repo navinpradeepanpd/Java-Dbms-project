@@ -105,7 +105,7 @@ public class BookingDAO {
             SELECT b.booking_id, b.customer_id, b.show_id, b.booking_time,
                    b.subtotal, b.discount_amount, b.total_amount, b.coupon_code, b.status,
                    c.customer_name, c.phone,
-                   m.movie_name, ms.show_date, ms.show_time, ms.screen_name
+                   m.movie_id, m.movie_name, ms.show_date, ms.show_time, ms.screen_name
             FROM booking b
             JOIN customer c ON b.customer_id = c.customer_id
             JOIN movie_show ms ON b.show_id = ms.show_id
@@ -145,21 +145,24 @@ public class BookingDAO {
      */
     public List<Booking> getBookingsByCustomerPhone(String phone, boolean confirmedOnly) throws SQLException {
         List<Booking> bookings = new ArrayList<>();
-        String sql = """
+        StringBuilder sql = new StringBuilder("""
             SELECT b.booking_id, b.customer_id, b.show_id, b.booking_time,
                    b.subtotal, b.discount_amount, b.total_amount, b.coupon_code, b.status,
                    c.customer_name, c.phone,
-                   m.movie_name, ms.show_date, ms.show_time, ms.screen_name
+                   m.movie_id, m.movie_name, ms.show_date, ms.show_time, ms.screen_name
             FROM booking b
             JOIN customer c ON b.customer_id = c.customer_id
             JOIN movie_show ms ON b.show_id = ms.show_id
             JOIN movie m ON ms.movie_id = m.movie_id
-            WHERE c.phone = ?""" + (confirmedOnly ? " AND b.status = 'CONFIRMED'" : "") + """
-            ORDER BY b.booking_time DESC
-            """;
+            WHERE c.phone = ?
+            """);
+        if (confirmedOnly) {
+            sql.append(" AND b.status = 'CONFIRMED'");
+        }
+        sql.append(" ORDER BY b.booking_time DESC");
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
 
             stmt.setString(1, phone.trim());
             try (ResultSet rs = stmt.executeQuery()) {
@@ -179,21 +182,24 @@ public class BookingDAO {
      */
     public List<Booking> getBookingsByCustomerId(int customerId, boolean confirmedOnly) throws SQLException {
         List<Booking> bookings = new ArrayList<>();
-        String sql = """
+        StringBuilder sql = new StringBuilder("""
             SELECT b.booking_id, b.customer_id, b.show_id, b.booking_time,
                    b.subtotal, b.discount_amount, b.total_amount, b.coupon_code, b.status,
                    c.customer_name, c.phone,
-                   m.movie_name, ms.show_date, ms.show_time, ms.screen_name
+                   m.movie_id, m.movie_name, ms.show_date, ms.show_time, ms.screen_name
             FROM booking b
             JOIN customer c ON b.customer_id = c.customer_id
             JOIN movie_show ms ON b.show_id = ms.show_id
             JOIN movie m ON ms.movie_id = m.movie_id
-            WHERE b.customer_id = ?""" + (confirmedOnly ? " AND b.status = 'CONFIRMED'" : "") + """
-            ORDER BY b.booking_time DESC
-            """;
+            WHERE b.customer_id = ?
+            """);
+        if (confirmedOnly) {
+            sql.append(" AND b.status = 'CONFIRMED'");
+        }
+        sql.append(" ORDER BY b.booking_time DESC");
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
 
             stmt.setInt(1, customerId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -217,7 +223,7 @@ public class BookingDAO {
             SELECT b.booking_id, b.customer_id, b.show_id, b.booking_time,
                    b.subtotal, b.discount_amount, b.total_amount, b.coupon_code, b.status,
                    c.customer_name, c.phone,
-                   m.movie_name, ms.show_date, ms.show_time, ms.screen_name
+                   m.movie_id, m.movie_name, ms.show_date, ms.show_time, ms.screen_name
             FROM booking b
             JOIN customer c ON b.customer_id = c.customer_id
             JOIN movie_show ms ON b.show_id = ms.show_id
@@ -253,6 +259,7 @@ public class BookingDAO {
         );
         booking.setCustomerName(rs.getString("customer_name"));
         booking.setCustomerPhone(rs.getString("phone"));
+        booking.setMovieId(rs.getInt("movie_id"));
         booking.setMovieTitle(rs.getString("movie_name"));
         booking.setShowDate(rs.getDate("show_date").toLocalDate());
         booking.setShowTime(rs.getTime("show_time").toLocalTime());

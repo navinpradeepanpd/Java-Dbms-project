@@ -25,6 +25,7 @@ public class Booking {
     // Supplementary presentation attributes
     private String customerName;
     private String customerPhone;
+    private int movieId;
     private String movieTitle;
     private LocalDate showDate;
     private LocalTime showTime;
@@ -136,6 +137,14 @@ public class Booking {
 
     public void setCustomerPhone(String customerPhone) {
         this.customerPhone = customerPhone;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
     public String getMovieTitle() {

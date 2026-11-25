@@ -1,6 +1,7 @@
 package com.cinebook.controller;
 
 import com.cinebook.dao.BookingDAO;
+import com.cinebook.dao.UserDAO;
 import com.cinebook.dto.BookingRequest;
 import com.cinebook.dto.BookingResponse;
 import com.cinebook.dto.CancellationResponse;
@@ -8,6 +9,7 @@ import com.cinebook.exception.BookingNotFoundException;
 import com.cinebook.exception.CineBookException;
 import com.cinebook.model.Booking;
 import com.cinebook.model.Customer;
+import com.cinebook.model.User;
 import com.cinebook.service.BookingService;
 import com.cinebook.security.CustomUserDetails;
 import org.springframework.security.access.AccessDeniedException;
@@ -36,14 +38,16 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final BookingDAO bookingDAO;
+    private final UserDAO userDAO;
 
     public BookingController() {
         this.bookingService = new BookingService();
         this.bookingDAO = new BookingDAO();
+        this.userDAO = new UserDAO();
     }
 
     @PostMapping
-    public ResponseEntity<BookingResponse> bookTickets(@RequestBody BookingRequest req) throws CineBookException {
+    public ResponseEntity<BookingResponse> bookTickets(@RequestBody BookingRequest req, Authentication authentication) throws CineBookException {
         if (req.getCustomerName() == null || req.getCustomerName().trim().isEmpty()) {
             throw new CineBookException("Customer name cannot be empty.");
         }
@@ -56,6 +60,13 @@ public class BookingController {
 
         Customer customer = new Customer(req.getCustomerName().trim(), req.getPhone().trim());
         Booking booking = bookingService.bookSeats(customer, req.getShowId(), req.getSeatCodes(), req.getCouponCode());
+
+        // Associate customer with logged in user account if logged in
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            try {
+                userDAO.updateUserCustomerId(userDetails.getUserId(), booking.getCustomerId());
+            } catch (SQLException ignored) {}
+        }
 
         return ResponseEntity.ok(new BookingResponse(true, "Booking confirmed successfully!", booking));
     }
@@ -72,10 +83,28 @@ public class BookingController {
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             boolean isAdmin = "ADMIN".equalsIgnoreCase(userDetails.getRole());
             if (!isAdmin) {
-                String userPhone = userDetails.getUsername();
-                if (b.getCustomerPhone() != null && !b.getCustomerPhone().equals(userPhone)
-                        && (userDetails.getCustomerId() == null || userDetails.getCustomerId() != b.getCustomerId())) {
-                    throw new AccessDeniedException("Access denied: You do not have permission to view this reservation.");
+                Integer userCustId = userDetails.getCustomerId();
+                String username = userDetails.getUsername();
+
+                // Check fresh user record from database in case user was just linked on booking
+                if (userCustId == null || userCustId != b.getCustomerId()) {
+                    try {
+                        Optional<User> fresh = userDAO.findById(userDetails.getUserId());
+                        if (fresh.isPresent() && fresh.get().getCustomerId() != null) {
+                            userCustId = fresh.get().getCustomerId();
+                        }
+                    } catch (SQLException ignored) {}
+                }
+
+                boolean matches = false;
+                if (userCustId != null && userCustId.equals(b.getCustomerId())) {
+                    matches = true;
+                } else if (b.getCustomerPhone() != null && b.getCustomerPhone().equals(username)) {
+                    matches = true;
+                }
+
+                if (!matches) {
+                    throw new AccessDeniedException("Access denied: You do not have permission to view reservation #" + id);
                 }
             }
         }
@@ -93,8 +122,18 @@ public class BookingController {
             }
 
             // Customer account: look up by customerId first if present, otherwise by phone/username
-            if (userDetails.getCustomerId() != null) {
-                List<Booking> byId = bookingDAO.getBookingsByCustomerId(userDetails.getCustomerId(), false);
+            Integer custId = userDetails.getCustomerId();
+            if (custId == null) {
+                try {
+                    Optional<User> fresh = userDAO.findById(userDetails.getUserId());
+                    if (fresh.isPresent() && fresh.get().getCustomerId() != null) {
+                        custId = fresh.get().getCustomerId();
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            if (custId != null) {
+                List<Booking> byId = bookingDAO.getBookingsByCustomerId(custId, false);
                 if (!byId.isEmpty()) {
                     return byId;
                 }
